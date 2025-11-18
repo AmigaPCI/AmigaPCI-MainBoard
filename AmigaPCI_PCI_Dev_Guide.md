@@ -82,154 +82,100 @@ New PCI hardware developed specifically for the AmigaPCI should be based on spec
 
 # 2.0 PCI Configuration
 
-Each PCI target device may be configured by the Amiga AUTOCONFIG process or by software configuration (Prometheus). During configuration, each PCI slot in turn, is polled to obtain the capabilities and address space needs of the target device. Each PCI slot is polled by asserting the **IDSEL** signal, which is approximately equivalent to the **_CFGIN** signal of the Zorro bus. However, unlike the **_CFGIN** signal, the **IDSEL** is asserted by a specific address bit during the address phase of a configuration command access*. Because the Local PCI Bridge addresses each slot directly, as opposed to the fall through system of Zorro, there is no equivalent, or need, of a **_CFGOUT** signal.
-
-*PCI Local Bus Specification Revision 2.3. PCI Special Interest Group. Section 3.2.2.3.5. System Generation of IDSEL. pp. 36-37.
+Each PCI target device may be configured by the Amiga AUTOCONFIG process or by software configuration (Prometheus). During configuration, each PCI slot in turn, is polled to obtain the capabilities and address space needs of the target device.
 
 ## 2.1 Local PCI Bridge
 
-The Local PCI Bridge is always configured via the AUTOCONFIG process at startup before other PCI devices. The Local PCI Bridge base address allows direct access of the Local PCI Bridge configuration registers and a means to access Prometheus configured PCI cards on the PCI bus (See 2.3  Prometheus Configuration). All PCI devices are accessed through the Local PCI Bridge, which acts as an interface between the devices on the CPU bus and devices on the PCI bus. The Local PCI Bridge also handles bus arbitration. During each CPU data transfer cycle, the address information is broadcast by the Local PCI Bridge to the PCI bus. If any devices respond by asserting **_DEVSEL**, the Local PCI Bridge proceeds with the PCI cycle. Otherwise, the Local PCI Bridge returns to an idle state.
-
-The following 16-bit registers are available on the Local PCI Bridge device. All registers can be read. This allows polling of the Local PCI Bridge settings and status. Reading a long word at offset 0x04 will return both registers. Accessing the registers from the MC68040 will result in big endian ordering of the bytes. Accessing the registers from the PCI bus will result in little endian ordering. Reads from unsupported registers will return 0. Registers are not user configurable.
-
-Table 2.1a. Local PCI Bridge Status Register.
-Little Endian Bit|Big Endian Bit|Description|Supported by Local<br /> PCI Bridge Device
--|-|-|-
-31|7|Detected Parity Error|Yes
-30|6|Signaled System Error|Yes
-29|5|Received Master Abort|Yes
-28|4|Received Target Abort|Yes
-27|3|Signaled Target Abort|No
-26-25|2-1|DEVSEL Timing|No
-24|0|Master Data Parity Error|Yes
-23|15|Fast Back-to-Back Capable|No
-22|14|Reserved|No
-21|13|66 MHz Capable|No
-20|12|Capabilties|No
-19|11|Interrupt Status|Yes
-18-16|10-8|Reserved|No
-
-Table 2.1b. Local PCI Bridge Command Register.
-Little Endian Bit|Big Endian Bit|Description|Default Value
--|-|-|-
-15-11|23-19|Reserved|0
-10|18|Interrupt Disable|0
-9|17|Fast Back-to-Back Enable|0
-8|16|_SERR Enable|1
-7|31|Reserved|0
-6|30|Parity Error Response|1
-5|29|VGA Palette Snoop|0
-4|28|Memory Write and Invalidate Enable|0
-3|27|Special Cycles|0
-2|26|Bus Master|0
-1|25|Memory Space|1
-0|24|I/O Space|0
+The host bridge base address is $8000 0000. The base address allows direct access of the host bridge configuration registers and a means to access the configuration spaces of PCI cards on the PCI bus (See 2.3  Prometheus Configuration). All PCI devices are accessed through the host bridge, which acts as an interface between devices on the CPU bus and devices on the PCI bus. The host bridge also handles bus arbitration. During each CPU data transfer cycle, the address information is broadcast by the host bridge to the PCI bus. If any devices respond by asserting **_DEVSEL**, the host bridge proceeds with the PCI cycle. Otherwise, the host bridge returns to an idle state.
 
 ## 2.2 AUTOCONFIG
 
-PCI cards designed specifically with support for the AmigaPCI will be configured via the AUTOCONFIG process at startup. AUTOCONFIG capable PCI devices will be configured by the Local PCI Bridge in the 32-bit Zorro 3 address space. In order to complete the AUTOCONFIG process, all AUTOCONFIG capable PCI devices must inclue a ROM or psuedo-ROM to support the process. In order to be recognized as an AUTOCONFIG capable device, a PCI card must respond with with the value 0x68 at offset 0x14 in the ROM space (section 2.2.2.1).
+PCI cards with Amiga option ROMs will be configured via the AUTOCONFIG process at startup. AUTOCONFIG capable PCI devices will be configured by the in the 32-bit memory expansion space range. In order to complete the AUTOCONFIG process, all AUTOCONFIG capable PCI devices must inclue a ROM or psuedo-ROM to support the process. The first 64KB of ROM space is designated as the PCI Data Structure.* To determine the target architecture of the ROM image, the value Code Type must be set. For AmigaOS ROM images, the Code Type at offset 0x14 must be **0x68**. All other values will be ignored.  
+
+Once an AmigaOS option ROM is identified, specifications such as the device manufacturer, product number, device capabilities, etc, are read from the device. Amiga OS will assign a base address to each device on the PCI card. This procedure is then repeated for each PCI device installed. Once complete, each PCI device may be accessed by the assigned base address. PCI target devices configured by the AUTOCONFIG process may only access memory and configuration spaces. Use of the I/O space is not recommended for new PCI designs and is not supported.
 
 > [!NOTE]
-> A Type 0 configuration transaction is used to access a device on the current bus segment and a Type 1 configuration transaction is used to access a device that resides behind another bridge on the bus. For example, a daughter card plugged into a PCI slot can supply additional PCI slots via a bridge on the daughter card. A Type 0 configuration transaction is not forwarded across a bridge but is used to configure a bridge or other PCI devices that are connected to the PCI bus on which the Type 0 configuration transaction is generated*. 
+> The Code Type value of 0x68 is an unofficial implementation of this register. By selecting a high value, it is expected this will never be officially assigned and should be safe far into the future.  
+> AmigaOS AUTOCONFIG 8-bit Product IDs, so the Device ID field must consider this.  
+> AmigaOS AUTOCONFIG supports 16-bit Vendor IDs, which is the same as PCI.  
 
-*PCI-to-PCI Bridge Architecture Specification Revision 1.1. PCI Special Interest Group. Section 3.1. Overview of Hierarchical Configuration. pp. 19.
+## 2.3 Accessing Devices on the PCI Bus
 
-### 2.2.1 AUTOCONFIG Process
-
-During configuration, specifications such as the device manufacturer, product number, device capabilities, etc, are read from the device. Each PCI device is capable of supporting up to six base address registers (BAR0 - BAR5, between 0x10 - 0x24 in the configuration register). The required address space for each of the six possible registers are determined and presented to Amiga OS for assigning of base addresses in the 32-bit Zorro 3 address space. This is done through the normal Zorro 3 AUTOCONFIG procedure. As an example, if BAR0 requests 512k of configuration space, this request will be passed to Amiga OS as a Zorro 3 device requiring 512k of AUTOCONFIG space. Amiga OS will then assign a base address to this request. This assigned base address will be programmed into BAR0 of the target PCI device. This process repeats for BAR1 - BAR5 of the same PCI device. This procedure is then repeated for each PCI device installed. Once complete, each PCI device may be accessed by the assigned base address, just as any other AUTOCONFIG device. PCI target devices configured by the AUTOCONFIG process may only access memory and configuration spaces. Use of the I/O space is not recommended for new PCI designs* and is not supported.
-
-> [!NOTE]
-> Amiga OS supports 8-bit Product IDs, so the Device ID field must consider this.
-> Amiga OS supports 16-bit Vendor IDs, which is the same as PCI.
-
-*PCI Local Bus Specification Revision 2.3. PCI Special Interest Group. Section 3.2.2. Addressing. pp. 27.
-
-### 2.2.2 AUTOCONFIG ROM Vector
-
-PCI devices may have onboard ROMs that enhance functionality, such as for auto booting. PCI ROMs may contain multiple images that support multiple architectures. During PCI configuration, the ROM address offset (AUTOCONFIG ROM Vector) is read from the PCI configuration header. This 16-bit value is then presented to the AUTOCONFIG process, which is an offset from the base address where the ROM will respond.
-
-#### 2.2.2.1 PCI Data Structure
-
-The first 64KB of ROM space is designated as the PCI Data Structure.* To determine the target architecture of the ROM image, the value Code Type must be set. For Amiga 68K ROM images, the Code Type at offset 0x14 must be **0x68**. All other values will be ignored. If this value is not set correctly, the device will not be configured with the AUTOCONFIG process.
-
-> [!NOTE]
-> **The Code Type value of 0x68 is an unofficial implementation of this register. By selecting a high value, it is expected this will never be officially assigned and should be safe far into the future.**
-
-*PCI Local Bus Specification Revision 2.3. PCI Special Interest Group. Section 6.3.1.2. PCI Data Structure Format. pp. 212.
-
-### 2.2.3 AUTOCONFIG PCI Device Register Access
-
-PCI defines multiple address spaces that exist in parallel. PCI command encodings select a specific address space for the current cycle. PCI devices added by the AUTOCONFIG process may be accessed in memory or configuration spaces. Each device is accessed via the assigned base address with the command type determined by sampling **R_W**, and the **TT** and **TM** buses. For example, you can access the Configuration Type 0 space of an AUTOCONFIG PCI device by driving the base address on the **A** bus, setting the **TT** bus to 0x2 and the TM bus to 0x0. This can be accomplished via the MOVES command. The Local PCI Bridge will interpret this as a Configuration Type 0 command and set the **C/BE[3..0]** bits accordingly. Reference sections 3.2.5, 5.3.1, and 5.3.2 in the Motorola MC68040 manual for details on the MOVES instruction.
-
-Table 2.2.3a. PCI Commands for AUTOCONFIG Devices.
-R_W|TT1|TT0|TM2|TM1|TM0|PCI Command
--|-|-|-|-|-|-
-1|0|x|x|x|x|Memory Space Read
-0|0|x|x|x|x|Memory Space Write
-1|1|0|0|0|0|Configuration Type 0 Space Read
-0|1|0|0|0|0|Configuration Type 0 Space Write
-x|1|0|0|0|1|Reserved by Motorola
-x|1|0|0|1|0|Reserved by Motorola
-1|1|0|0|1|1|Configuration Type 1 Space Read
-0|1|0|0|1|1|Configuration Type 1 Space Write
-x|1|0|1|0|0|Reserved
-x|1|0|1|0|1|Reserved by Motorola
-x|1|0|1|1|0|Reserved by Motorola
-x|1|0|1|1|1|Reserved
-
-### 2.2.3 PCI AUTOCONFIG Configuration
-
-During the AUTOCONFIG process, up to 21 AUTOCONFIG capable PCI device slots may be addressed by the Local PCI Bridge, although the AmigaPCI has only five. During the configuration access, the Local PCI Bridge asserts **IDSEL** with one of 21 address bits, **A[31..11]**. Once the device has been configured, the device should only be accessed through its AUTOCONFIG assigned base address. Shown below is the list of possible AmigaPCI slot **IDSEL** addresses. This list maintains compatability with Prometheus* **IDSEL** addresses while allowing for expansion in the number of slots in new system designs.
-
-Examples:
-1) Applying address 0x0200 0000 will enable **IDSEL** of the card in slot 9.  
-2) Applying address 0x8000 0000 will enable **IDSEL** of the card in slot 15.  
-
-Table 2.2.3a. AUTOCONFIG Capable Slots.
-PCI Slot|Address Bit|Offset|Prometheus Compatable
--|-|-|-
-0|AD[16]|0x0001 0000|Yes*
-1|AD[17]|0x0002 0000|Yes
-2|AD[18]|0x0004 0000|Yes
-3|AD[19]|0x0008 0000|Yes
-4|AD[20]|0x0010 0000|No
-5|AD[21]|0x0020 0000|No
-6|AD[22]|0x0040 0000|No
-7|AD[23]|0x0080 0000|No
-8|AD[24]|0x0100 0000|No
-9|AD[25]|0x0200 0000|No
-10|AD[26]|0x0400 0000|No
-11|AD[27]|0x0800 0000|No
-12|AD[28]|0x1000 0000|No
-13|AD[29]|0x2000 0000|No
-14|AD[30]|0x4000 0000|No
-15|AD[31]|0x8000 0000|No
-16|AD[11]|0x0000 0800|No
-17|AD[12]|0x0000 1000|No
-18|AD[13]|0x0000 2000|No
-19|AD[14]|0x0000 4000|No
-20|AD[15]|0x0000 8000|No
-
-*Prometheus daughter cards historically have 4 PCI Local Bus slots. It is assumed drivers designed for Prometheus will only search for devices at offsets 0x0001 0000 - 0x0008 0000.
-
-## 2.3 Prometheus Enabled Device Configuration
-
-The AmigaPCI aims to maintain a high level of compatabitly with Prometheus drivers. However, Prometheus implements non-standard PCI bridge registers. This means some drivers may need modification to work with the AmigaPCI. PCI devices not supporting AUTOCONFIG should be installed in a Prometheus configuration slot. Each slot designated as a Prometheus configuration slot may be accessed through the base address of the Local PCI Bridge, which is always configured by AUTOCONFIG at startup. Each slot on the PCI bus may be addressed individually by its offset value to read or write from that device's configuration register. To maintain compatability with existing Prometheus drivers, the system must support **IDSEL** on four slots driven by **A[19..16]**. These four slots also support AUTOCONFIG. Up to 17 additional slots may be added to support AUTOCONFIG only devices. See 2.2 AUTOCONFIG PCI Slots.
-
-For a full understanding of intefacing Prometheus enabled devices, documentation of the Prometheus firmware should be reviewed.
-
-Examples, assuming the PCI Local Bridge base address is 0x6000 0000:
-
-1) Applying address 0x6001 0000 will enable **IDSEL** of the card in slot 0.  
-2) Applying address 0x6008 0000 will enable **IDSEL** of the card in slot 3.  
-
-Table 2.3a. Address Offset of PCI Slots For **IDSEL**.
-PCI Slot|Address Bit|Offset From Base Address
+Table 2.3 PCI Host Bridge Memory Map
+Starting Address|Ending Address|Description
 -|-|-
-0|AD[16]|0x0001 0000
-1|AD[17]|0x0002 0000
-2|AD[18]|0x0004 0000
-3|AD[19]|0x0008 0000
+$8000 0000|$9FBF FFFF|Memory Expansion Space
+$9FC0 0000|$9FC0 7FFF|Reserved
+$9FC0 8000|$9FC0 8FFF|Host Bridge Type 0 Configuration Space
+$9FC1 0000|$9FC1 FFFF|PCI Slot 0 Type 0 Configuration Space
+$9FC2 0000|$9FC2 FFFF|PCI Slot 1 Type 0 Configuration Space
+$9FC3 0000|$9FC3 FFFF|PCI Slot 4 Type 0 Configuration Space
+$9FC4 0000|$9FC4 FFFF|PCI Slot 2 Type 0 Configuration Space
+$9FC8 0000|$9FC8 FFFF|PCI Slot 3 Type 0 Configuration Space
+$9FC9 0000|$9FD0 FFFF|Reserved
+$9FD1 0000|$9FDF FFFF|Type 1 Configuration Space
+$9FE0 0000|$9FFF FFFF|I/O Expansion Space
+
+### 2.3.1 Memory Space Access
+
+### 2.3.2 Type 0 Configuration Access
+
+Accesses to each device on the PCI bus is possible by implementing the correct offset from the base address. Some examples are below.
+
+Table 2.3.2a Configuration Space Access
+Address Bits|Description
+-|-
+31:20|Type 0 configuration space.
+19:15|Device to Access. See Table 2.3.2b.
+14:11|Reserved. Should be 0x0.
+10:8|Value identifying the function ID of target slot.
+7:2|Configuration Register Offset.
+1:0|Port Size
+
+Table 2.3.2b Device Access
+A[19:15] Binary|Result
+-|-
+00001|Host bridge.
+00010|PCI Slot 0 _IDSEL.
+00100|PCI Slot 1 _IDSEL.
+01000|PCI Slot 2 _IDSEL.
+10000|PCI Slot 3 _IDSEL.
+00011|PCI Slot 4 _IDSEL.
+
+Table 2.3.2c Access Examples
+Address|Read/Write|Result
+-|-|-
+$9FC0 8000|Read|Returns register 0x0 from the host bridge.
+$9FC4 0000|Read|Returns register 0x0 from PCI device 0 on slot 2.
+$9FC3 0000|Read|Returns register 0x0 from PCI device 0 on slot 4.
+
+Table 2.3.2d Host Bridge CONFIG0 Registers.  
+<table>
+    <thead>
+      <td colspan=8><p align="center">Data Bits</p></td><td></td>
+    </thead>
+    <tbody>
+    <tr>
+    <td width="70px">31</td><td width="70px"></td><td width="70px"></td><td width="70px"><p align="right">16</p></td>
+      <td  width="70px">15</td><td width="70px"></td><td width="70px"></td><td width="70px"><p align="right">0</p></td>
+      <td width="60px"><p align="center">Offset</p></td>
+      </tr>
+      <tr>
+        <td><p align="center">Prometheus Control</p></td><td colspan=3><p align="center">Device ID</p></td><td colspan=4><p align="center">Vendor ID</p></td><td><p align="center">0x0</p></td>
+      </tr>
+      <tr>
+        <td colspan=4><p align="center">Status</p></td><td colspan=4><p align="center">Command</p></td><td><p align="center">0x4</p></td>
+      </tr>
+      <tr>
+        <td colspan=6><p align="center">Class Code</p></td><td colspan=2><p align="center">Revision ID</p></td><td><p align="center">0x8</p></td>      
+      </tr>
+    </tbody>
+</table>
+
+### 2.3.3 Type 1 Configuration Access
+
+### 2.3.4 I/O Space Access
+
 
 # 3.0 Data Transfer Cycles and Bus Mastering
 
