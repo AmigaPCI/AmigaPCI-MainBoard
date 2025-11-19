@@ -1,0 +1,110 @@
+#CLOCKS
+set_io CLK40_IN  52
+set_io CLK33    128
+set_io RESETn    49
+
+#AD BUS
+set_io AD[0]    2 #AD0
+set_io AD[1]    1 #AD1
+set_io AD[2]  144 #AD2
+set_io AD[3]  143 #AD3
+set_io AD[4]  142 #AD4
+set_io AD[5]  139 #AD5
+set_io AD[6]  141 #AD6
+set_io AD[7]  138 #AD7
+set_io AD[8]    3 #AD8
+set_io AD[9]  137 #AD9
+set_io AD[10] 136 #AD10
+set_io AD[11] 135 #AD11
+set_io AD[12] 134 #AD12
+set_io AD[13] 130 #AD13
+set_io AD[14] 125 #AD14
+set_io AD[15] 124 #AD15
+set_io AD[16] 122 #AD16
+set_io AD[17] 121 #AD17
+set_io AD[18] 120 #AD18
+set_io AD[19] 119 #AD19
+set_io AD[20] 118 #AD20
+set_io AD[21] 117 #AD21
+set_io AD[22] 116 #AD22
+set_io AD[23] 115 #AD23
+set_io AD[24] 114 #AD24
+set_io AD[25] 113 #AD25
+set_io AD[26] 112 #AD26
+set_io AD[27] 110 #AD27
+set_io AD[28]   4 #AD28
+set_io AD[29]   7 #AD29
+set_io AD[30]   9 #AD30
+set_io AD[31]   8 #AD31
+
+#D BUS
+set_io D[0]   62 #D0
+set_io D[1]   63 #D1
+set_io D[2]   64 #D2
+set_io D[3]   73 #D3
+set_io D[4]   74 #D4
+set_io D[5]   75 #D5
+set_io D[6]   76 #D6
+set_io D[7]   78 #D7
+set_io D[8]   79 #D8
+set_io D[9]   80 #D9
+set_io D[10]  81 #D10
+set_io D[11]  82 #D11
+set_io D[12]  83 #D12
+set_io D[13]  84 #D13
+set_io D[14]  85 #D14
+set_io D[15]  87 #D15
+set_io D[16]  88 #D16
+set_io D[17]  90 #D17
+set_io D[18]  91 #D18
+set_io D[19]  93 #D19
+set_io D[20]  94 #D20
+set_io D[21]  95 #D21
+set_io D[22]  96 #D22
+set_io D[23]  97 #D23
+set_io D[24]  98 #D24
+set_io D[25]  99 #D25
+set_io D[26] 101 #D26
+set_io D[27] 102 #D27
+set_io D[28] 104 #D28
+set_io D[29] 105 #D29
+set_io D[30] 106 #D30
+set_io D[31] 107 #D31
+
+#DATA TRANSFER SIGNALS
+
+set_io TSn    29
+set_io BGn    28
+set_io TACK_ENn 21
+set_io RnW    18
+set_io BURSTn     17
+
+#PCI CYCLE SIGNALS
+set_io DEVSELn     20
+set_io PCI_BUF_ENn 31
+set_io PCI_BUF_DIR 34
+set_io PCI_CYCLEn  19
+set_io BRIDGE_ENn   45
+set_io PHASEA_D   16
+#set_io PAR_DA     15
+set_io TARGET_READYn 12
+set_io INIT_READYn   11
+#set_io STOPn      10
+#set_io IDSEL0     48
+#set_io IDSEL1     61
+#set_io IDSEL2     55
+#set_io IDSEL3     60
+#set_io IDSEL4     56
+set_io ADDRESS_ENn     22
+set_io ADDRESS_LATCH   41
+set_io ADDRESS_DIR     39
+set_io PCIAT[1] 43
+set_io PCIAT[0] 42
+set_io INT_ENn  44
+
+
+#set_io TACKn  23
+#set_io CONFIG_ENn 24
+
+#set_io TP0 38
+#set_io TP1 37
