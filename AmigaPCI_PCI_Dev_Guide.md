@@ -19,8 +19,7 @@ This document is a work in progress and is presented "as-is" with no waranty exp
 3) Examples of bus data are italicized, such as *DATA0* or *ADDRESS1*.  
 4) Hex values are presented with a leading 0x and a space inserted every 4 characters for clarity.
 5) AmigaPCI refers to this specification or any implementation of this specification, in part or whole.
-6) CPU refers to the Motorola MC68040 or MC68060 processor, unless otherwise specified.
-</br>
+6) CPU refers to the Motorola MC68040 or MC68060 processor, unless otherwise specified.  
 
 **Revision History**  
 Revision|Date|Status
@@ -86,7 +85,7 @@ Each PCI target device may be configured by the Amiga AUTOCONFIG process or by s
 
 ## 2.1 PCI Host Bridge
 
-The host bridge base address is $8000 0000. The base address allows direct access of the host bridge configuration registers and a means to access the configuration spaces of PCI cards on the PCI bus. All PCI devices are accessed through the host bridge, which acts as an interface between devices on the CPU bus and devices on the PCI bus. The host bridge also handles bus arbitration. During each CPU data transfer cycle, the address information is broadcast by the host bridge to the PCI bus. If any devices respond by asserting **_DEVSEL**, the host bridge proceeds with the PCI cycle. Otherwise, the host bridge returns to an idle state.
+The host bridge base address is $8000 0000. The base address allows direct access of the host bridge configuration registers and a means to access the configuration spaces of PCI cards on the PCI bus. All PCI devices may be accessed through the host bridge, which acts as an interface between devices on the CPU bus and devices on the PCI bus. The host bridge also handles bus arbitration. During each CPU data transfer cycle, the address information is broadcast by the host bridge to the PCI bus. If any devices respond by asserting **_DEVSEL**, the host bridge proceeds with the PCI cycle. Otherwise, the host bridge returns to an idle state.
 
 ## 2.2 Accessing Devices on the PCI Bus
 
@@ -107,25 +106,29 @@ $9FC9 0000|$9FD0 FFFF|Reserved
 $9FD1 0000|$9FDF FFFF|Type 1 Configuration Space
 $9FE0 0000|$9FFF FFFF|I/O Expansion Space
 
-### 2.2.1 PCI Memory and I/O Space Access
+### 2.2.1 PCI Memory Space
 
-All PCI devices are assigned a base address during configuration, either by AmigaOS option ROMs or Prometheus software. Access to PCI devices during normal operation will occur via the base address assigned.
+PCI devices assigned a base address during configuration, either by AmigaOS option ROMs or Prometheus software, can operated in the memory space. Access to PCI devices during normal operation will occur via the base address assigned.
 
-### 2.2.2 PCI Type 0 Configuration Access
+### 2.2.2 I/O Space
 
-The Type 0 configuration space of each device on the PCI bus can be accessed by probing the correct address. The addressing scheme is described below. The data bit order shown in the tables is aligned to big endian accesses from the CPU. The host bridge automatically byte swaps the data bus in both directions. Thus, any data on the CPU side of the bridge will be in big endian order. Conversely, any data on the PCI side of the bus is in little endian order. Becuase of the byte swapping, it is critical to consider how the data will be presented when referencing tables in the PCI specifications. Address translation that may be required is implemented by the host bridge. For example, AD(1:0) must be $0 for accesses to the Type 0 Configuration space. To support this, the host bridge automatically sets AD(1:0) = 00 during this access type. The devloper may choose to read or write a byte, word, or long word at any appropriate address alignment without affecting the Type 0 Configuration access by the host bridge.  
+TBD
 
-Table 2.2.2a Configuration Space Access
-Address Bits|Description
+### 2.2.3 PCI Type 0 Configuration Access
+
+The Type 0 configuration space of each device on the PCI bus can be accessed by probing the correct address. The addressing scheme is described below. The data bit order shown in the tables is aligned to big endian accesses from the CPU. The host bridge automatically byte swaps the data bus in both directions. Thus, any data on the CPU side of the bridge will be in big endian order. Conversely, any data on the PCI side of the bus is in little endian order. Becuase of the byte swapping, it is critical to consider how the data will be presented when referencing tables in the PCI specifications. Address translation that may be required is implemented by the host bridge. For example, AD(1:0) must be $0 for accesses to the Type 0 Configuration space. To support this, the host bridge automatically sets AD(1:0) = $0 during this access type. In addition, AD[31:20] are set to $0.
+
+Table 2.2.3a Type 0 Configuration Space Access.
+A Bus Address Bits|Description
 -|-
 31:20|Type 0 configuration space ($9FC).
-19:15|Device to Access. See Table 2.3.2b.
+19:15|Slot to Access. See Table 2.2.3b.
 14:11|Reserved. Should be $0.
 10:8|Value identifying the function ID of target slot.
 7:2|Configuration Register Offset.
 1:0|Byte start address. Defined by CPU.
 
-Table 2.2.2b Device Access
+Table 2.2.3b Device Access
 A[19:15] Binary|Result
 -|-
 00001|Host bridge.
@@ -135,8 +138,8 @@ A[19:15] Binary|Result
 10000|PCI Slot 3 _IDSEL.
 00011|PCI Slot 4 _IDSEL.
 
-Table 2.2.2c Access Examples
-Address|Read/Write|Result
+Table 2.2.3c Access Examples
+A Bus Address|Read/Write|Result
 -|-|-
 $9FC0 8000|Read|Returns register 0x0 from the host bridge.
 $9FC4 0000|Read|Returns register 0x0 from PCI device 0 on slot 2.
@@ -146,14 +149,14 @@ $9FC1 0100|Read|Returns register 0x0 from PCI device 1 on slot 1.
 $9FC1 0200|Read|Returns register 0x0 from PCI device 2 on slot 1.
 $9FC0 8004|Write|Writes to register 0x4 of the host bridge.
 
-#### 2.2.2.1 Host Bridge Type 0 Configuration Registers
+#### 2.2.3.1 Host Bridge Type 0 Configuration Registers
 
 The host bridge of the AmigaPCI supports the Type 0 configuration registers listed in Table 2.2.2.1, which are always aligned as big endian and match the data positions shown in the table. These registers can be used to identify the AmigaPCI host bridge and, to a limited extent, affect its behavior. The host bridge supports the register settings shown in table 2.2.2.2. Writing to read only registers will have no effect. All undefined or reserved registers are unsupported and will return $0 when read and writing to those registers will have no effect.
 
-Table 2.2.2.1 Host Bridge Type 0 Configuration Registers.  
+Table 2.2.3.1s Host Bridge Type 0 Configuration Registers.  
 <table>
     <thead>
-      <td colspan=8><p align="center">Data Bits (Big Endian)</p></td><td></td>
+      <td colspan=8><p align="center">Data Bits (D Bus, Big Endian)</p></td><td></td>
     </thead>
     <tbody>
     <tr>
@@ -173,7 +176,7 @@ Table 2.2.2.1 Host Bridge Type 0 Configuration Registers.
     </tbody>
 </table>
 
-Table 2.2.2.2 AmigaPCI Host Bridge Register Bits
+Table 2.2.3.1b AmigaPCI Host Bridge Register Bits
 Register|Offset|Read/Write|Data Bits|Description
 -|-|-|-|-
 Prometheus|0x0|Read/Write|31|PCI Bus Reset.*
@@ -188,18 +191,35 @@ Revision ID|0x8|Read|7:0|Returns hardware revision of host bridge.
 
 *These register bits may not be supported in the final product.
 
-### 2.2.3 Type 1 Configuration Access
+### 2.2.4 Type 1 Configuration Access
+
+The Type 1 configuration space of each device on the PCI bus can be accessed by probing the correct address. Up to 14 additional buses can be supported using the addressing scheme described below. Bus 0 is reserved for the system host bridge. The host bridge automatically byte swaps the data bus in both directions. Thus, any data on the CPU side of the bridge will be in big endian order. Conversely, any data on the PCI side of the bus is in little endian order. Becuase of the byte swapping, it is critical to consider how the data will be presented when referencing tables in the PCI specifications. Address translation that may be required is implemented by the host bridge. For example, AD(1:0) must be $1 for accesses to the Type 1 Configuration space. To support this, the host bridge automatically sets AD(1:0) = $1 during this access type. In addition, AD(31:20) is set to $0.  
+
+Table 2.2.4a Type 1 Configuration Space Access
+A Bus Address Bits|Description
+-|-
+31:20|Type 1 configuration space ($9FD).
+19:16|Bus number ($1 - $FF)
+15:11|Target slot on the target bus.
+10:8|Value identifying the function ID of target slot.
+7:2|Configuration Register Offset.
+1:0|Byte start address. Defined by CPU.
+
+Table 2.2.4b Device Access
+A[19:15] Binary|Result
+-|-
+00001|Host bridge.
+00010|PCI Slot 0 _IDSEL.
+00100|PCI Slot 1 _IDSEL.
+01000|PCI Slot 2 _IDSEL.
+10000|PCI Slot 3 _IDSEL.
+00011|PCI Slot 4 _IDSEL.
 
 ## 2.3 AmigaOS Option ROM Cards
 
-PCI cards with AmigaOS ROMs will be configured via an AUTOCONFIG-like process at startup. In order to complete the configuration process, the PCI devices must inclue a ROM or psuedo-ROM to supply the necessary information. The first 64KB of ROM space is designated as the PCI Data Structure. To determine the target architecture of the ROM image, the value Code Type must be set. For AmigaOS ROM images, the Code Type at offset 0x14 must be **0x68**. All other values will be ignored.  
+PCI cards with AmigaOS ROMs will be configured via an AUTOCONFIG-like process at startup. In order to complete the configuration process, the PCI devices must inclue a ROM or psuedo-ROM to supply the necessary information. The first 64KB of ROM space is designated as the PCI Data Structure. To determine the target architecture of the ROM image, the value **Code Type** must be set. For AmigaOS ROM images, the Code Type at offset **0x14** must be **0x68**. All other values will be ignored.  
 
 Once an AmigaOS ROM is identified, specifications such as the device manufacturer, product number, device capabilities, etc, are read from the device. AmigaOS will assign a base address to each device on the PCI card. This procedure is then repeated for each PCI device installed. Once complete, each PCI device may be accessed by the assigned base address.
-
-> [!NOTE]
-> The Code Type value of 0x68 is an unofficial implementation of this register. By selecting a high value, it is expected this will never be officially assigned and should be safe far into the future.  
-> AmigaOS AUTOCONFIG 8-bit Product IDs, so the Device ID field must consider this.  
-> AmigaOS AUTOCONFIG supports 16-bit Vendor IDs, which is the same as PCI.  
 
 # 3.0 Data Transfer Cycles and Bus Mastering
 
@@ -301,5 +321,10 @@ A data parity error occurs when there is a parity mismatch during the data phase
 
 **Note:** During CPU driven cycles, the PCI device is the target device. During DMA cycles, the Local PCI Bridge or other PCI device is the target device.
 
+# Appendix A Definitions
+
+A = The address bus of the AmigaPCI.  
+AD = The portion of the PCI bus where address and data signals are duplexed.
+D = The data bus of the AmigaPCI.  
 
 **END**
