@@ -96,12 +96,7 @@ Starting Address|Ending Address|Description
 -|-|-
 $8000 0000|$9FBF FFFF|Memory Expansion Space
 $9FC0 0000|$9FC0 7FFF|Reserved
-$9FC0 8000|$9FC0 8FFF|Host Bridge Type 0 Configuration Space
-$9FC1 0000|$9FC1 FFFF|PCI Slot 0 Type 0 Configuration Space
-$9FC2 0000|$9FC2 FFFF|PCI Slot 1 Type 0 Configuration Space
-$9FC3 0000|$9FC3 FFFF|PCI Slot 4 Type 0 Configuration Space
-$9FC4 0000|$9FC4 FFFF|PCI Slot 2 Type 0 Configuration Space
-$9FC8 0000|$9FC8 FFFF|PCI Slot 3 Type 0 Configuration Space
+$9FC0 8000|$9FC8 FFFF|Type 0 Configuration Space
 $9FC9 0000|$9FD0 FFFF|Reserved
 $9FD1 0000|$9FDF FFFF|Type 1 Configuration Space
 $9FE0 0000|$9FFF FFFF|I/O Expansion Space
