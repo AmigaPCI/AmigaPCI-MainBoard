@@ -108,11 +108,11 @@ $9FE0 0000|$9FFF FFFF|I/O Expansion Space
 
 ### 2.2.1 PCI Memory Space
 
-PCI devices assigned a base address during configuration, either by AmigaOS option ROMs or Prometheus software, can operated in the memory space. Access to PCI devices during normal operation will occur via the base address assigned.
+PCI devices assigned a base address during configuration, either by AmigaOS option ROMs or Prometheus software, can operated in the memory space. Access to PCI devices during normal operation will occur via the base address assigned. Only memory read and memory write commands are posted to the PCI bus.
 
 ### 2.2.2 I/O Space
 
-TBD
+Two megabytes of space is available for I/O devices. In this space, only I/O read and I/O write commands are posted to the PCI bus. I/O devices are not recommended for new designs. Address bits AD(31:20) are set to $0 during an I/O space access.
 
 ### 2.2.3 PCI Type 0 Configuration Access
 
@@ -204,16 +204,6 @@ A Bus Address Bits|Description
 10:8|Value identifying the function ID of target slot.
 7:2|Configuration Register Offset.
 1:0|Byte start address. Defined by CPU.
-
-Table 2.2.4b Device Access
-A[19:15] Binary|Result
--|-
-00001|Host bridge.
-00010|PCI Slot 0 _IDSEL.
-00100|PCI Slot 1 _IDSEL.
-01000|PCI Slot 2 _IDSEL.
-10000|PCI Slot 3 _IDSEL.
-00011|PCI Slot 4 _IDSEL.
 
 ## 2.3 AmigaOS Option ROM Cards
 
