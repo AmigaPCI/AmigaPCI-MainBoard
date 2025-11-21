@@ -27,14 +27,17 @@ Description: Buffers for the PCI bus interface.
 Date          Who  Description
 -----------------------------------
 18-NOV-2025   JN   INITIAL CODE
+21-NOV-2025   JN   Added address decoding for all cycle types.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
 
 module U109_BUFFERS
 (
-    input PHASEA_D, DEVSELn, BGn, RnW, REGISTER_CYCLE,
-    input [31:0] D_OUT,    
+    input PHASEA_D, DEVSELn, BGn, RnW, REGISTER_CYCLE, A_LATCH_VALID,
+    input [1:0] PCIAT,
+    input [31:0] D_OUT,
+    input [31:0] A_LATCH, 
 
     output ADDRESS_ENn, ADDRESS_DIR, PCI_BUF_ENn, PCI_BUF_DIR,
 
@@ -50,7 +53,8 @@ module U109_BUFFERS
 //in the address phase of the cycle. The direction of the data is determined
 //by who has the bus.
 
-assign ADDRESS_ENn = !(PHASEA_D);
+wire ADDRESS_VALID = (PHASEA_D && A_LATCH_VALID);
+assign ADDRESS_ENn = ADDRESS_VALID;
 assign ADDRESS_DIR = BGn;
 
 ///////////////////////
@@ -59,15 +63,33 @@ assign ADDRESS_DIR = BGn;
 
 //The onboard (FPGA) data bus buffers are enabled during the data phase of a PCI cycle.
 //Only enable when a PCI device has identified itself.
-//These buffers are byte swapped.
+//These buffers are byte swapped for data phase transfers.
 
-wire DATA_TO_AMIGA = ((REGISTER_CYCLE && RnW) || (!PHASEA_D && ((!BGn &&  RnW ) || (BGn && !RnW)))); 
-wire DATA_TO_PCI   = (!PHASEA_D && ((!BGn && !RnW ) || (BGn && RnW)));
+// Access Type         PCIAT1   PCIAT0
+//-------------------------------------
+//PCI Config Space 0     0        0
+//PCI Config Space 1     0        1
+//PCI Memory Space       1        0
+//I/O Space              1        1
 
+localparam BURST_ORDER_WRAP = 2'b10;
+localparam CONFIG0_ACCESS   = 2'b00;
+localparam CONFIG1_ACCESS   = 2'b01;
+
+wire CONFIG0_SPACE = PCIAT == 2'b00;
+wire CONFIG1_SPACE = PCIAT == 2'b01;
+wire MEMORY_SPACE  = PCIAT == 2'b10;
+
+wire D_TO_AMIGA   = ((REGISTER_CYCLE && RnW) || (!PHASEA_D && ((!BGn &&  RnW ) || (BGn && !RnW)))); 
+wire AD_TO_PCI    = ((ADDRESS_VALID) || ((!PHASEA_D && ((!BGn && !RnW ) || (BGn && RnW)))));
+
+wire [1:0]  A_LOW      = CONFIG0_SPACE ? CONFIG0_ACCESS : CONFIG1_SPACE ? CONFIG1_ACCESS : A_LATCH[1:0];
+wire [31:0] AD_A_OUT   = MEMORY_SPACE ? {A_LATCH[31:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW};
+wire [31:0] AD_OUT     = ADDRESS_VALID ? AD_A_OUT : { D[7:0],  D[15:8],  D[23:16],  D[31:24]};
 wire [31:0] D_DATA_OUT = REGISTER_CYCLE ? D_OUT : {AD[7:0], AD[15:8], AD[23:16], AD[31:24]};
 
-assign AD = DATA_TO_PCI   ? { D[7:0],  D[15:8],  D[23:16],  D[31:24]} : 32'bz;
-assign D  = DATA_TO_AMIGA ? D_DATA_OUT : 32'bz;
+assign AD = AD_TO_PCI  ? AD_OUT : 32'bz;
+assign D  = D_TO_AMIGA ? D_DATA_OUT : 32'bz;
 
 /////////////////////////////
 // LEVEL SHIFTING BUFFERS //

@@ -27,6 +27,7 @@ Description: ADDRESS DECODE
 Date          Who  Description
 -----------------------------------
 16-NOV-2025   JN   INITIAL CODE
+21-NOV-2025   JN   Moved assertion of PCIAT to PCI_STATE_MACHINE module.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -38,9 +39,8 @@ module U409_ADDRESS_DECODE
     input [31:15] A,
 
     //Chip Selects
-    //output CONF0_ACCESS, CONF1_ACCESS, IO_ACCESS,
-    output BRIDGE_ENn, BRIDGE_REG_SPACE,
-    output [1:0] PCIAT
+    //output CONFIG0_ACCESS, CONFIG1_ACCESS, IO_ACCESS,
+    output BRIDGE_ENn, BRIDGE_REG_SPACE, CONFIG0_SPACE, CONFIG1_SPACE, IO_SPACE
 );
 
   //////////////////////
@@ -51,23 +51,13 @@ module U409_ADDRESS_DECODE
 //phase of a PCI cycle. States of these signals should be latched
 //at the start of a new cycle.
 
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
-
 localparam [3:0] BRIDGE_BASE = 4'h8;
 
 assign BRIDGE_ENn =  !(RESETn && PHASEA_D && A[31:29] == BRIDGE_BASE[3:1]);
 
-assign CONF0_SPACE      = (PHASEA_D && A[28:20] == 9'b111111100);
-assign CONF1_SPACE      = (PHASEA_D && A[28:20] == 9'b111111101);
+assign CONFIG0_SPACE    = (PHASEA_D && A[28:20] == 9'b111111100);
+assign CONFIG1_SPACE    = (PHASEA_D && A[28:20] == 9'b111111101);
 assign IO_SPACE         = (PHASEA_D && A[28:21] == 8'b11111111);
-assign BRIDGE_REG_SPACE = (!BRIDGE_ENn && CONF0_SPACE && A[19:15] == 5'b00001);
-
-assign PCIAT[1] = (IO_SPACE || (!IO_SPACE && !CONF0_SPACE && !CONF1_SPACE));
-assign PCIAT[0] = (IO_SPACE || CONF1_SPACE);
+assign BRIDGE_REG_SPACE = (!BRIDGE_ENn && CONFIG0_SPACE && A[19:15] == 5'b00001);
 
 endmodule

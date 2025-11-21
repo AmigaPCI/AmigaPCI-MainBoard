@@ -40,7 +40,7 @@ module U109_TOP (
 
     //PCI
     input TARGET_READYn, DEVSELn,
-    output PCI_CYCLEn, PHASEA_D, ADDRESS_LATCH, ADDRESS_DIR, ADDRESS_ENn, INT_ENn,
+    output PCI_CYCLEn, PHASEA_D, CLK_ADDRESS_LATCH, ADDRESS_DIR, ADDRESS_ENn, INT_ENn,
     output BRIDGE_ENn, PCI_BUF_ENn, PCI_BUF_DIR, INIT_READYn,
     output [1:0] PCIAT,
 
@@ -51,6 +51,7 @@ module U109_TOP (
     //, output TP0, TP1
 );
 
+//Need to connect to _INT2!
 wire INT_STATUSn = 1;
 
 /////////////////////
@@ -59,13 +60,14 @@ wire INT_STATUSn = 1;
 
 wire CLK40_PAD = CLK40_IN;
 wire CLK40;
-wire BRIDGE_REG_SPACE;
+wire BRIDGE_REG_SPACE, CONFIG0_SPACE, CONFIG1_SPACE, IO_SPACE, A_LATCH_VALID, PCI_TACK_EN;
 wire REGISTER_CYCLE;
 wire REG_TACK;
+wire [31:0] A_LATCH;
 wire [31:0] D_OUT;
 
 assign INIT_READYn = PHASEA_D;
-assign TACK_ENn = !(REG_TACK);
+assign TACK_ENn = !(REG_TACK || PCI_TACK_EN);
 
 //////////////////////////////
 // PCI CYCLE STATE MACHINE //
@@ -80,10 +82,19 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .BRIDGE_ENn (BRIDGE_ENn),
     .BURSTn (BURSTn),
     .BRIDGE_REG_SPACE (BRIDGE_REG_SPACE),
+    .DEVSELn (DEVSELn),
+    .AD (AD),
     .TARGET_READYn (TARGET_READYn),
     .PCI_CYCLEn (PCI_CYCLEn),
-    .ADDRESS_LATCH (ADDRESS_LATCH),
-    .PHASEA_D (PHASEA_D)
+    .CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
+    .A_LATCH_VALID (A_LATCH_VALID),
+    .PHASEA_D (PHASEA_D),
+    .PCI_TACK_EN (PCI_TACK_EN),
+    .CONFIG0_SPACE (CONFIG0_SPACE),
+    .CONFIG1_SPACE (CONFIG1_SPACE),
+    .IO_SPACE (IO_SPACE),
+    .PCIAT (PCIAT),
+    .A_LATCH (A_LATCH)
 );
 
 //////////////////
@@ -98,6 +109,9 @@ U109_BUFFERS U109_BUFFERS(
     .RnW (RnW),
     .REGISTER_CYCLE (REGISTER_CYCLE),
     .D_OUT (D_OUT),
+    .A_LATCH (A_LATCH),
+    .A_LATCH_VALID (A_LATCH_VALID),
+    .PCIAT (PCIAT),
 
     //output
     .ADDRESS_ENn (ADDRESS_ENn),
@@ -108,6 +122,8 @@ U109_BUFFERS U109_BUFFERS(
     //inout
     .D (D),
     .AD (AD)
+
+    //,.TP0(TP0)
 );
 
 ///////////////////////
@@ -124,7 +140,9 @@ U409_ADDRESS_DECODE U409_ADDRESS_DECODE
    //output
    .BRIDGE_ENn (BRIDGE_ENn),
    .BRIDGE_REG_SPACE (BRIDGE_REG_SPACE),
-   .PCIAT (PCIAT)
+   .CONFIG0_SPACE (CONFIG0_SPACE),
+   .CONFIG1_SPACE (CONFIG1_SPACE),
+   .IO_SPACE (IO_SPACE)
 );
 
 ///////////////////////

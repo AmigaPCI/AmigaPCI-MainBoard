@@ -27,6 +27,7 @@ Description: Part of the PCI state machine.
 Date          Who  Description
 -----------------------------------
 18-NOV-2025   JN   INITIAL CODE
+21-NOV-2025   JN   Moved PCIAT assertion to this module.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -37,12 +38,17 @@ module U109_PCI_STATE_MACHINE (
     input CLK40, CLK33,
 
     //Cycle Start/Termination
-    input RESETn, TSn, RnW, BRIDGE_ENn, BURSTn, BRIDGE_REG_SPACE,
+    input RESETn, TSn, RnW, BRIDGE_ENn, BURSTn, BRIDGE_REG_SPACE, DEVSELn,
+
+    //Address/Data
+    input [31:0] AD,
 
     //PCI Signals
-    input TARGET_READYn,
-    output ADDRESS_LATCH,
-    output reg PCI_CYCLEn, PHASEA_D
+    input TARGET_READYn, CONFIG0_SPACE, CONFIG1_SPACE, IO_SPACE,
+    output CLK_ADDRESS_LATCH, A_LATCH_VALID,
+    output reg PCI_CYCLEn, PHASEA_D, PCI_TACK_EN,
+    output reg [1:0] PCIAT,
+    output reg [31:0] A_LATCH
 
 );
 
@@ -50,11 +56,22 @@ module U109_PCI_STATE_MACHINE (
 // SYNCHORNIZER INPUT //
 ///////////////////////
 
+// Access Type         PCIAT1   PCIAT0
+//-------------------------------------
+//PCI Config Space 0     0        0
+//PCI Config Space 1     0        1
+//PCI Memory Space       1        0
+//I/O Space              1        1
+
+assign A_LATCH_VALID = PCI_CYCLE_START_HOLD;
+
 reg PCI_CYCLE_START_HOLD;
 reg [1:0] RESET_START;
 always @(posedge CLK40) begin
     if (!RESETn) begin
         PCI_CYCLE_START_HOLD <= 0;
+        PCIAT <= 2'b10;
+        A_LATCH <= 32'h0;
         RESET_START <= 2'b0;
     end else begin
         RESET_START[0] <= START_CYCLE_RESET;
@@ -64,6 +81,9 @@ always @(posedge CLK40) begin
             PCI_CYCLE_START_HOLD <= 0;
         end else if (!TSn && !BRIDGE_ENn && !BRIDGE_REG_SPACE) begin
             PCI_CYCLE_START_HOLD <= 1;
+            PCIAT[1] <= (IO_SPACE || (!IO_SPACE && !CONFIG0_SPACE && !CONFIG1_SPACE));
+            PCIAT[0] <= (IO_SPACE || CONFIG1_SPACE);
+            A_LATCH <= AD;
         end
     end
 end
@@ -72,16 +92,18 @@ end
 // PCI STATE MACHINE //
 //////////////////////
 
-localparam [3:0] TIMEOUT = 4'hf;
+localparam [3:0] TIMEOUT = 4'h7;
 
-assign ADDRESS_LATCH = 0;
+assign CLK_ADDRESS_LATCH = 0;
 
-reg TARGET_READYn_HOLD;
+reg TARGET_READYn_DELAY, DEVSELn_DELAY;
 always @(posedge CLK33) begin
     if (!RESETn) begin
-        TARGET_READYn_HOLD <= 1;
+        TARGET_READYn_DELAY <= 1;
+        DEVSELn_DELAY <= 1;
     end else begin
-        TARGET_READYn_HOLD <= TARGET_READYn;
+        TARGET_READYn_DELAY <= TARGET_READYn;
+        DEVSELn_DELAY <= DEVSELn;
     end
 end
 
@@ -97,6 +119,7 @@ always @(negedge CLK33) begin
         PCI_CYCLEn <= 1;
         PHASEA_D <= 1;
         START_CYCLE_RESET <= 0;
+        PCI_TACK_EN <= 0;
         CYCLE_STATE <= 4'h0;
     end else begin
 
@@ -105,6 +128,7 @@ always @(negedge CLK33) begin
 
         case (CYCLE_STATE)
             4'h0 : begin
+                PCI_TACK_EN <= 0;
                 if (PCI_CYCLE_START[1]) begin
                     //DOUBLE CHECK CYCLE TYPE (MEM, CP0, CS1, REGISTER SPACE)
                     PCI_CYCLEn <= 0; //Signal U110 to assert _FRAME.
@@ -121,10 +145,26 @@ always @(negedge CLK33) begin
                 CYCLE_STATE <= 4'h2;
             end
             4'h2 : begin
-                if (!TARGET_READYn_HOLD) begin
-                    //Target device accepted data
+                START_CYCLE_RESET <= 0;
+                if (!DEVSELn_DELAY) begin
+                    //Target device has responded.
+                    //_TRDY and _DEVSEL may assert on the same edge!
+                    CYCLE_STATE <= 4'h3;
+                end else begin
+                    //Timeout if the target device takes too long to respond.
+                    TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
+                    if (TIMEOUT_COUNT == TIMEOUT) begin
+                        PCI_TACK_EN <= 1;
+                        PCI_CYCLEn <= 1;
+                        PHASEA_D <= 1;
+                        CYCLE_STATE <= 4'h0;
+                    end
+                end
+            end
+            4'h3 : begin
+                if (!TARGET_READYn_DELAY) begin
+                    //Target device accepted or asserted data.
                     //Can also check for FIFO not empty to proceed, which is probably better.
-                    START_CYCLE_RESET <= 0;
                     BURST_COUNT <= BURST_COUNT + 1;
                     if (!CYCLE_BURST_CYCLE || BURST_COUNT == 2'b11) begin
                         PHASEA_D <= 1; //Return to idle state.
@@ -133,15 +173,6 @@ always @(negedge CLK33) begin
 
                     if (BURST_COUNT == 2'b10) begin
                         PCI_CYCLEn <= 1; //Disable _FRAME one clock before cycle ends.
-                    end
-                end else begin
-                    //Timeout if the target device takes too long to respond.
-                    //The _TACK timeout in U409 will do the rest.
-                    TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
-                    if (TIMEOUT_COUNT == TIMEOUT) begin
-                        PCI_CYCLEn <= 1;
-                        PHASEA_D <= 1;
-                        CYCLE_STATE <= 4'h0;
                     end
                 end
             end

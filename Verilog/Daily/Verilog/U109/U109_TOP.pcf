@@ -96,7 +96,7 @@ set_io INIT_READYn   11
 #set_io IDSEL3     60
 #set_io IDSEL4     56
 set_io ADDRESS_ENn     22
-set_io ADDRESS_LATCH   41
+set_io CLK_ADDRESS_LATCH   41
 set_io ADDRESS_DIR     39
 set_io PCIAT[1] 43
 set_io PCIAT[0] 42
@@ -106,5 +106,5 @@ set_io INT_ENn  44
 #set_io TACKn  23
 #set_io CONFIG_ENn 24
 
-#set_io TP0 38
-#set_io TP1 37
+set_io TP0 38
+set_io TP1 37
