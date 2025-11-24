@@ -34,7 +34,7 @@ NOTE:This one has the "slow" PLL!
 module U110_TOP (
 
     //Clocks
-    input CLK40_IN, CLK33,
+    input CLK40_IN, CLK33_IN,
     
     //Cycle Start/Terminate
     input RESETn, TSn, RnW,
@@ -49,9 +49,10 @@ module U110_TOP (
     output IDELENn, IDEDIR, IDEHRENn, IDEHWENn, ATA_LATCH,
 
     //PCI 
-    input BPRO_ENn, DEVSELn, TRDYn, PHASEA_D, PCI_TACK_ENn,
+    input DEVSELn, TRDYn, PCI_TACK_ENn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn,
     input [1:0] PCIAT,
-    output DEVSEL_OUTn,
+    output DEVSEL_OUTn, PHASEA_D, FRAMEn, PCI_TIPn,
+    output [3:0] CBE,
 
     //Arbitor and Interrupts
     output INT2n, BUSDIR, BGn, BURSTn
@@ -65,7 +66,10 @@ module U110_TOP (
 //////////////////////////
 
 wire CLK40_PAD = CLK40_IN;
-wire CLK40 = CLK40_PLL;
+wire CLK40;
+//wire CLK33_PAD = CLK33_IN;
+wire CLK33 = !CLK33_IN;
+wire ATA_TACK;
 
 assign DEVSEL_OUTn = DEVSELn;
 
@@ -84,7 +88,6 @@ U110_INTERRUPT U110_INTERRUPT (
  // CYCLE TERMINATION //
 ///////////////////////
 
-wire ATA_TACK;
 U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
     //INPUT
     .CLK40 (CLK40),
@@ -166,6 +169,33 @@ U110_ARBITOR U110_ARBITOR (
  // PCI STATE MACHINE //
 ////////////////////////
 
+U110_PCI_BRIDGE U110_PCI_BRIDGE (
+
+    //input
+    .CLK40 (CLK40),
+    .CLK33 (CLK33),
+    .RESETn (RESETn),
+    .TSn (TSn),
+    .RnW (RnW),
+    .BGn (BGn),
+    .PCI_CYCLEn (PCI_CYCLEn),
+    .DEVSELn (DEVSELn),
+    .UUBEn (UUBEn),
+    .UMBEn (UMBEn),
+    .LMBEn (LMBEn),
+    .LLBEn (LLBEn),
+    .BURSTn (BURSTn),
+    .BRIDGE_ENn (BRIDGE_ENn), 
+    .PCIAT (PCIAT),
+
+    //output
+    .FRAMEn (FRAMEn),
+    .PHASEA_D (PHASEA_D),
+    .PCI_TIPn (PCI_TIPn),
+    .CBE (CBE)
+
+);
+
 /*U110_PCI_SM U110_PCI_SM (
     //input
     .CLK40 (CLK40),
@@ -199,18 +229,46 @@ SB_PLL40_CORE #(
     //.FDA_RELATIVE   (4'b0000),
     .PLLOUT_SELECT ("SHIFTREG_0deg"),
     .SHIFTREG_DIV_MODE (1'b0)
-) pll (
-    .LOCK           (),
-    .RESETB         (1'b1),
+) pll40 (
+    .LOCK            (),
+    .RESETB          (1'b1),
     .REFERENCECLK   (CLK40_PAD),
-    .PLLOUTGLOBAL   (CLK40_PLL),
-    
-    .EXTFEEDBACK       (1'b0),
-    .DYNAMICDELAY      (8'b00001111),
-    .BYPASS            (1'b0),
-    .SDI               (1'b0),
-    .SCLK              (1'b0),
-    .LATCHINPUTVALUE   (1'b0)
+    //.PACKAGEPIN      (CLK40_PAD),
+    .PLLOUTGLOBAL    (CLK40),
+    .PLLOUTCORE      (),    
+    .EXTFEEDBACK     (1'b0),
+    .DYNAMICDELAY    (8'b00001111),
+    .BYPASS          (1'b0),
+    .SDI             (1'b0),
+    .SCLK            (1'b0),
+    .LATCHINPUTVALUE (1'b0)
 );
+
+/*SB_PLL40_PAD #(
+    .DIVR (4'b0000),
+    .DIVF (7'b0000000),
+    .DIVQ (3'b100),
+    .FILTER_RANGE (3'b011),
+    .FEEDBACK_PATH ("PHASE_AND_DELAY"),
+    .DELAY_ADJUSTMENT_MODE_FEEDBACK ("FIXED"),
+    .FDA_FEEDBACK   (4'b1111),
+    //.DELAY_ADJUSTMENT_MODE_RELATIVE ("FIXED"),
+    //.FDA_RELATIVE   (4'b0000),
+    .PLLOUT_SELECT ("SHIFTREG_0deg"),
+    .SHIFTREG_DIV_MODE (1'b0)
+) pll33 (
+    .LOCK            (),
+    .RESETB          (1'b1),
+    //.REFERENCECLK   (CLK33_PAD),
+    .PACKAGEPIN      (CLK33_PAD),
+    .PLLOUTGLOBAL    (CLK33),
+    .PLLOUTCORE      (),    
+    .EXTFEEDBACK     (1'b0),
+    .DYNAMICDELAY    (8'b00001111),
+    .BYPASS          (1'b0),
+    .SDI             (1'b0),
+    .SCLK            (1'b0),
+    .LATCHINPUTVALUE (1'b0)
+);*/
 
 endmodule

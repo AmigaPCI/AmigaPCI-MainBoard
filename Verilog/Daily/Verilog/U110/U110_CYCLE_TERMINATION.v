@@ -53,17 +53,16 @@ module U110_CYCLE_TERMINATION (
 
 assign TACKn = TACK_OUT_EN ? TACK_OUT : 1'bz;
 assign TCIn  = TACK_OUT_EN ? TACK_OUT : 1'bz;
-//assign TBIn  = TACK_OUT_EN && !ATA_ENn ? TACK_OUT : 1'bz;
-assign TBIn  = TACK_OUT_EN ? TACK_OUT : 1'bz;
+assign TBIn  = TBI_OUT_EN  ? TACK_OUT : 1'bz;
 assign TEAn  = 1;
 
-reg TACK_OUT_EN;
-reg TACK_OUT;
+reg TACK_OUT_EN, TACK_OUT, TBI_OUT_EN;
 reg [3:0] TACK_COUNT;
 
 always @(posedge CLK40) begin
     if (!RESETn) begin
         TACK_OUT_EN <= 0;
+        TBI_OUT_EN <= 0;
         TACK_OUT <= 1;
         TACK_COUNT <= 4'h0;
     end else begin
@@ -71,6 +70,7 @@ always @(posedge CLK40) begin
             4'h0 : begin
                 if (ATA_TACK || !PCI_TACK_ENn) begin
                     TACK_OUT_EN <= 1;
+                    TBI_OUT_EN <= (PCI_TACK_ENn);
                     TACK_OUT <= 0;
                     TACK_COUNT <= 4'h1;
                 end
@@ -81,6 +81,7 @@ always @(posedge CLK40) begin
             end
             4'h2 : begin
                 TACK_OUT_EN <= 0;
+                TBI_OUT_EN <= 0;
                 TACK_COUNT <= 4'h0;
             end
         endcase

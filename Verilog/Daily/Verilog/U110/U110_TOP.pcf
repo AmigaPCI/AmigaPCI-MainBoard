@@ -1,6 +1,16 @@
 #CLOCKS
+#set_io CLK40_IN 49 #52
+#set_io RESETn   20 #49
+
+#set_io CLK33_IN 129 #93
+#set_io CBE[0]    139 -pullup yes #129
+
 set_io CLK40_IN 52
-#set_io CLK33 93
+set_io RESETn   49
+
+set_io CLK33_IN 93
+set_io CBE[0]   129 -pullup yes
+
 
 #ADDRESS
 #set_io A[0]     73
@@ -32,7 +42,7 @@ set_io CS1_SECn  101
 set_io IDEDIR     83
 
 #DATA TRANSFER SIGNALS
-set_io RESETn   49
+
 set_io SIZ[1]   18
 set_io SIZ[0]   17
 set_io TEAn     10
@@ -62,10 +72,10 @@ set_io BUSDIR    55
 #set_io BUSGNT4n 124
 
 #PCI SIGNALS
-#set_io BREG_ENn   11 #INPUT - Bridge Register Access
-#set_io BPRO_ENn   63 #INPUT - Bridge Prometheus Access
-#set_io PCIAT[1] 45
-#set_io PCIAT[0] 44
+set_io BRIDGE_ENn 63
+set_io PCI_TIPn 138
+set_io PCIAT[1] 45
+set_io PCIAT[0] 44
 #set_io PCIMODE0    2 -pullup yes
 #set_io PCIMODE1    3 -pullup yes
 #set_io PCIMODE2    4 -pullup yes
@@ -73,19 +83,19 @@ set_io BUSDIR    55
 #set_io PARITY    144
 #set_io PERRn     143
 #set_io PLOCKn    142
-#set_io FRAMEn    137
+set_io FRAMEn    137 -pullup yes
 set_io DEVSELn   134
 set_io DEVSEL_OUTn 60
-#set_io CBE[0]    129
-#set_io CBE[1]    130
-#set_io CBE[2]    135
-#set_io CBE[3]    136
+
+set_io CBE[1]    130 -pullup yes
+set_io CBE[2]    135 -pullup yes
+set_io CBE[3]    136 -pullup yes
 #set_io RSTPCIn   122
 set_io INT2n     121
 #set_io PCIINTn   117
 #set_io PAR_DA     82
-#set_io PHASEA_D   81
-#set_io PCI_CYCLEn  78
+set_io PHASEA_D   81
+set_io PCI_CYCLEn  78
 #set_io AD[1] 105
 #set_io AD[0] 104
 
@@ -94,10 +104,10 @@ set_io INT2n     121
 #set_io PCI0 60
 
 #BYTE ENABLES
-#set_io UUBEn 37
-#set_io UMBEn 38
-#set_io LMBEn 39
-#set_io LLBEn 41
+set_io UUBEn 37
+set_io UMBEn 38
+set_io LMBEn 39
+set_io LLBEn 41
 
 #Test (J100,101,102)
 #set_io TP0    2 #J100

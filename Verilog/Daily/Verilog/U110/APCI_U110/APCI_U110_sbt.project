@@ -32,7 +32,7 @@ Version=Lattice Semiconductor Corporation iCEcube - Release: 2020.12.27943 - Bui
 ProjectName=APCI_U110
 Vendor=SiliconBlue
 Synthesis=synplify
-ProjectVFiles=../U110_ARBITOR.v=work,../U110_BUFFERS.v=work,../U110_CYCLE_TERMINATION.v=work,../U110_INTERRUPT.v=work,../U110_TOP.v=work,../U110_ATA.v=work
+ProjectVFiles=../U110_ARBITOR.v=work,../U110_BUFFERS.v=work,../U110_CYCLE_TERMINATION.v=work,../U110_INTERRUPT.v=work,../U110_TOP.v=work,../U110_ATA.v=work,../U110_PCI_BRIDGE.v=work
 ProjectCFiles=../U110_TOP.sdc
 CurImplementation=APCI_U110_Implmnt
 Implementations=APCI_U110_Implmnt
