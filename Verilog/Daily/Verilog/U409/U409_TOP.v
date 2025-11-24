@@ -38,7 +38,7 @@ module U409_TOP (
     output AGNUS_CLK, TICK60, TICK50, CLK_CIA, 
     
     //Cycle Start/Termination    
-    input  TSn, OVL, RnW,
+    input  TSn, OVL, RnW, TEAn,
     output TBIn, TCIn,
     input [1:0] TT,
     inout TACKn,
@@ -49,7 +49,7 @@ module U409_TOP (
 
     //Chip Selects/Address Spaces
     output ROM_ENn, CIACS0n, CIACS1n, RAMSPACEn, REGSPACEn, RTC_ENn, PORTSIZE,
-    output reg BUF_ENn,
+    output BUF_ENn,
     
     //Configuration Signals
     //input PCI_CONFIGUREDn
@@ -61,7 +61,7 @@ module U409_TOP (
     //output [1:0] PCIAT,
 
     //ATA
-    input AUTOBOOT, PPIO_J, SPIO_J,
+    input AUTOBOOT, SPIO_J, PPIO_J,
     output PCS0, PCS1, SCS0, SCS1, PPIO, SPIO, ATA_ENn,
 
     //Flash
@@ -102,8 +102,7 @@ wire AGNUS_SPACE;
 //wire [3:0] D_OUT;
 //wire [3:0] D_IN = AUTOCONFIG_SPACE && !RnW ? D[7:4] : 4'h0;
 
-//wire BRIDGE_ENn = 1;
-//assign BUF_ENn = !((!ROM_SPACE && !CIA_SPACE && !RTC_SPACE) && (AGNUS_SPACE || ATA_SPACE || FLASH_SPACE || !BRIDGE_ENn));
+assign BUF_ENn = !((!ROM_SPACE && !CIA_SPACE && !RTC_SPACE) && (AGNUS_SPACE || ATA_SPACE || FLASH_SPACE || !BRIDGE_ENn));
 assign PORTSIZE = CIA_SPACE || !REGSPACEn || RTC_SPACE || ATA_SPACE || FLASH_SPACE;
 //assign BUF_ENn = !(AGNUS_SPACE || AUTOCONFIG_SPACE || ATA_SPACE || FLASH_SPACE || !BRIDGE_ENn);
 //assign PORTSIZE = CIA_SPACE || !REGSPACEn || RTC_SPACE || AUTOCONFIG_SPACE || ATA_SPACE || FLASH_SPACE;
@@ -117,8 +116,7 @@ assign CPUCONFn  = 1; //!(!CONFIGURED && !PCI_CONFIGUREDn); //Signal local bus c
 ////////////
 
 //Enable the level shifting buffers when we are in the LVTTL space.
-//wire LV_SPACE = AGNUS_SPACE || AUTOCONFIG_SPACE || ATA_SPACE || FLASH_SPACE || !BRIDGE_ENn; // PCI_SPACE;
-wire LV_SPACE = ((!ROM_SPACE && !CIA_SPACE && !RTC_SPACE) && (AGNUS_SPACE || ATA_SPACE || FLASH_SPACE || !BRIDGE_ENn));
+/*wire LV_SPACE = ((!ROM_SPACE && !CIA_SPACE && !RTC_SPACE) && (AGNUS_SPACE || ATA_SPACE || FLASH_SPACE || !BRIDGE_ENn));
 always @(posedge CLK40) begin
     if (!RESETn) begin
         BUF_ENn <= 1;
@@ -129,7 +127,7 @@ always @(posedge CLK40) begin
             BUF_ENn <= 1;
         end
     end
-end
+end*/
 
 ///////////////////////
 // TRANSFER ACK TOP //
@@ -141,6 +139,7 @@ U409_TRANSFER_ACK U409_TRANSFER_ACK (
     .CLK40 (CLK40),
     .RESETn (RESETn),
     .TSn (TSn),
+    .TEAn (TEAn),
     .ROM_SPACE (ROM_SPACE),
     .CIA_ENABLE (CIA_ENABLE),
     .CLK_CIA (CLK_CIA),

@@ -152,34 +152,6 @@ always @(posedge CLK40) begin
   end
 end
 
-  //////////////////////
- // PCI BRIDGE SPACE //
-//////////////////////
-
-//The PCI bridge can be accessed in one of two ways.
-//The first is the PCI Bridge registers in the Z2 space as a 64k device. These registers are defined by the PCI spec and support AUTOCONFIG cards.
-//The second way is as a prometheus access in the Z3 space.
-//The PCIAT (PCI Access Type) bus identifies the acess type for all bridge accesses.
-//NOTE: The I/O space is basically deprectaed in the Rev 2.3 PCI spec, but is here for prometheus support. The PCI I/O space is not supported for AUTOCONFIG cards.
-
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
-
-/*localparam [3:0] BRIDGE_BASE = 4'h8;
-
-assign BRIDGE_ENn =  !(RESETn && A[31:29] == BRIDGE_BASE[3:1]);
-
-wire PRO_CONF0_SPACE = A[27:20] == 8'hFC;
-wire PRO_CONF1_SPACE = A[27:20] == 8'hFD;
-wire PRO_IO_SPACE    = A[28:21] == 8'hFF;
-
-assign PCIAT[1] = (PRO_IO_SPACE || (!PRO_IO_SPACE && !PRO_CONF0_SPACE && !PRO_CONF1_SPACE));
-assign PCIAT[0] = (PRO_IO_SPACE || PRO_CONF1_SPACE);*/
-
   /////////////////
  // FLASH SPACE //
 /////////////////

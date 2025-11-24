@@ -33,7 +33,8 @@ Date          Who  Description
 18-OCT-2025   JN   Moved RTC to dedicated module.
 05-NOV-2025   JN   Changed ROM timing options to support Kicksmash.
 07-NOV-2025   JN   Modified ROM state machine.
-141-NOV-2025  JN   Modified slowest ROM timing from 250 to 275ns.
+14-NOV-2025   JN   Modified slowest ROM timing from 250 to 275ns.
+24-NOV-2025   JN   Added _TEA to cycle timeout reset.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -44,7 +45,7 @@ module U409_TRANSFER_ACK (
     input CLK40_IN, CLK40, CLK_CIA, RESETn,
     
     //Cycle Start/Termination
-    input TSn, //AC_TACK,
+    input TSn, TEAn, //AC_TACK,
     output TBIn, TCIn,
     inout TACKn,
 
@@ -258,7 +259,7 @@ reg [6:0] DELAYED_TACK_COUNTER;
 reg [1:0] DELAYED_TACK_STATE;
 reg DELAYED_TACK_EN;
     
-wire DELAYED_TACK_RST = !TACKn || !RESETn || AGNUS_SPACE;
+wire DELAYED_TACK_RST = !TACKn || !RESETn || AGNUS_SPACE || !TEAn;
     
 always @(posedge CLK40, posedge DELAYED_TACK_RST) begin
     if (DELAYED_TACK_RST) begin
