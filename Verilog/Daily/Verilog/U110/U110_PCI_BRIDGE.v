@@ -26,20 +26,24 @@ See individual modules for revision history.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 
-iceprog D:\AmigaPCI\U110\APCI_U110\APCI_U110_Implmnt\sbt\outputs\bitmap\U110_TOP_bitmap.bin
+Date          Who  Description
+-----------------------------------
+29-NOV-2025   JN   Initial code.
 */
 
 module U110_PCI_BRIDGE (
 
     input CLK40, CLK33, RESETn, TSn, RnW,
-    input BGn, PCI_CYCLEn, DEVSELn, UUBEn, UMBEn, LMBEn, LLBEn, BURSTn, BRIDGE_ENn, 
+    input BGn, PCI_CYCLEn, DEVSELn, UUBEn, UMBEn, LMBEn, LLBEn, BURSTn, BRIDGE_ENn, PARITY_DA,
     input [1:0] PCIAT,
 
-    output FRAMEn,
-    output reg PHASEA_D, PCI_TIPn,
+    output RESET_PCIn, FRAMEn, PARITY, PCI_TIPn,
+    output reg PHASEA_D, PCI_TIMEOUT,
     output [3:0] CBE
 
 );
+
+assign RESET_PCIn = RESETn;
 
   ////////////////
  // PARAMETERS //
@@ -66,17 +70,48 @@ localparam [1:0] BURST_TOTAL = 2'b11;
  // CYCLE START //
 /////////////////
 
-reg PCI_CYCLE_START_HOLD;
-always @(posedge CLK40) begin
-    if (!RESETn) begin
+wire CYCLE_RESET = (!RESETn || START_CYCLE_RESET);
+reg PCI_CYCLE_START_HOLD, WRITE_CYCLE;
+always @(posedge CLK40, posedge CYCLE_RESET) begin
+    if (CYCLE_RESET) begin
         PCI_CYCLE_START_HOLD <= 0;
+        WRITE_CYCLE <= 0;
     end else begin
-        if (START_CYCLE_RESET) begin
-            PCI_CYCLE_START_HOLD <= 0;
-        end else if (!TSn && !BRIDGE_ENn) begin
+        if (!TSn && !BRIDGE_ENn) begin
             PCI_CYCLE_START_HOLD <= 1;
+            WRITE_CYCLE <= !(RnW);
         end
     end
+end
+
+  /////////////////
+ // CBE COMMAND //
+/////////////////
+
+//Latch the CBE command here.
+
+// Access Type         PCIAT1   PCIAT0
+//-------------------------------------
+//PCI Config Space 0     0        0
+//PCI Config Space 1     0        1
+//PCI Memory Space       1        0
+//I/O Space              1        1
+
+reg [3:0] CBE_CMD;
+always @* begin
+    case (PCIAT)
+        MEMORY_ACCESS: begin
+            CBE_CMD = WRITE_CYCLE ? WR_MEM : RD_MEM;
+        end
+
+        IO_ACCESS: begin
+            CBE_CMD = WRITE_CYCLE ? WR_IO : RD_IO;
+        end
+
+        default: begin
+            CBE_CMD = WRITE_CYCLE ? WR_CON : RD_CON;
+        end
+    endcase
 end
 
   /////////////////////////////
@@ -88,6 +123,8 @@ end
 //The signals come out about 2-3ns early, which is probably fine.
 //A pll can be used in the next hardware revision to get it exact.
 
+
+//------ RISING SIGNAL LATCH ------
 reg DEVSELn_DELAY;
 always @(posedge CLK33) begin
     if (!RESETn) begin
@@ -97,81 +134,110 @@ always @(posedge CLK33) begin
     end
 end
 
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
-
-wire CONF_ACCESS = ((PCIAT == CONFIG0_ACCESS) || (PCIAT == CONFIG1_ACCESS));
-
-wire [3:0] CBE_CMD = ((PCIAT == MEMORY_ACCESS) &&  RnW) ? RD_MEM :
-                     ((PCIAT == MEMORY_ACCESS) && !RnW) ? WR_MEM :
-                     ((CONF_ACCESS) &&  RnW) ? RD_CON :
-                     ((CONF_ACCESS) && !RnW) ? WR_CON : 
-                     ((PCIAT == IO_ACCESS) &&  RnW) ? RD_IO : WR_IO;
-
+//------ FALLING EDGE DRIVERS ------
 assign FRAMEn = !BGn ? FRAME_OUTn : 1'bz;
 assign CBE = !BGn ? CBE_OUT : 4'bz;
+assign PCI_TIPn = !(CYCLE_IN_PROGRESS || !DEVSELn);
 
-reg FRAME_OUTn, BURST_CYCLE, START_CYCLE_RESET;
+reg FRAME_OUTn, BURST_CYCLE, START_CYCLE_RESET, PCI_WRITE_CYCLE, CYCLE_IN_PROGRESS;
+reg [1:0] PCI_CYCLE_START_SYNC;
 reg [3:0] CBE_OUT, CYCLE_STATE, TIMEOUT_COUNT;
-
 always @(negedge CLK33) begin
     if (!RESETn) begin
+        PCI_CYCLE_START_SYNC <= 2'b00;
         PHASEA_D <= 1;
-        PCI_TIPn <= 1;
+        CYCLE_IN_PROGRESS <= 0;
+        PCI_TIMEOUT <= 0;
         FRAME_OUTn <= 1;
         BURST_CYCLE <= 0;
         START_CYCLE_RESET <= 0;
+        PCI_WRITE_CYCLE <= 0;
         CBE_OUT <= 4'hf;
         TIMEOUT_COUNT <= 4'h0;
         CYCLE_STATE <= 4'h0;
     end else begin
+
+        PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[0], PCI_CYCLE_START_HOLD};
+
         case (CYCLE_STATE)
             4'h0 : begin
-                if (PCI_CYCLE_START_HOLD) begin
-                    PCI_TIPn <= 0;
+                if (PCI_CYCLE_START_SYNC[0] ^ PCI_CYCLE_START_SYNC[1]) begin
+                    CYCLE_IN_PROGRESS <= 1;
                     FRAME_OUTn <= 0;
                     CBE_OUT <= CBE_CMD;
                     BURST_CYCLE <= !(BURSTn);
-                    START_CYCLE_RESET <= 1;
+                    PCI_WRITE_CYCLE <= WRITE_CYCLE;
+                    TIMEOUT_COUNT <= 4'h0;
                     CYCLE_STATE <= 4'h1;
                 end
             end
             4'h1 : begin
                 PHASEA_D <= 0;
-                CBE_OUT <= RnW ? 4'h0 : {LLBEn, LMBEn, UMBEn, UUBEn};
+                CBE_OUT <= !PCI_WRITE_CYCLE ? 4'h0 : {LLBEn, LMBEn, UMBEn, UUBEn};
                 FRAME_OUTn <= !(BURST_CYCLE);
+                START_CYCLE_RESET <= 1;
                 CYCLE_STATE <= 4'h2;
             end
             4'h2 : begin
                 START_CYCLE_RESET <= 0;
                 if (!DEVSELn_DELAY) begin
+                    CYCLE_IN_PROGRESS <= 0;
                     CYCLE_STATE <= 4'h3;
                 end else begin
                     //Timeout if the device takes too long to respond.
                     TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
                     if (TIMEOUT_COUNT == TIMEOUT) begin
-                        PCI_TIPn <= 1;
+                        PCI_TIMEOUT <= 1;
+                        CYCLE_IN_PROGRESS <= 0;
                         FRAME_OUTn <= 1;
-                        PHASEA_D <= 1;
+                        PHASEA_D <= 1;                        
+                    end else if (TIMEOUT_COUNT == TIMEOUT + 1) begin
+                        PCI_TIMEOUT <= 0;
                         CYCLE_STATE <= 4'h0;
                     end
                 end
             end
             4'h3 : begin
-                if (PCI_CYCLEn) begin
+                if (PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.
                     FRAME_OUTn <= 1;
-                end                
-                if (DEVSELn_DELAY) begin
-                    PCI_TIPn <= 1;
                     PHASEA_D <= 1;
                     CYCLE_STATE <= 4'h0;
                 end
             end
         endcase
+    end    
+end
+
+  ////////////
+ // PARITY //
+////////////
+
+//We only assert PARITY one cycle after we drive the bus.
+
+//Calculate the parity.
+reg PARITY_CBE, PARITY_OUT;
+always @(posedge CLK33) begin
+    if (!RESETn) begin
+        PARITY_CBE <= 1;
+    end else begin
+        PARITY_CBE <= ^{CBE_OUT};
+    end    
+end
+
+//Assert Parity
+assign PARITY = PARITY_EN ? PARITY_OUT : 1'bz;
+reg PARITY_EN;
+always @(negedge CLK33) begin
+    if (!RESETn) begin
+        PARITY_EN <= 0;
+        PARITY_OUT <= 1;
+    end else begin
+        if (!BGn && (PHASEA_D || PCI_WRITE_CYCLE)) begin
+            PARITY_OUT <= ^{PARITY_CBE, PARITY_DA};
+            PARITY_EN <= 1;
+        end else begin
+            PARITY_EN <= 0;
+        end
     end    
 end
 

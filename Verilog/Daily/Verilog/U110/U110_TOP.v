@@ -28,7 +28,6 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 
 iceprog D:\AmigaPCI\U110\APCI_U110\APCI_U110_Implmnt\sbt\outputs\bitmap\U110_TOP_bitmap.bin
 
-NOTE:This one has the "slow" PLL!
 */
 
 module U110_TOP (
@@ -49,17 +48,22 @@ module U110_TOP (
     output IDELENn, IDEDIR, IDEHRENn, IDEHWENn, ATA_LATCH,
 
     //PCI 
-    input DEVSELn, TRDYn, PCI_TACK_ENn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn,
+    input DEVSELn, TRDYn, PCI_TACK_ENn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA,
     input [1:0] PCIAT,
-    output DEVSEL_OUTn, PHASEA_D, FRAMEn, PCI_TIPn,
+    input [4:0] BUSREQ,
+    output RESET_PCIn, DEVSEL_OUTn, PHASEA_D, FRAMEn, PCI_TIPn, PARITY,
     output [3:0] CBE,
+
 
     //Arbitor and Interrupts
     output INT2n, BUSDIR, BGn, BURSTn
 
-    //,output TP0
+    ,output TP0, TP1
 
 );
+
+assign TP0 = PCI_CYCLEn;
+assign TP1 = PCI_TIPn;
 
 ////////////////////////////
 // INTERNAL SIGNAL WIRES //
@@ -70,7 +74,7 @@ wire CLK40;
 //wire CLK33_PAD = CLK33_IN;
 wire CLK33 = !CLK33_IN;
 wire ATA_TACK;
-
+wire PCI_TIMEOUT;
 assign DEVSEL_OUTn = DEVSELn;
 
   ///////////////
@@ -91,10 +95,12 @@ U110_INTERRUPT U110_INTERRUPT (
 U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
     //INPUT
     .CLK40 (CLK40),
+    .CLK33 (CLK33),
     .RESETn (RESETn),
     .ATA_ENn (ATA_ENn),
     .ATA_TACK (ATA_TACK),
     .PCI_TACK_ENn (PCI_TACK_ENn),
+    .PCI_TIMEOUT (PCI_TIMEOUT),
 
     //output
     .TEAn (TEAn),
@@ -161,6 +167,9 @@ U110_ATA U110_ATA (
 
 U110_ARBITOR U110_ARBITOR (
 
+    //input
+    .BUSREQ (BUSREQ),
+
     //output
     .BGn (BGn)
 );
@@ -186,14 +195,17 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .LLBEn (LLBEn),
     .BURSTn (BURSTn),
     .BRIDGE_ENn (BRIDGE_ENn), 
+    .PARITY_DA (PARITY_DA),
     .PCIAT (PCIAT),
 
     //output
     .FRAMEn (FRAMEn),
+    .RESET_PCIn (RESET_PCIn),
     .PHASEA_D (PHASEA_D),
     .PCI_TIPn (PCI_TIPn),
+    .PCI_TIMEOUT (PCI_TIMEOUT),
+    .PARITY (PARITY),
     .CBE (CBE)
-
 );
 
 /*U110_PCI_SM U110_PCI_SM (

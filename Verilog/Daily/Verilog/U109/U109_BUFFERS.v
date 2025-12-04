@@ -34,12 +34,13 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 
 module U109_BUFFERS
 (
-    input PHASEA_D, DEVSELn, BGn, RnW, REGISTER_CYCLE, A_LATCH_VALID,
+    input CLK40, CLK33, RESETn, TSn, PHASEA_D, DEVSELn, BGn, RnW, PCI_TIPn, BRIDGE_ENn, PCI_CYCLEn, PCI_WRITE_CYCLE,
     input [1:0] PCIAT,
-    input [31:0] D_OUT,
-    input [31:0] A_LATCH, 
+    //input [31:0] a_rdata, p_rdata,
+    input [31:0] A2P_DATA, P2A_DATA,
 
     output ADDRESS_ENn, ADDRESS_DIR, PCI_BUF_ENn, PCI_BUF_DIR,
+    output reg PARITY_DA,
 
     inout [31:0] D,
     inout [31:0] AD
@@ -53,8 +54,26 @@ module U109_BUFFERS
 //in the address phase of the cycle. The direction of the data is determined
 //by who has the bus.
 
-wire ADDRESS_VALID = (PHASEA_D && A_LATCH_VALID);
-assign ADDRESS_ENn = ADDRESS_VALID;
+reg ADDRESS_VALID;
+reg [1:0] PHASEn_SYNC;
+reg [31:0] A_LATCH;
+always @(posedge CLK40) begin
+    if (!RESETn) begin
+        A_LATCH <= 32'h0;
+        ADDRESS_VALID <= 0;
+        PHASEn_SYNC <= 2'b11;
+    end else begin
+        PHASEn_SYNC <= {PHASEn_SYNC[0], PHASEA_D};
+        if (!TSn && !BRIDGE_ENn) begin
+            A_LATCH <= AD;
+            ADDRESS_VALID <= 1;
+        end else if (PHASEn_SYNC[1] ^ PHASEn_SYNC[0]) begin
+            ADDRESS_VALID <= 0;
+        end
+    end
+end
+
+assign ADDRESS_ENn = (ADDRESS_VALID || !PCI_TIPn); //Turn off address buffers once we've latched the address of this cycle.
 assign ADDRESS_DIR = BGn;
 
 ///////////////////////
@@ -80,22 +99,38 @@ wire CONFIG0_SPACE = PCIAT == 2'b00;
 wire CONFIG1_SPACE = PCIAT == 2'b01;
 wire MEMORY_SPACE  = PCIAT == 2'b10;
 
-wire D_TO_AMIGA   = ((REGISTER_CYCLE && RnW) || (!PHASEA_D && ((!BGn &&  RnW ) || (BGn && !RnW)))); 
-wire AD_TO_PCI    = ((ADDRESS_VALID) || ((!PHASEA_D && ((!BGn && !RnW ) || (BGn && RnW)))));
+//These are CPU driven cycles only!!!!
 
-wire [1:0]  A_LOW      = CONFIG0_SPACE ? CONFIG0_ACCESS : CONFIG1_SPACE ? CONFIG1_ACCESS : A_LATCH[1:0];
-wire [31:0] AD_A_OUT   = MEMORY_SPACE ? {A_LATCH[31:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW};
-wire [31:0] AD_OUT     = ADDRESS_VALID ? AD_A_OUT : { D[7:0],  D[15:8],  D[23:16],  D[31:24]};
-wire [31:0] D_DATA_OUT = REGISTER_CYCLE ? D_OUT : {AD[7:0], AD[15:8], AD[23:16], AD[31:24]};
+//Set AD bus to correct output depending on access type and address or data phase.
+wire AD_TO_PCI        = ((PHASEA_D && ADDRESS_VALID) || ((!PHASEA_D && ((!BGn && !RnW ) || (BGn && RnW)))));
+wire [1:0]  A_LOW     = CONFIG0_SPACE ? CONFIG0_ACCESS : CONFIG1_SPACE ? CONFIG1_ACCESS : A_LATCH[1:0]; //Sets AD[1:0]
+wire [31:0] AD_A_OUT  = MEMORY_SPACE ? {A_LATCH[31:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
+wire [31:0] AD_OUT    = ADDRESS_VALID ? AD_A_OUT : {A2P_DATA[7:0], A2P_DATA[15:8], A2P_DATA[23:16], A2P_DATA[31:24]}; //Sets AD source to address or FIFO data.
+assign AD = AD_TO_PCI ? AD_OUT : 32'bz;
 
-assign AD = AD_TO_PCI  ? AD_OUT : 32'bz;
+//Set D bus to correct output from FIFO.
+wire D_TO_AMIGA = (!PCI_CYCLEn && !PCI_WRITE_CYCLE);
+wire [31:0] D_DATA_OUT = {P2A_DATA[7:0], P2A_DATA[15:8], P2A_DATA[23:16], P2A_DATA[31:24]};
+//wire [31:0] D_DATA_OUT = {P2A_DATA[0:7], P2A_DATA[8:15], P2A_DATA[16:23], P2A_DATA[24:31]};
 assign D  = D_TO_AMIGA ? D_DATA_OUT : 32'bz;
+
+/////////////
+// PARITY //
+///////////
+
+always @(posedge CLK33) begin
+    if (!RESETn) begin
+        PARITY_DA <= 1;
+    end else begin
+        PARITY_DA <= ^{AD_OUT};
+    end
+end
 
 /////////////////////////////
 // LEVEL SHIFTING BUFFERS //
 ///////////////////////////
 
-//The level shifting buffers can be enabled for moat cycles.
+//The level shifting buffers can be enabled for most cycles.
 //The only exception is a PCI to PCI DMA cycle, which can 
 //be detected by a PCI DMA cycle where _DEVSEL asserts.
 //Direction is dictated by who what the bus and cycle type.

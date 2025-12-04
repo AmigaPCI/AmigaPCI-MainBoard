@@ -28,6 +28,7 @@ Date          Who  Description
 -----------------------------------
 18-NOV-2025   JN   INITIAL CODE
 21-NOV-2025   JN   Moved PCIAT assertion to this module.
+01-DEC-2025   JN   Incorporate FIFO transactions.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -38,146 +39,177 @@ module U109_PCI_STATE_MACHINE (
     input CLK40, CLK33,
 
     //Cycle Start/Termination
-    input RESETn, TSn, RnW, BRIDGE_ENn, BURSTn, BRIDGE_REG_SPACE, DEVSELn,
+    input RESETn, RnW, BURSTn, PCI_TIPn, BGn, TACKn,
+
+    //FIFO
+    input P2A_FIFO_EMPTY, A2P_FIFO_EMPTY,
 
     //Address/Data
-    input [31:0] AD,
+    //input [31:0] AD,
 
     //PCI Signals
-    input TARGET_READYn, CONFIG0_SPACE, CONFIG1_SPACE, IO_SPACE,
-    output CLK_ADDRESS_LATCH, A_LATCH_VALID,
-    output reg PCI_CYCLEn, PHASEA_D, PCI_TACK_EN,
-    output reg [1:0] PCIAT,
-    output reg [31:0] A_LATCH
+    output CLK_ADDRESS_LATCH, INIT_READYn, PCI_CYCLEn, PARITY_DIR, DATA_DIRECTION, PCI_WRITE_CYCLE, 
+    output reg PCI_TACK_EN, P2A_READ_NEXT
 
 );
-
-/////////////////////////
-// SYNCHORNIZER INPUT //
-///////////////////////
-
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
-
-assign A_LATCH_VALID = PCI_CYCLE_START_HOLD;
-
-reg PCI_CYCLE_START_HOLD;
-reg [1:0] RESET_START;
-always @(posedge CLK40) begin
-    if (!RESETn) begin
-        PCI_CYCLE_START_HOLD <= 0;
-        PCIAT <= 2'b10;
-        A_LATCH <= 32'h0;
-        RESET_START <= 2'b0;
-    end else begin
-        RESET_START[0] <= START_CYCLE_RESET;
-        RESET_START[1] <= RESET_START[0];
-
-        if (RESET_START[1]) begin
-            PCI_CYCLE_START_HOLD <= 0;
-        end else if (!TSn && !BRIDGE_ENn && !BRIDGE_REG_SPACE) begin
-            PCI_CYCLE_START_HOLD <= 1;
-            PCIAT[1] <= (IO_SPACE || (!IO_SPACE && !CONFIG0_SPACE && !CONFIG1_SPACE));
-            PCIAT[0] <= (IO_SPACE || CONFIG1_SPACE);
-            A_LATCH <= AD;
-        end
-    end
-end
 
 ////////////////////////
 // PCI STATE MACHINE //
 //////////////////////
 
-localparam [3:0] TIMEOUT = 4'h7;
+localparam [1:0] BURST_TOTAL = 2'b11;
+localparam AMIGA_TO_PCI  = 1;
+localparam PCI_TO_AMIGA  = 0;
+localparam FIFO_TO_PCI   = 0;
+localparam FIFO_TO_AMIGA = 1;
 
 assign CLK_ADDRESS_LATCH = 0;
+assign INIT_READYn = !BGn ? !(A2P_INIT_RDY ^ P2A_INIT_RDY) : 1'bz;
+assign PCI_CYCLEn = !(A2P_CYCLE ^ P2A_CYCLE);
+assign PARITY_DIR = A2P_CYCLE ? AMIGA_TO_PCI : PCI_TO_AMIGA;
+assign DATA_DIRECTION = A2P_CYCLE ? FIFO_TO_PCI : FIFO_TO_AMIGA;
+assign PCI_WRITE_CYCLE = A2P_CYCLE;
 
-reg TARGET_READYn_DELAY, DEVSELn_DELAY;
-always @(posedge CLK33) begin
-    if (!RESETn) begin
-        TARGET_READYn_DELAY <= 1;
-        DEVSELn_DELAY <= 1;
-    end else begin
-        TARGET_READYn_DELAY <= TARGET_READYn;
-        DEVSELn_DELAY <= DEVSELn;
-    end
-end
+//Direction of data flow.
+// 0 = Amiga is producer, PCI is consumer
+// 1 = PCI is producer, Amiga is consumer
 
-reg CYCLE_BURST_CYCLE, START_CYCLE_RESET;
-reg [1:0] PCI_CYCLE_START, BURST_COUNT;
-reg [3:0] CYCLE_STATE, TIMEOUT_COUNT;
-
+//Drive Amiga to PCI cycles. e.g. CPU write.
+reg A2P_BURST_CYCLE, A2P_INIT_RDY, A2P_CYCLE;
+reg [1:0] A2P_BURST_COUNT;
+reg [3:0] A2P_CYCLE_STATE;
 always @(negedge CLK33) begin
     if (!RESETn) begin
-        PCI_CYCLE_START <= 2'b00;
-        BURST_COUNT <= 2'b00;
-        CYCLE_BURST_CYCLE <= 0;
-        PCI_CYCLEn <= 1;
-        PHASEA_D <= 1;
-        START_CYCLE_RESET <= 0;
-        PCI_TACK_EN <= 0;
-        CYCLE_STATE <= 4'h0;
+        A2P_CYCLE <= 0;
+        A2P_INIT_RDY <= 0;
+        A2P_BURST_CYCLE <= 0;
+        //a_ren <= 0;
+        A2P_BURST_COUNT <= 2'b00;
+        A2P_CYCLE_STATE <= 4'h0;
     end else begin
-
-        PCI_CYCLE_START[0] <= PCI_CYCLE_START_HOLD;
-        PCI_CYCLE_START[1] <= PCI_CYCLE_START[0];
-
-        case (CYCLE_STATE)
+        case (A2P_CYCLE_STATE)
             4'h0 : begin
-                PCI_TACK_EN <= 0;
-                if (PCI_CYCLE_START[1]) begin
-                    //DOUBLE CHECK CYCLE TYPE (MEM, CP0, CS1, REGISTER SPACE)
-                    PCI_CYCLEn <= 0; //Signal U110 to assert _FRAME.
-                    CYCLE_BURST_CYCLE <= !BURSTn;
-                    BURST_COUNT <= 2'b0;
-                    TIMEOUT_COUNT <= 4'h0;
-                    START_CYCLE_RESET <= 1;
-                    CYCLE_STATE <= 4'h1;
+                if (!PCI_TIPn && !RnW) begin
+                    A2P_CYCLE <= 1; //Signal U110 we are going.
+                    A2P_BURST_CYCLE <= !(BURSTn); //Is this a burst cycle?
+                    A2P_BURST_COUNT <= 2'b0; //Reset the burst counter.
+                    A2P_CYCLE_STATE <= 4'h1;
                 end
             end
             4'h1 : begin
-                PHASEA_D <= 0; //Signal we are now in the data phase.
-                PCI_CYCLEn <= CYCLE_BURST_CYCLE; //Disable _FRAME one clock before cycle ends.
-                CYCLE_STATE <= 4'h2;
-            end
-            4'h2 : begin
-                START_CYCLE_RESET <= 0;
-                if (!DEVSELn_DELAY) begin
-                    //Target device has responded.
-                    //_TRDY and _DEVSEL may assert on the same edge!
-                    CYCLE_STATE <= 4'h3;
-                end else begin
-                    //Timeout if the target device takes too long to respond.
-                    TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
-                    if (TIMEOUT_COUNT == TIMEOUT) begin
-                        PCI_TACK_EN <= 1;
-                        PCI_CYCLEn <= 1;
-                        PHASEA_D <= 1;
-                        CYCLE_STATE <= 4'h0;
+                if (A2P_FIFO_EMPTY) begin //FIFO is empty.
+                    //a_ren <= 0; //Wait
+                    A2P_INIT_RDY <= 0;
+                    if ((!A2P_BURST_CYCLE && A2P_BURST_COUNT == 1) || (A2P_BURST_COUNT == BURST_TOTAL)) begin
+                        A2P_CYCLE <= 0;
+                        A2P_CYCLE_STATE <= 4'h0;
+                    end
+                end else begin //FIFO not empty
+                    //a_ren <= 1; //Clock in the next word.
+
+                    A2P_INIT_RDY <= 1; //Assert initiator ready.
+                    A2P_BURST_COUNT <= A2P_BURST_COUNT + 1;
+                    if (A2P_BURST_COUNT == (BURST_TOTAL - 1)) begin
+                        A2P_CYCLE <= 0; //Disable _FRAME one clock before cycle ends.
                     end
                 end
-            end
-            4'h3 : begin
-                if (!TARGET_READYn_DELAY) begin
-                    //Target device accepted or asserted data.
-                    //Can also check for FIFO not empty to proceed, which is probably better.
-                    BURST_COUNT <= BURST_COUNT + 1;
-                    if (!CYCLE_BURST_CYCLE || BURST_COUNT == 2'b11) begin
-                        PHASEA_D <= 1; //Return to idle state.
-                        CYCLE_STATE <= 4'h0;
-                    end
 
-                    if (BURST_COUNT == 2'b10) begin
-                        PCI_CYCLEn <= 1; //Disable _FRAME one clock before cycle ends.
-                    end
+                if (PCI_TIPn) begin //Catch cycle time out or early termination.
+                    A2P_CYCLE <= 0;
+                    A2P_INIT_RDY <= 0;
+                    A2P_CYCLE_STATE <= 4'h0;
                 end
             end
         endcase
+    end
+end
 
+//Drive PCI to Amiga cycles. e.g. CPU Read.
+reg P2A_INIT_RDY, P2A_CYCLE, P2A_RESET; //P2A_BURST_CYCLE,  //, P2A_START, P2A_INIT_EN,P2A_CYCLE_EN,
+reg [1:0] P2A_START_SYNC; //, P2A_CYCLE_EN_SYNC, P2A_INIT_EN_SYNC;
+//reg [1:0] P2A_BURST_COUNT;
+reg [3:0] P2A_CYCLE_STATE;
+
+//The first SM drives the PCI bus signals on the falling clock edge.
+wire P2A_CYCLE_RESET = (!RESETn || P2A_RESET);
+always @(negedge CLK33, posedge P2A_CYCLE_RESET) begin
+    if (P2A_CYCLE_RESET) begin
+        P2A_INIT_RDY <= 0;
+        P2A_CYCLE <= 0;
+    end else begin
+        if (RnW && !PCI_TIPn) begin
+            P2A_CYCLE <= 1;
+            P2A_INIT_RDY <= 1;
+        end
+    end
+end
+
+reg TACK_DELAY;
+always @(posedge CLK40) begin
+    if (!RESETn) begin
+        TACK_DELAY <= 0;
+    end else begin
+        TACK_DELAY <= ~TACKn;
+    end
+end
+
+//This SM drives the Amiga bus signals
+always @(negedge CLK40) begin
+    if (!RESETn) begin
+        P2A_START_SYNC <= 2'b00;
+        PCI_TACK_EN <= 0;
+        P2A_RESET <= 0;
+        P2A_READ_NEXT <= 0;
+        P2A_CYCLE_STATE <= 4'h0;
+    end else begin
+        case (P2A_CYCLE_STATE)
+            4'h0 : begin
+                P2A_RESET <= 0;
+                P2A_READ_NEXT <= 0;
+                if ((P2A_START_SYNC[1] ^ P2A_START_SYNC[0])) begin
+                    P2A_CYCLE_STATE <= 4'h1;
+                end else begin
+                    P2A_START_SYNC <= {P2A_START_SYNC[0], P2A_CYCLE};
+                end
+            end
+            4'h1 : begin
+                P2A_START_SYNC <= 2'b00;
+                if (!P2A_FIFO_EMPTY) begin //FIFO has data!
+                    PCI_TACK_EN <= 1;
+                    P2A_CYCLE_STATE <= 4'h2;
+                end else if (PCI_TIPn) begin //Catch cycle time out or early termination.
+                    P2A_RESET <= 1;
+                    P2A_CYCLE_STATE <= 4'h0;
+                end
+            end
+            4'h2 : begin
+                PCI_TACK_EN <= 0;
+                 if (TACK_DELAY) begin
+                    P2A_READ_NEXT <= 1; //Clock in the next word.
+                    P2A_RESET <= 1;
+                    P2A_CYCLE_STATE <= 4'h0;
+                 end
+            end
+
+                /*if (P2A_FIFO_EMPTY) begin //FIFO is empty.
+                    P2A_READ_NEXT <= 0; //Wait
+                    PCI_TACK_EN   <= 0;        
+                    if ((!P2A_BURST_CYCLE && P2A_BURST_COUNT == 1) || (P2A_BURST_COUNT == BURST_TOTAL)) begin
+                        P2A_CYCLE_EN <= 0;
+                        P2A_INIT_EN <= 0;
+                        P2A_CYCLE_STATE <= 4'h0;
+                    end
+                end else begin //FIFO not empty
+                    PCI_TACK_EN <= 1;
+                    P2A_READ_NEXT <= 1; //Clock in the next word.
+                    P2A_BURST_COUNT <= P2A_BURST_COUNT + 1;
+                    if (P2A_BURST_COUNT == (BURST_TOTAL - 1)) begin
+                        P2A_CYCLE_EN <= 0; //Disable _FRAME one clock before cycle ends.
+                    end
+                end
+            end*/
+
+        endcase
     end
 end
 

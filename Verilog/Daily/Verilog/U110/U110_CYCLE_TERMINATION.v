@@ -27,6 +27,7 @@ Date          Who  Description
 02-JUL-2025   JN   Initial release for Rev 6.0 hardware.
 16-OCT-2025   JN   Changed to rising clock edge to better accomodate latency in the FPGA.
 17-NOV-2025   JN   Added PCI TACK.
+24-NOV-2025   JN   Added cycle timeouts on the PCI bus.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -34,10 +35,10 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 module U110_CYCLE_TERMINATION (
 
     //Clcoks
-    input CLK40, 
+    input CLK40, CLK33,
     
     //Cycle Start/Terminate
-    input RESETn, ATA_TACK, PCI_TACK_ENn,
+    input RESETn, ATA_TACK, PCI_TACK_ENn, PCI_TIMEOUT,
     output TEAn, TACKn, TCIn, TBIn,
 
     //Condition Signals
@@ -45,16 +46,36 @@ module U110_CYCLE_TERMINATION (
 
 );
 
+  ////////////////////
+ // PCI CLOCK SYNC //
+////////////////////
+
+//The timeout signal is derived from the 33MHz domain.
+//All other PCI _TACK signals are derived from the 40MHz domain.
+
+wire CYCLE_RESET = (!RESETn || (!TACK_OUT && TACK_OUT_EN));
+reg PCI_TIMEOUT_HOLD;
+always @(posedge CLK33, posedge CYCLE_RESET) begin
+    if (CYCLE_RESET) begin
+        PCI_TIMEOUT_HOLD <= 0;
+    end else begin
+        if (PCI_TIMEOUT) begin
+            PCI_TIMEOUT_HOLD <= 1;
+        end
+    end    
+end
+
   ///////////////////////
  // CYCLE TERMINATION //
 ///////////////////////
 
 //Terminate cycles for PCI and ATA access. We don't allow caching in either PCI or ATA spaces.
+//Asserting _TEA alone causes the system to crash.
 
 assign TACKn = TACK_OUT_EN ? TACK_OUT : 1'bz;
+assign TEAn = 1;
 assign TCIn  = TACK_OUT_EN ? TACK_OUT : 1'bz;
 assign TBIn  = TBI_OUT_EN  ? TACK_OUT : 1'bz;
-assign TEAn  = 1;
 
 reg TACK_OUT_EN, TACK_OUT, TBI_OUT_EN;
 reg [3:0] TACK_COUNT;
@@ -68,9 +89,9 @@ always @(posedge CLK40) begin
     end else begin
         case (TACK_COUNT)
             4'h0 : begin
-                if (ATA_TACK || !PCI_TACK_ENn) begin
+                if (ATA_TACK || !PCI_TACK_ENn || PCI_TIMEOUT_HOLD) begin
                     TACK_OUT_EN <= 1;
-                    TBI_OUT_EN <= (PCI_TACK_ENn);
+                    TBI_OUT_EN <= (PCI_TACK_ENn); //Enable _TBI for non-PCI cycles.
                     TACK_OUT <= 0;
                     TACK_COUNT <= 4'h1;
                 end
