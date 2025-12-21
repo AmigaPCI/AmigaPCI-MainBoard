@@ -37,7 +37,7 @@ module U409_RTC_SM (
     input CLK40,
     
     //Cycle Start/Termination
-    input RESETn, TSn, RnW, RTC_SPACE, 
+    input RESETn, TSn, RTC_SPACE, 
 
     //Chip Enable
     output reg RTC_ENn, RTC_TACK

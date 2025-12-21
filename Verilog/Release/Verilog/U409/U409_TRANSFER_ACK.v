@@ -33,6 +33,8 @@ Date          Who  Description
 18-OCT-2025   JN   Moved RTC to dedicated module.
 05-NOV-2025   JN   Changed ROM timing options to support Kicksmash.
 07-NOV-2025   JN   Modified ROM state machine.
+14-NOV-2025   JN   Modified slowest ROM timing from 250 to 275ns.
+24-NOV-2025   JN   Added _TEA to cycle timeout reset.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -43,7 +45,7 @@ module U409_TRANSFER_ACK (
     input CLK40_IN, CLK40, CLK_CIA, RESETn,
     
     //Cycle Start/Termination
-    input TSn, AC_TACK,
+    input TSn, TEAn, //AC_TACK,
     output TBIn, TCIn,
     inout TACKn,
 
@@ -83,7 +85,8 @@ always @(posedge CLK40_IN) begin
     end else begin
         case (TACK_STATE)
             4'h0 : begin
-                if (ROM_TACK_EN || RTC_TACK || IRQ_TACK_EN || AC_TACK || CIA_TACK_EN || DELAYED_TACK_EN || FLASH_TACK) begin
+                //if (ROM_TACK_EN || RTC_TACK || IRQ_TACK_EN || AC_TACK || CIA_TACK_EN || DELAYED_TACK_EN || FLASH_TACK) begin
+                if (ROM_TACK_EN || RTC_TACK || IRQ_TACK_EN || CIA_TACK_EN || DELAYED_TACK_EN || FLASH_TACK) begin
                     TACK_EN  <= 1;
                     TACK_OUT <= 0;
                     TACK_STATE <= 4'h1;
@@ -108,12 +111,12 @@ end
 //We support multiple timing options for ROM cycle termination.
 //The exact timing is user selected by jumpers on the APCI board.
 
-localparam [3:0] ROM_DELAY_250 = 4'h7; //250ns
+localparam [3:0] ROM_DELAY_275 = 4'h8; //275ns
 localparam [3:0] ROM_DELAY_200 = 4'h5; //200ns
 localparam [3:0] ROM_DELAY_150 = 4'h3; //150ns
 localparam [3:0] ROM_DELAY_100 = 4'h1; //100ns
 
-wire [1:0] DELAY_250 = ROM_DELAY == 2'b11;
+wire [1:0] DELAY_275 = ROM_DELAY == 2'b11;
 wire [1:0] DELAY_200 = ROM_DELAY == 2'b10;
 wire [1:0] DELAY_150 = ROM_DELAY == 2'b01;
 wire [1:0] DELAY_100 = ROM_DELAY == 2'b00;
@@ -141,7 +144,7 @@ always @(posedge CLK40) begin
                 if ((ROM_TACK_COUNTER == ROM_DELAY_100 && DELAY_100) ||
                     (ROM_TACK_COUNTER == ROM_DELAY_150 && DELAY_150) ||
                     (ROM_TACK_COUNTER == ROM_DELAY_200 && DELAY_200) ||
-                    (ROM_TACK_COUNTER == ROM_DELAY_250 && DELAY_250)) begin
+                    (ROM_TACK_COUNTER == ROM_DELAY_275 && DELAY_275)) begin
                     ROM_TACK_EN <= 1;
                     ROM_TACK_STATE <= 2'b10;
                 end else begin
@@ -256,7 +259,7 @@ reg [6:0] DELAYED_TACK_COUNTER;
 reg [1:0] DELAYED_TACK_STATE;
 reg DELAYED_TACK_EN;
     
-wire DELAYED_TACK_RST = !TACKn || !RESETn || AGNUS_SPACE;
+wire DELAYED_TACK_RST = !TACKn || !RESETn || AGNUS_SPACE || !TEAn;
     
 always @(posedge CLK40, posedge DELAYED_TACK_RST) begin
     if (DELAYED_TACK_RST) begin

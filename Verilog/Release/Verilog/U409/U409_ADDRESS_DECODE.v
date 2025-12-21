@@ -30,6 +30,8 @@ Date          Who  Description
 15-OCT-2025   JN   Assert _ROMEN directly from address.
 01-NOV-2025   JN   Roll back _ROMEN change above.
 06-NOV-2025   JN   Fixed RTC address space.
+11-NOV-2025   JN   Bridge base address fixed to $80000000
+13-NOV-2025   JN   ATA address fixed to $DB0000
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -38,26 +40,26 @@ module U409_ADDRESS_DECODE
 (
 
     //Clocks
-    input CLK40, OVL, CIA_ENABLE, CONFIGURED,
+    input CLK40, OVL, CIA_ENABLE, //CONFIGURED,
     
     //Cycle Start/Terminate
     input RESETn, RnW,
     input [1:0] TT,
-    input [2:0] TM,
     input [31:12] A,
 
     //Chip Selects
+    input AUTOBOOT,
     output ROM_SPACE, CIA_SPACE, CIACS0n, CIACS1n, RAMSPACEn, REGSPACEn, AGNUS_SPACE,
-    output AUTOVECTOR, RTC_SPACE, AUTOCONFIG_SPACE, ATA_SPACE, ATA_ENn,
-    output PCS0, PCS1, SCS0, SCS1, BREG_ENn, BPRO_ENn, PCI_SPACE,
-    output [1:0] PCIAT,
+    output AUTOVECTOR, RTC_SPACE, ATA_SPACE, ATA_ENn, // AUTOCONFIG_SPACE,
+    output PCS0, PCS1, SCS0, SCS1, //BRIDGE_ENn,
+    //output [1:0] PCIAT,
 
     //Base Addresses
-    input [7:0] BRIDGE_BASE,
-    input [7:1] LIDE_BASE,
-    input [3:0] PRO_BASE,    
+    //input [7:1] LIDE_BASE,
+    //input [3:0] PRO_BASE,    
     
     //FLASH
+    input FLASH_DISJn,
     output FLASH_SPACE,
     output [1:0] FLASH_BANK
 
@@ -113,7 +115,7 @@ assign AUTOVECTOR = RESETn && TT[1] && TT[0] && A[31:16] == 16'hFFFF;
  // AUTOCONFIG SPACE //
 //////////////////////
 
-assign AUTOCONFIG_SPACE = Z2_SPACE && A[23:16] == 8'hE8;
+//assign AUTOCONFIG_SPACE = Z2_SPACE && A[23:16] == 8'hE8;
 
   /////////////////////
  // REAL TIME CLOCK //
@@ -128,58 +130,27 @@ assign RTC_SPACE = Z2_SPACE && A[23:16] == 8'hDC;
 
 //ATA ROM and chip selects.
 
-wire CS0 = !A[16] && !A[15] && !A[13] &&  A[12];
-wire CS1 = !A[16] && !A[15] &&  A[13] && !A[12];
+//wire CS0 = !A[16] && !A[15] && !A[13] &&  A[12];
+//wire CS1 = !A[16] && !A[15] &&  A[13] && !A[12];
+wire CS0 = !A[15] && !A[13] &&  A[12];
+wire CS1 = !A[15] &&  A[13] && !A[12];
 assign PCS0 = !A[14] && CS0;
 assign PCS1 =  A[14] && CS0;
 assign SCS0 = !A[14] && CS1;
 assign SCS1 =  A[14] && CS1;
 
-assign ATA_SPACE = Z2_SPACE && CONFIGURED && A[23:17] == LIDE_BASE; //128k
-//wire ATA_ROM = ATA_SPACE && !ATA_EN;
+//assign ATA_SPACE = Z2_SPACE && CONFIGURED && A[23:17] == LIDE_BASE; //128k
+assign ATA_SPACE = Z2_SPACE && A[23:16] == 8'hDB;
 assign ATA_ENn = !(ATA_SPACE && ATA_EN);
-//assign ATA_ENn = 1'b1;
 
 reg ATA_EN;
 always @(posedge CLK40) begin
   if (!RESETn) begin
     ATA_EN <= 0;
   end else begin
-    ATA_EN <= (ATA_SPACE && !RnW) || ATA_EN;
+    ATA_EN <= (ATA_SPACE && !RnW && AUTOBOOT) || ATA_EN;
   end
 end
-
-  //////////////////////
- // PCI BRIDGE SPACE //
-//////////////////////
-
-//The PCI bridge can be accessed in one of two ways.
-//The first is the PCI Bridge registers in the Z2 space as a 64k device. These registers are defined by the PCI spec and support AUTOCONFIG cards.
-//The second way is as a prometheus access in the Z3 space.
-//The PCIAT (PCI Access Type) bus identifies the acess type for all bridge accesses.
-//NOTE: The I/O space is basically deprectaed in the Rev 2.3 PCI spec, but is here for prometheus support. The PCI I/O space is not supported for AUTOCONFIG cards.
-
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
-
-assign BREG_ENn  = !(Z2_SPACE && CONFIGURED && A[23:16] == BRIDGE_BASE); //64k
-assign BPRO_ENn  = !(RESETn   && CONFIGURED && A[31:28] == PRO_BASE); //256mb
-assign PCI_SPACE =  (!BREG_ENn || !BPRO_ENn);
-
-wire ALT_SPACE   = TT[1] && !TT[0];
-wire CONF0_SPACE = ALT_SPACE && (!TM[2] && !TM[1] && !TM[0]);
-wire CONF1_SPACE = ALT_SPACE && (!TM[2] &&  TM[1] &&  TM[0]);
-
-wire PRO_CONF0_SPACE = BPRO_ENn && A[27:20] == 8'hFC;
-wire PRO_CONF1_SPACE = BPRO_ENn && A[27:20] == 8'hFD;
-wire PRO_IO_SPACE    = BPRO_ENn && A[27:20] == 8'hFE;
-
-assign PCIAT[1] = RESETn && ((PRO_IO_SPACE || !ALT_SPACE) && !PRO_CONF0_SPACE && !PRO_CONF1_SPACE);
-assign PCIAT[0] = RESETn && (PRO_IO_SPACE || CONF1_SPACE || PRO_CONF1_SPACE);
 
   /////////////////
  // FLASH SPACE //
@@ -195,6 +166,15 @@ assign PCIAT[0] = RESETn && (PRO_IO_SPACE || CONF1_SPACE || PRO_CONF1_SPACE);
 // $E00000 - $E7FFFF     1       0      $100000 - $17FFFF
 // $F00000 - $F7FFFF     1       1      $180000 - $1FFFFF
 
+reg FLASH_DISABLE;
+always @(posedge CLK40) begin
+  if (!RESETn) begin
+    FLASH_DISABLE <= 0;
+  end else begin
+    FLASH_DISABLE <= !FLASH_DISJn;
+  end
+end
+
 wire ROM_SPACE_A = A[23:19] == 5'b10101; //A8-AF
 wire ROM_SPACE_B = A[23:19] == 5'b10110; //B0-B7
 wire ROM_SPACE_E = A[23:19] == 5'b11100; //E0-E7
@@ -202,6 +182,5 @@ wire ROM_SPACE_F = A[23:19] == 5'b11110; //F0-F7
 
 assign FLASH_BANK[1] = A[22];
 assign FLASH_BANK[0] = A[20];
-assign FLASH_SPACE = Z2_SPACE && (ROM_SPACE_F || ROM_SPACE_E || ROM_SPACE_B || ROM_SPACE_A);
-
+assign FLASH_SPACE = Z2_SPACE && !FLASH_DISABLE && (ROM_SPACE_F || ROM_SPACE_E || ROM_SPACE_B || ROM_SPACE_A);
 endmodule

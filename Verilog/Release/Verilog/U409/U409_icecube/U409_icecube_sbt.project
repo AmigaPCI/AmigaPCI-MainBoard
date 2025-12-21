@@ -4,7 +4,7 @@ Version=Lattice Semiconductor Corporation iCEcube - Release: 2020.12.27943 - Bui
 ProjectName=U409_icecube
 Vendor=SiliconBlue
 Synthesis=synplify
-ProjectVFiles=../U409_ADDRESS_DECODE.v=work,../U409_CIA.v=work,../U409_TICK.v=work,../U409_TOP.v=work,../U409_TRANSFER_ACK.v=work,../U409_AUTOCONFIG.v=work,../U409_FLASH.v=work,../U409_RTC_SM.v=work
+ProjectVFiles=../U409_ADDRESS_DECODE.v=work,../U409_CIA.v=work,../U409_TICK.v=work,../U409_TOP.v=work,../U409_TRANSFER_ACK.v=work,../U409_FLASH.v=work,../U409_RTC_SM.v=work
 ProjectCFiles=../U409_TOP.sdc
 CurImplementation=U409_icecube_Implmnt
 Implementations=U409_icecube_Implmnt

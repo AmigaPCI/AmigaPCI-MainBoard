@@ -40,11 +40,10 @@ module U409_FLASH
     
     //Cycle Start/Terminate
     input RESETn, TSn, RnW,
-    input [23:1] A,
     output reg FLASH_TACK,
 
     //FLASH Control Signals
-    input FLASH_SPACE, FLASH_RDY,
+    input FLASH_SPACE,
     output FLASH_WPn, FLASH_RSTn, FLASH_READn, FLASH_WRITEn,
     output reg FLASH_ENn
 
