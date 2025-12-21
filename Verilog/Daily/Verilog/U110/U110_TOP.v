@@ -33,48 +33,55 @@ iceprog D:\AmigaPCI\U110\APCI_U110\APCI_U110_Implmnt\sbt\outputs\bitmap\U110_TOP
 module U110_TOP (
 
     //Clocks
-    input CLK40_IN, CLK33_IN,
+    input CLK66_IN, CLK40_IN, CLK33_IN,
     
     //Cycle Start/Terminate
-    input RESETn, TSn, RnW,
-    input [1:0] SIZ,
-    output TEAn, TACKn, TCIn, TBIn,
+    input  RESETn, TSn, RnW,
+    input  [1:0] SIZ,
+    output TEAn, TCIn, TBIn, 
+    inout  TACKn,
     
     //ATA Chip Selects
-    input ATA_ENn, PPIO, SPIO, PCS1 , PCS0, SCS1, SCS0,
+    input  ATA_ENn, PPIO, SPIO, PCS1 , PCS0, SCS1, SCS0,
     output CS0_PRIn, CS1_PRIn, CS0_SECn, CS1_SECn, DIOR_PRIn, DIOW_PRIn, DIOR_SECn, DIOW_SECn,
 
     //ATA Buffers
     output IDELENn, IDEDIR, IDEHRENn, IDEHWENn, ATA_LATCH,
 
     //PCI 
-    input DEVSELn, TRDYn, PCI_TACK_ENn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA,
-    input [1:0] PCIAT,
-    input [4:0] BUSREQ,
-    output RESET_PCIn, DEVSEL_OUTn, PHASEA_D, FRAMEn, PCI_TIPn, PARITY,
+    input  DEVSELn, TRDYn, PCI_TACK_ENn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA,
+    input  [1:0] PCIAT,
+    input  [4:0] BUSREQ,
+    output DEVSEL_OUTn, FRAMEn, PCI_TIPn, PARITY, W_LATCH_ENn,
     output [3:0] CBE,
 
 
     //Arbitor and Interrupts
     output INT2n, BUSDIR, BGn, BURSTn
 
-    ,output TP0, TP1
+    ,output TP0,TP1,TP2
 
 );
 
-assign TP0 = PCI_CYCLEn;
-assign TP1 = PCI_TIPn;
+//assign TP0 = CLK33;
+//assign TP1 = CLK66; //13
+//assign TP2 = CLK40;
+//assign TP0 = PCI_TIPn;
 
 ////////////////////////////
 // INTERNAL SIGNAL WIRES //
 //////////////////////////
 
+wire CLK66 = CLK66_IN;
 wire CLK40_PAD = CLK40_IN;
 wire CLK40;
 //wire CLK33_PAD = CLK33_IN;
 wire CLK33 = !CLK33_IN;
 wire ATA_TACK;
 wire PCI_TIMEOUT;
+wire A2P_TACK_EN;
+wire TACK_OUT;
+
 assign DEVSEL_OUTn = DEVSELn;
 
   ///////////////
@@ -95,18 +102,22 @@ U110_INTERRUPT U110_INTERRUPT (
 U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
     //INPUT
     .CLK40 (CLK40),
-    .CLK33 (CLK33),
+    //.CLK33 (CLK33),
     .RESETn (RESETn),
-    .ATA_ENn (ATA_ENn),
+    //.ATA_ENn (ATA_ENn),
     .ATA_TACK (ATA_TACK),
     .PCI_TACK_ENn (PCI_TACK_ENn),
     .PCI_TIMEOUT (PCI_TIMEOUT),
+    .A2P_TACK_EN (A2P_TACK_EN),
 
     //output
     .TEAn (TEAn),
     .TACKn (TACKn),
     .TCIn (TCIn),
-    .TBIn (TBIn)
+    .TBIn (TBIn),
+    .TACK_OUT (TACK_OUT)
+
+    //,.TP1(TP1)
 );
 
   /////////////
@@ -181,11 +192,14 @@ U110_ARBITOR U110_ARBITOR (
 U110_PCI_BRIDGE U110_PCI_BRIDGE (
 
     //input
+    .CLK66 (CLK66),
     .CLK40 (CLK40),
     .CLK33 (CLK33),
     .RESETn (RESETn),
     .TSn (TSn),
     .RnW (RnW),
+    .TACK_OUT (TACK_OUT),
+    //.TACKn (TACKn),
     .BGn (BGn),
     .PCI_CYCLEn (PCI_CYCLEn),
     .DEVSELn (DEVSELn),
@@ -200,30 +214,15 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
 
     //output
     .FRAMEn (FRAMEn),
-    .RESET_PCIn (RESET_PCIn),
-    .PHASEA_D (PHASEA_D),
     .PCI_TIPn (PCI_TIPn),
+    .W_LATCH_ENn (W_LATCH_ENn),
     .PCI_TIMEOUT (PCI_TIMEOUT),
+    .A2P_TACK_EN (A2P_TACK_EN),
     .PARITY (PARITY),
     .CBE (CBE)
+
+    ,.TP0(TP0),.TP1(TP1), .TP2(TP2)
 );
-
-/*U110_PCI_SM U110_PCI_SM (
-    //input
-    .CLK40 (CLK40),
-    .CLK33 (CLK33),
-    .RESETn (RESETn),
-    .RnW (RnW),
-    .TSn (TSn),
-    .DEVSELn (DEVSELn),
-    .TRDYn (TRDYn),
-    .BURST (BURST),
-    .BPRO_ENn (BPRO_ENn),
-    .PCIAT (PCIAT),
-
-    //output
-    .PCI_CYCLEn (PCI_CYCLEn)
-);*/
 
   /////////
  // PLL //

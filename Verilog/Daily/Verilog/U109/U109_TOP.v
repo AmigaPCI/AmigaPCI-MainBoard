@@ -33,76 +33,90 @@ module U109_TOP (
 
     //Clocks
     input CLK40_IN, CLK33_IN,
+    output CLK66_OUT,
 
     //Cycle Start/Terminate
-    input RESETn, TSn, RnW, BURSTn, BGn, TACKn,
-    output TACK_ENn,
+    input RESETn, TSn, RnW, BURSTn, BGn,
+    output TCI_ENn,
 
     //PCI
-    input TARGET_READYn, DEVSELn, PHASEA_D, PCI_TIPn,
-    output PCI_CYCLEn, CLK_ADDRESS_LATCH, ADDRESS_DIR, ADDRESS_ENn, //INT_ENn,
+    input  TARGET_READYn, DEVSELn, PCI_TIPn, W_LATCH_ENn,
+    output PCI_CYCLEn, CLK_ADDRESS_LATCH, ADDRESS_DIR, ADDRESS_ENn, PCI_RSTn,
     output BRIDGE_ENn, PCI_BUF_ENn, PCI_BUF_DIR, INIT_READYn, PARITY_DIR, PARITY_DA,
     output [1:0] PCIAT,
     output [4:0] IDSEL,
+    inout  TACKn,
 
     //Busses
     inout [31:0] D,
     inout [31:0] AD
 
-    , output TP0, TP1
+    //,output TP0, TP1
 );
-
-assign TP0 = PHASEA_D;
-assign TP1 = BRIDGE_ENn;
-
-//Need to connect to _INT2!
-//wire INT_STATUSn = 1;
 
 /////////////////////
 // INTERNAL WIRES //
 ///////////////////
 
-//wire CLK40_PAD = CLK40_IN;
-wire CLK40 = CLK40_IN;
+wire CLK80_PLL;
+wire CLK80 = CLK80_PLL;
+wire CLK40_PAD = CLK40_IN;
+wire CLK40_PLL;
+wire CLK40 = CLK40_PLL;
 wire CLK33_PAD = CLK33_IN;
 wire CLK33_PLL;
-wire CLK33 = !CLK33_PLL;
-wire PCI_TACK_EN;
-wire DATA_DIRECTION;
-wire PCI_WRITE_CYCLE;
+wire CLK33 = !(CLK33_PLL);
+wire CLK66_PLL;
+wire CLK66 = CLK66_PLL;
+assign CLK66_OUT = CLK66_PLL;
+
 wire [31:0] P2A_DATA;
-wire [31:0] A2P_DATA = 32'hffffffff;
-wire P2A_FIFO_EMPTY, A2P_FIFO_EMPTY;
+wire [31:0] A2P_DATA;
+wire P2A_FIFO_EMPTY;
+wire A2P_FIFO_EMPTY;
 wire P2A_READ_NEXT;
-
-//assign TACK_ENn = !(REG_TACK || PCI_TACK_EN);
-assign TACK_ENn = !(PCI_TACK_EN);
-
-//assign TP0 = p_ren;
+wire A2P_READ_NEXT;
+wire PCI_CYCLE_ACTIVE = (!PCI_CYCLEn || !PCI_TIPn);
+wire PCI_WRITE_EN;
+wire BRIDGE_SPACE;
+//wire BRIDGE_CYCLE;
+wire BRIDGE_CONF_SPACE;
 
 //////////////////////////////
 // PCI CYCLE STATE MACHINE //
 ////////////////////////////
 
 U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
+    .CLK80 (CLK80),
+    .CLK66 (CLK66),
     .CLK40 (CLK40),
     .CLK33 (CLK33),
     .RESETn (RESETn),
+    .TSn (TSn),
     .RnW (RnW),
+    .REG_DATA (D[31]),
     .BURSTn (BURSTn),
     .PCI_TIPn (PCI_TIPn),
     .BGn (BGn),
-    .TACKn (TACKn),
+    .PCI_WRITE_EN (PCI_WRITE_EN),
+    .BRIDGE_CONF_SPACE (BRIDGE_CONF_SPACE),
+    .A (AD[7:0]),
+    //.BRIDGE_CYCLE (BRIDGE_CYCLE),
     .P2A_FIFO_EMPTY (P2A_FIFO_EMPTY),
     .A2P_FIFO_EMPTY (A2P_FIFO_EMPTY),
+    .DEVSELn (DEVSELn),
+    .TARGET_READYn (TARGET_READYn),
+
     .PCI_CYCLEn (PCI_CYCLEn),
     .CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
     .INIT_READYn (INIT_READYn),
     .PARITY_DIR (PARITY_DIR),
-    .DATA_DIRECTION (DATA_DIRECTION),
-    .PCI_WRITE_CYCLE (PCI_WRITE_CYCLE),
-    .PCI_TACK_EN (PCI_TACK_EN),
-    .P2A_READ_NEXT (P2A_READ_NEXT)
+    .TACKn (TACKn),
+    .PCI_RSTn (PCI_RSTn),
+    .P2A_READ_NEXT (P2A_READ_NEXT),
+    .A2P_READ_NEXT (A2P_READ_NEXT),
+    .TCI_ENn (TCI_ENn)
+    //,.TP0 (TP0), .TP1 (TP1)
 );
 
 //////////////////
@@ -114,16 +128,13 @@ U109_BUFFERS U109_BUFFERS(
     .CLK40 (CLK40),
     .CLK33 (CLK33),
     .RESETn (RESETn),
+    .RnW (RnW),
     .TSn (TSn),
-    .PHASEA_D (PHASEA_D),
     .DEVSELn (DEVSELn),
     .BGn (BGn),
-    .RnW (RnW),
     .PCI_TIPn (PCI_TIPn),
-    .BRIDGE_ENn (BRIDGE_ENn),
+    .BRIDGE_SPACE (BRIDGE_SPACE),
     .PCI_CYCLEn (PCI_CYCLEn),
-    .PCI_WRITE_CYCLE (PCI_WRITE_CYCLE),
-    .PCIAT (PCIAT),
     .P2A_DATA (P2A_DATA),
     .A2P_DATA (A2P_DATA),
 
@@ -132,7 +143,12 @@ U109_BUFFERS U109_BUFFERS(
     .ADDRESS_DIR (ADDRESS_DIR),
     .PCI_BUF_ENn (PCI_BUF_ENn),
     .PCI_BUF_DIR (PCI_BUF_DIR),
+    .PCI_WRITE_EN (PCI_WRITE_EN),
+    //.BRIDGE_CYCLE (BRIDGE_CYCLE),
     .PARITY_DA (PARITY_DA),
+    .IDSEL (IDSEL),
+    .PCIAT (PCIAT),
+    //.PCI_RSTn (PCI_RSTn),
 
     //inout
     .D (D),
@@ -149,87 +165,56 @@ U409_ADDRESS_DECODE U409_ADDRESS_DECODE
    .CLK40 (CLK40),
    .RESETn (RESETn),
    .TSn (TSn),
-   .PHASEA_D (PHASEA_D),
-   .BGn (BGn),
-   .INIT_READYn (INIT_READYn),
+   .PCI_CYCLEn (PCI_CYCLEn),
    .A (AD[31:16]),
 
    //output
+   .BRIDGE_SPACE (BRIDGE_SPACE),
    .BRIDGE_ENn (BRIDGE_ENn),
-   .PCIAT (PCIAT),
-   .IDSEL (IDSEL)
+   .BRIDGE_CONF_SPACE (BRIDGE_CONF_SPACE)
 );
 
-//////////////////
-// BRIDGE FIFO //
-////////////////
+////////////////////////
+// PCI TO AMIGA FIFO //
+//////////////////////
 
-U109_FIFO U109_FIFO
+//DATA_ DIRECTION
+//PCI_TO_AMIGA  = 1
+//AMIGA_TO_PCI  = 0;
+wire DATA_DIRECTION = (!BGn && !PCI_WRITE_EN);
+wire P2A_WR_EN = (PCI_CYCLE_ACTIVE && DATA_DIRECTION && !TARGET_READYn);
+
+U109_FIFO P2A_FIFO
 (
-    //input
-    .CLKBUS (CLK40),
-    .CLKPCI (CLK33),
     .RESETn (RESETn),
-
-    .TARGET_READYn (TARGET_READYn),
-    .P2A_READ_NEXT (P2A_READ_NEXT),
-
-    .AD_IN (AD),
-
-    //output
-    .P2A_FIFO_EMPTY (P2A_FIFO_EMPTY),
-    .A2P_FIFO_EMPTY (A2P_FIFO_EMPTY),
-    .P2A_DATA (P2A_DATA)
-
-    //,.TP0 (TP0)
+    .CLK_WR (CLK33), //Data generating device bus clock.
+    .CLK_RD (CLK40), //Data consuming device bus clock.
+    .CLK_SYNC (CLK80), //2x Read Clock
+    .WR_EN (P2A_WR_EN), //Write data into the fifo.
+    .READ_NEXT (P2A_READ_NEXT), //Advance to next stored fifo value.
+    .DATA_IN (AD), //Data input to fifo.
+    .FIFO_EMPTY (P2A_FIFO_EMPTY), //Is the fifo empty?
+    .DATA_OUT (P2A_DATA) //Data out from the fifo.
 );
 
-//Direction of data flow.
-// 0 = Amiga is producer, PCI is consumer
-// 1 = PCI is producer, Amiga is consumer
+////////////////////////
+// AMIGA TO PCI FIFO //
+//////////////////////
 
-//Trigger the FIFO to latch incoming data.
-/*wire amiga_write_en = (!TACKn && !RnW); //CPU write or DMA read. Data moves D -> AD.
-wire pci_write_en   = (!TARGET_READYn && RnW); //CPU read or DMA write. Data moves D <- AD.
+wire A2P_WR_EN = ((!W_LATCH_ENn) && !DATA_DIRECTION && !TACKn);
 
-//assign TP0 = DATA_DIRECTION;
-//assign TP1 = a_rempty;
-
-U109_BRIDGE_FIFO_DIR U109_BRIDGE_FIFO_DIR (
+U109_FIFO A2P_FIFO
+(
     .RESETn (RESETn),
-
-    .dir       (DATA_DIRECTION),   
-    .amiga_clk (CLK40),
-    .pci_clk   (CLK33),
-
-    // --- CPU WRITE or DMA READ ---
-    //DIR==0 = Amiga is producer, PCI is consumer
-    //Amiga side
-    .a_wen     (amiga_write_en), 
-    .a_wdata   (D),
-    .a_wready  (amiga_wready), //FIFO not full.
-
-    // PCI side
-    .p_ren     (p_ren),
-    .p_rdata   (p_rdata),
-    .p_rempty  (p_rempty), //FIFO empty.
-
-    // --- CPU READ or DMA WRITE ---
-    //DIR==1 = PCI is producer, Amiga is consumer
-    //Amiga side
-    .a_ren     (a_ren),
-    .a_rdata   (a_rdata),
-    .a_rempty  (a_rempty), //FIFO empty.
-
-    // PCI side
-    .p_wen     (pci_write_en),
-    .p_wdata   (AD),
-    .p_wready  (pci_wready) //FIFO not full
-
-    ,.TP0 (TP0), .TP1 (TP1)
-
-    
-);*/
+    .CLK_WR (CLK40), //Data generating device bus clock.
+    .CLK_RD (CLK33), //Data consuming device bus clock.
+    .CLK_SYNC (CLK66), //2x Read Clock
+    .WR_EN (A2P_WR_EN), //Write data into the fifo.
+    .READ_NEXT (A2P_READ_NEXT), //Advance to next stored fifo value.
+    .DATA_IN (D), //Data input to fifo.
+    .FIFO_EMPTY (A2P_FIFO_EMPTY), //Is the fifo empty?
+    .DATA_OUT (A2P_DATA) //Data out from the fifo.
+);
 
 ///////////////////////
 // BRIDGE REGISTERS //
@@ -259,85 +244,22 @@ U109_BRIDGE_FIFO_DIR U109_BRIDGE_FIFO_DIR (
 /////////
 
 //icecube2 struggles with synthesizing two PLLs.
-//It will throw errors but still seems to work fine.
+//It will throw a lot of warnings but works fine.
 
-//SB_PLL40_CORE #(
-/*SB_PLL40_PAD #(
-    .DIVR (4'b0000),
-    .DIVF (7'b0000000),
-    .DIVQ (3'b100),
-    .FILTER_RANGE (3'b011),
-    .FEEDBACK_PATH ("PHASE_AND_DELAY"),
-    .DELAY_ADJUSTMENT_MODE_FEEDBACK ("FIXED"),
-    .FDA_FEEDBACK   (4'b0000),
-    //.DELAY_ADJUSTMENT_MODE_RELATIVE ("FIXED"),
-    //.FDA_RELATIVE   (4'b0000),
-    .PLLOUT_SELECT ("SHIFTREG_0deg"),
-    .SHIFTREG_DIV_MODE (2'b00)
-) pll40 (
-    .LOCK            (),
-    .RESETB          (1'b1),
-    .PACKAGEPIN      (CLK40_PAD),
-    .PLLOUTGLOBAL    (CLK40),
-    .PLLOUTCORE      (), 
-    .EXTFEEDBACK     (1'b0),
-    .DYNAMICDELAY    (8'b00000000),
-    .BYPASS          (1'b0),
-    .SDI             (1'b0),
-    .SCLK            (1'b0),
-    .LATCHINPUTVALUE (1'b0)
-);*/
+U109_TOP_4080_pll U109_TOP_4080_pll(
+    .PACKAGEPIN(CLK40_PAD),
+    .PLLOUTCOREA(),
+    .PLLOUTCOREB(),
+    .PLLOUTGLOBALA(CLK80_PLL),
+    .PLLOUTGLOBALB(CLK40_PLL),
+    .RESET(1'b1));
 
-//8ns early
-/*SB_PLL40_PAD #(
-    .DIVR (4'b0000),
-    .DIVF (7'b0000000),
-    .DIVQ (3'b011),
-    .FILTER_RANGE (3'b011),
-    .FEEDBACK_PATH ("PHASE_AND_DELAY"),
-    .DELAY_ADJUSTMENT_MODE_FEEDBACK ("FIXED"),
-    //.DELAY_ADJUSTMENT_MODE_FEEDBACK ("DYNAMIC"),
-    .FDA_FEEDBACK   (4'b0000),
-    //.DELAY_ADJUSTMENT_MODE_RELATIVE ("FIXED"),
-    //.FDA_RELATIVE   (4'b0000),
-    .PLLOUT_SELECT ("SHIFTREG_0deg"),
-    .SHIFTREG_DIV_MODE (2'b00),
-    .ENABLE_ICEGATE (1'b0)
-) pll33 (
-    .LOCK            (),
-    .RESETB          (1'b1),
-    .PACKAGEPIN      (CLK33_PAD),
-    .PLLOUTGLOBAL    (CLK33_PLL),
-    .PLLOUTCORE      (),
-    .EXTFEEDBACK     (1'b0),
-    .DYNAMICDELAY    (8'b00000000),
-    .BYPASS          (1'b0),
-    .SDI             (1'b0),
-    .SCLK            (1'b0),
-    .LATCHINPUTVALUE (1'b0)
-);*/
-
-//4ns early
-SB_PLL40_PAD #(
-    .DIVR (4'b0000),
-    .DIVF (7'b0011111),
-    .DIVQ (3'b101),
-    .FILTER_RANGE (3'b011),
-    .FEEDBACK_PATH ("SIMPLE"),
-    .PLLOUT_SELECT ("GENCLK"),
-    .ENABLE_ICEGATE (1'b0)
-) pll33 (
-    .LOCK            (),
-    .RESETB          (1'b1),
-    .PACKAGEPIN      (CLK33_PAD),
-    .PLLOUTGLOBAL    (CLK33_PLL),
-    .PLLOUTCORE      (),
-    .EXTFEEDBACK     (1'b0),
-    .DYNAMICDELAY    (8'b00000000),
-    .BYPASS          (1'b0),
-    .SDI             (1'b0),
-    .SCLK            (1'b0),
-    .LATCHINPUTVALUE (1'b0)
-);
+U109_TOP_3366_pll U109_TOP_3366_pll(
+    .PACKAGEPIN(CLK33_PAD),
+    .PLLOUTCOREA(),
+    .PLLOUTCOREB(),
+    .PLLOUTGLOBALA(CLK66_PLL),
+    .PLLOUTGLOBALB(CLK33_PLL),
+    .RESET(1'b1));
 
 endmodule

@@ -34,55 +34,103 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 
 module U109_BUFFERS
 (
-    input CLK40, CLK33, RESETn, TSn, PHASEA_D, DEVSELn, BGn, RnW, PCI_TIPn, BRIDGE_ENn, PCI_CYCLEn, PCI_WRITE_CYCLE,
-    input [1:0] PCIAT,
-    //input [31:0] a_rdata, p_rdata,
+    input CLK40, CLK33, RESETn, RnW, TSn, DEVSELn, BGn, PCI_TIPn, BRIDGE_SPACE, PCI_CYCLEn,
     input [31:0] A2P_DATA, P2A_DATA,
 
     output ADDRESS_ENn, ADDRESS_DIR, PCI_BUF_ENn, PCI_BUF_DIR,
-    output reg PARITY_DA,
+    output reg PARITY_DA, PCI_WRITE_EN,
+    output [4:0] IDSEL,
+    output [1:0] PCIAT,
 
     inout [31:0] D,
     inout [31:0] AD
 );
 
-//////////////////////
-// ADDRESS BUFFERS //
+/////////////////
+// PARAMETERS //
+///////////////
+
+//localparam BRIDGE_ADDRESS  = 4'h0;
+localparam SLOT0_ADDRESS   = 4'h1;
+localparam SLOT1_ADDRESS   = 4'h2;
+localparam SLOT4_ADDRESS   = 4'h3;
+localparam SLOT2_ADDRESS   = 4'h4;
+localparam SLOT3_ADDRESS   = 4'h8;
+localparam CONF0_ADD_SPACE = 9'b111111100; //$9FC
+localparam CONF1_ADD_SPACE = 9'b111111101; //$9FD
+localparam IO_ADD_LO_SPACE = 9'b111111110; //$9FE
+localparam IO_ADD_HI_SPACE = 9'b111111111; //$9FF
+
+localparam BURST_ORDER_WRAP = 2'b10;
+
+localparam CONFIG0_ACCESS   = 2'b00;
+localparam CONFIG1_ACCESS   = 2'b01;
+localparam MEM_ACCESS       = 2'b10;
+localparam IO_ACCESS        = 2'b11;
+
 ////////////////////
+// ADDRESS LATCH //
+//////////////////
 
 //The address buffers are enabled any time the PCI state machine is idle or 
 //in the address phase of the cycle. The direction of the data is determined
 //by who has the bus.
 
 reg ADDRESS_VALID;
-reg [1:0] PHASEn_SYNC;
+reg [1:0] PHASEn_SYNC, PCIAT_LATCHED;;
 reg [31:0] A_LATCH;
-always @(posedge CLK40) begin
+always @(negedge CLK40) begin
     if (!RESETn) begin
-        A_LATCH <= 32'h0;
         ADDRESS_VALID <= 0;
+        PCI_WRITE_EN <= 0;
+        PCIAT_LATCHED <= MEM_ACCESS;
+        A_LATCH <= 32'h0;
         PHASEn_SYNC <= 2'b11;
     end else begin
-        PHASEn_SYNC <= {PHASEn_SYNC[0], PHASEA_D};
-        if (!TSn && !BRIDGE_ENn) begin
-            A_LATCH <= AD;
-            ADDRESS_VALID <= 1;
-        end else if (PHASEn_SYNC[1] ^ PHASEn_SYNC[0]) begin
-            ADDRESS_VALID <= 0;
+        PHASEn_SYNC <= {PHASEn_SYNC[0], PCI_CYCLEn};        
+        if (ADDRESS_VALID) begin
+            if (!PHASEn_SYNC[1]) begin
+                ADDRESS_VALID <= 0;
+            end
+        end else begin
+            if (!TSn && BRIDGE_SPACE) begin
+                A_LATCH <= AD;
+                ADDRESS_VALID <= 1;
+                PCI_WRITE_EN <= !(RnW);
+                case (AD[28:20])
+                    CONF0_ADD_SPACE : PCIAT_LATCHED <= CONFIG0_ACCESS;
+                    CONF1_ADD_SPACE : PCIAT_LATCHED <= CONFIG1_ACCESS;
+                    IO_ADD_LO_SPACE : PCIAT_LATCHED <= IO_ACCESS;
+                    IO_ADD_HI_SPACE : PCIAT_LATCHED <= IO_ACCESS;
+                    default         : PCIAT_LATCHED <= MEM_ACCESS;
+                endcase
+            end
         end
     end
 end
 
-assign ADDRESS_ENn = (ADDRESS_VALID || !PCI_TIPn); //Turn off address buffers once we've latched the address of this cycle.
+wire CONFIG0_SPACE = (A_LATCH[28:20] == CONF0_ADD_SPACE);
+wire CONFIG1_SPACE = (A_LATCH[28:20] == CONF1_ADD_SPACE);
+wire IO_SPACE      = (A_LATCH[28:21] == IO_ADD_LO_SPACE[8:1]);
+wire MEMORY_SPACE  = (!CONFIG0_SPACE && !CONFIG1_SPACE && !IO_SPACE);
+
+wire SLOT4_ENABLE  = (A_LATCH[19:16] == SLOT4_ADDRESS);
+wire SLOT3_ENABLE  = (A_LATCH[19:16] == SLOT3_ADDRESS);
+wire SLOT2_ENABLE  = (A_LATCH[19:16] == SLOT2_ADDRESS);
+wire SLOT1_ENABLE  = (A_LATCH[19:16] == SLOT1_ADDRESS);
+wire SLOT0_ENABLE  = (A_LATCH[19:16] == SLOT0_ADDRESS);
+
+assign ADDRESS_ENn = (ADDRESS_VALID || !PCI_TIPn || !PCI_CYCLEn); //Turn off address buffers to prevent contention on AD bus.
 assign ADDRESS_DIR = BGn;
+assign IDSEL = (ADDRESS_VALID && (CONFIG0_SPACE || CONFIG1_SPACE)) ? {SLOT4_ENABLE, SLOT3_ENABLE, SLOT2_ENABLE, SLOT1_ENABLE, SLOT0_ENABLE} : 5'b00000;
 
-///////////////////////
-// DATA BUS BUFFERS //
-/////////////////////
+//////////////////////
+// PCI ACCESS TYPE //
+////////////////////
 
-//The onboard (FPGA) data bus buffers are enabled during the data phase of a PCI cycle.
-//Only enable when a PCI device has identified itself.
-//These buffers are byte swapped for data phase transfers.
+//This bus is used by U110 to interpret the PCI cycle bus command.
+//In order to meet the needed setup time, we grab the address early
+//and base PCIAT on that until the latched address becomes available.
 
 // Access Type         PCIAT1   PCIAT0
 //-------------------------------------
@@ -91,28 +139,41 @@ assign ADDRESS_DIR = BGn;
 //PCI Memory Space       1        0
 //I/O Space              1        1
 
-localparam BURST_ORDER_WRAP = 2'b10;
-localparam CONFIG0_ACCESS   = 2'b00;
-localparam CONFIG1_ACCESS   = 2'b01;
+reg [1:0] PCIAT_PRE;
+always @* begin
+    case (AD[28:20])
+        CONF0_ADD_SPACE : PCIAT_PRE <= CONFIG0_ACCESS;
+        CONF1_ADD_SPACE : PCIAT_PRE <= CONFIG1_ACCESS;
+        IO_ADD_LO_SPACE : PCIAT_PRE <= IO_ACCESS;
+        IO_ADD_HI_SPACE : PCIAT_PRE <= IO_ACCESS;
+        default         : PCIAT_PRE <= MEM_ACCESS;
+    endcase
+end
 
-wire CONFIG0_SPACE = PCIAT == 2'b00;
-wire CONFIG1_SPACE = PCIAT == 2'b01;
-wire MEMORY_SPACE  = PCIAT == 2'b10;
+assign PCIAT = ADDRESS_VALID ? PCIAT_LATCHED : PCIAT_PRE;
+
+///////////////////////
+// D/AD BUS BUFFERS //
+/////////////////////
+
+//The onboard (FPGA) data bus buffers are enabled during the data phase of a PCI cycle.
+//Only enable when a PCI device has identified itself.
+//These buffers are byte swapped for data phase transfers.
 
 //These are CPU driven cycles only!!!!
 
 //Set AD bus to correct output depending on access type and address or data phase.
-wire AD_TO_PCI        = ((PHASEA_D && ADDRESS_VALID) || ((!PHASEA_D && ((!BGn && !RnW ) || (BGn && RnW)))));
+//wire AD_OUT_EN        = ((PCI_CYCLEn && ADDRESS_VALID) || (!PCI_CYCLEn && PCI_WRITE_EN)); // || (BGn && RnW)))));
+wire AD_OUT_EN        = ADDRESS_VALID && ((PCI_CYCLEn) || (PCI_WRITE_EN && !PCI_CYCLEn));
 wire [1:0]  A_LOW     = CONFIG0_SPACE ? CONFIG0_ACCESS : CONFIG1_SPACE ? CONFIG1_ACCESS : A_LATCH[1:0]; //Sets AD[1:0]
 wire [31:0] AD_A_OUT  = MEMORY_SPACE ? {A_LATCH[31:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
-wire [31:0] AD_OUT    = ADDRESS_VALID ? AD_A_OUT : {A2P_DATA[7:0], A2P_DATA[15:8], A2P_DATA[23:16], A2P_DATA[31:24]}; //Sets AD source to address or FIFO data.
-assign AD = AD_TO_PCI ? AD_OUT : 32'bz;
+wire [31:0] AD_OUT    = PCI_CYCLEn ? AD_A_OUT : {A2P_DATA[7:0], A2P_DATA[15:8], A2P_DATA[23:16], A2P_DATA[31:24]}; //Sets AD source to address or FIFO data.
+assign AD = AD_OUT_EN ? AD_OUT : 32'bz;
 
 //Set D bus to correct output from FIFO.
-wire D_TO_AMIGA = (!PCI_CYCLEn && !PCI_WRITE_CYCLE);
+wire D_OUT_EN = (!PCI_CYCLEn && !PCI_WRITE_EN);
 wire [31:0] D_DATA_OUT = {P2A_DATA[7:0], P2A_DATA[15:8], P2A_DATA[23:16], P2A_DATA[31:24]};
-//wire [31:0] D_DATA_OUT = {P2A_DATA[0:7], P2A_DATA[8:15], P2A_DATA[16:23], P2A_DATA[24:31]};
-assign D  = D_TO_AMIGA ? D_DATA_OUT : 32'bz;
+assign D  = D_OUT_EN ? D_DATA_OUT : 32'bz;
 
 /////////////
 // PARITY //
@@ -146,7 +207,8 @@ end
 //  R   A<B (0) A>B (1)   A>B (1) A<B (0)
 //  W   A<B (0) A>B (1)   A<B (0) A>B (1)
 
-assign PCI_BUF_ENn = !(PHASEA_D || (!BGn && !PHASEA_D && !DEVSELn));
+//assign PCI_BUF_ENn = !(PHASEA_D || (!BGn && !PHASEA_D && !DEVSELn));
+assign PCI_BUF_ENn = !(PCI_CYCLEn || (!BGn && !PCI_CYCLEn)); // && !DEVSELn));
 
 //wire CPU_WRITE = !BGn && !RnW && !PHASEA_D;
 //wire DMA_READ  =  BGn &&  RnW && !PHASEA_D;
@@ -154,6 +216,8 @@ assign PCI_BUF_ENn = !(PHASEA_D || (!BGn && !PHASEA_D && !DEVSELn));
 //wire CPU_READ  = !BGn &&  RnW && !PHASEA_D;
 //wire DMA_WRITE =  BGn && !RnW && !PHASEA_D;
 
-assign PCI_BUF_DIR =  ((PHASEA_D && BGn) || (!PHASEA_D && ((RnW && !BGn) || (!RnW && BGn))));
+//assign PCI_BUF_DIR =  ((PCI_CYCLEn && BGn) || (!PCI_CYCLEn && ((RnW && !BGn) || (!RnW && BGn))));
+//assign PCI_BUF_DIR =  ((PCI_CYCLEn && BGn) || (!PCI_CYCLEn && (PCI_WRITE_EN && !BGn)));// || (!RnW && BGn))));
+assign PCI_BUF_DIR = (!PCI_CYCLEn && !PCI_WRITE_EN); // && !BGn));
 
 endmodule

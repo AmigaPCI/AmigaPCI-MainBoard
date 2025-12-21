@@ -29,21 +29,26 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 Date          Who  Description
 -----------------------------------
 29-NOV-2025   JN   Initial code.
+05-DEC-2025   JN   Assert _TACK for write to PCI cycles.
 */
 
 module U110_PCI_BRIDGE (
 
-    input CLK40, CLK33, RESETn, TSn, RnW,
+    input CLK66, CLK40, CLK33, RESETn, TSn, RnW, TACK_OUT,
     input BGn, PCI_CYCLEn, DEVSELn, UUBEn, UMBEn, LMBEn, LLBEn, BURSTn, BRIDGE_ENn, PARITY_DA,
     input [1:0] PCIAT,
 
-    output RESET_PCIn, FRAMEn, PARITY, PCI_TIPn,
-    output reg PHASEA_D, PCI_TIMEOUT,
+    output FRAMEn, PARITY,
+    output reg PCI_TIMEOUT, A2P_TACK_EN, W_LATCH_ENn, PCI_TIPn,
     output [3:0] CBE
+
+    ,output TP0,TP1,TP2
 
 );
 
-assign RESET_PCIn = RESETn;
+assign TP0 = WRITE_CYCLE_SYNC[1] || WRITE_CYCLE_SYNC[0];
+assign TP1 = PCI_TIPn;
+assign TP2 = PCI_CYCLE_START_SYNC[2];
 
   ////////////////
  // PARAMETERS //
@@ -63,24 +68,58 @@ localparam WR_MEM = 4'b0111;
 localparam RD_CON = 4'b1010;
 localparam WR_CON = 4'b1011;
 
-localparam [3:0] TIMEOUT = 4'h3;
+localparam [3:0] TIMEOUT = 4'h2;
 localparam [1:0] BURST_TOTAL = 2'b11;
 
   /////////////////
  // CYCLE START //
 /////////////////
 
-wire CYCLE_RESET = (!RESETn || START_CYCLE_RESET);
-reg PCI_CYCLE_START_HOLD, WRITE_CYCLE;
-always @(posedge CLK40, posedge CYCLE_RESET) begin
-    if (CYCLE_RESET) begin
+reg PCI_CYCLE_PENDING, PCI_CYCLE_START_HOLD, WRITE_CYCLE, W_LATCH_ENn;
+reg [1:0] PCI_TIPn_SYNC, PCI_CYCLE_STATE;
+always @(posedge CLK40) begin
+    if (!RESETn) begin
+        PCI_CYCLE_PENDING <= 0;
         PCI_CYCLE_START_HOLD <= 0;
         WRITE_CYCLE <= 0;
+        A2P_TACK_EN <= 0;
+        W_LATCH_ENn <= 1;
+        PCI_CYCLE_STATE <= 2'b0;
+        PCI_TIPn_SYNC <= 2'b0;
     end else begin
-        if (!TSn && !BRIDGE_ENn) begin
-            PCI_CYCLE_START_HOLD <= 1;
-            WRITE_CYCLE <= !(RnW);
-        end
+
+        if (!TSn && !BRIDGE_ENn) begin PCI_CYCLE_PENDING <= 1; end
+        PCI_TIPn_SYNC <= {PCI_TIPn_SYNC[0], PCI_TIPn};
+
+        case (PCI_CYCLE_STATE)
+            2'b00 : begin
+                if (PCI_CYCLE_PENDING || (!TSn && !BRIDGE_ENn)) begin
+                    PCI_CYCLE_START_HOLD <= 1;                    
+                    if (!RnW) begin
+                        W_LATCH_ENn <= 0;
+                        WRITE_CYCLE <= 1;
+                        A2P_TACK_EN <= 1;
+                    end
+                    PCI_CYCLE_STATE <= 2'b01;
+                end
+            end
+            2'b01: begin
+                A2P_TACK_EN <= 0;
+                PCI_CYCLE_PENDING <= 0;
+                PCI_CYCLE_STATE <= 2'b10;
+            end
+            2'b10 : begin
+                if (!W_LATCH_ENn) begin
+                    if (!TACK_OUT) begin
+                        W_LATCH_ENn <= 1;
+                    end
+                end else if (!PCI_TIPn_SYNC[1]) begin
+                    PCI_CYCLE_START_HOLD <= 0;
+                    WRITE_CYCLE <= 0;
+                    PCI_CYCLE_STATE <= 2'b00;
+                end
+            end
+        endcase
     end
 end
 
@@ -134,39 +173,51 @@ always @(posedge CLK33) begin
     end
 end
 
+//------ SYNCHRONIZER ------
+reg [1:0] BURSTn_SYNC, WRITE_CYCLE_SYNC;
+reg [3:0] PCI_CYCLE_START_SYNC;
+always @(posedge CLK66) begin
+    if (!RESETn) begin
+        PCI_CYCLE_START_SYNC <= 4'h0;
+        BURSTn_SYNC <= 2'b0;
+        WRITE_CYCLE_SYNC <= 2'b0;
+    end else begin
+        PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[2:0], PCI_CYCLE_START_HOLD};
+        WRITE_CYCLE_SYNC <= {WRITE_CYCLE_SYNC[0], WRITE_CYCLE};
+        BURSTn_SYNC <= {BURSTn_SYNC[0], BURSTn};
+    end
+end
+
 //------ FALLING EDGE DRIVERS ------
+wire WRITE_CYCLE_START = (WRITE_CYCLE_SYNC[1] || WRITE_CYCLE_SYNC[0]);
+
 assign FRAMEn = !BGn ? FRAME_OUTn : 1'bz;
 assign CBE = !BGn ? CBE_OUT : 4'bz;
-assign PCI_TIPn = !(CYCLE_IN_PROGRESS || !DEVSELn);
 
-reg FRAME_OUTn, BURST_CYCLE, START_CYCLE_RESET, PCI_WRITE_CYCLE, CYCLE_IN_PROGRESS;
-reg [1:0] PCI_CYCLE_START_SYNC;
+reg FRAME_OUTn, BURST_CYCLE, PCI_WRITE_CYCLE, PHASEA_D;
+reg [1:0] TIMEOUT_STATE;
 reg [3:0] CBE_OUT, CYCLE_STATE, TIMEOUT_COUNT;
 always @(negedge CLK33) begin
     if (!RESETn) begin
-        PCI_CYCLE_START_SYNC <= 2'b00;
         PHASEA_D <= 1;
-        CYCLE_IN_PROGRESS <= 0;
+        PCI_TIPn <= 1;
         PCI_TIMEOUT <= 0;
         FRAME_OUTn <= 1;
         BURST_CYCLE <= 0;
-        START_CYCLE_RESET <= 0;
-        PCI_WRITE_CYCLE <= 0;
         CBE_OUT <= 4'hf;
+        TIMEOUT_STATE <= 2'b0;
         TIMEOUT_COUNT <= 4'h0;
         CYCLE_STATE <= 4'h0;
     end else begin
-
-        PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[0], PCI_CYCLE_START_HOLD};
-
         case (CYCLE_STATE)
             4'h0 : begin
-                if (PCI_CYCLE_START_SYNC[0] ^ PCI_CYCLE_START_SYNC[1]) begin
-                    CYCLE_IN_PROGRESS <= 1;
+                if ((!WRITE_CYCLE_START && PCI_CYCLE_START_SYNC[0]) || (WRITE_CYCLE_START && PCI_CYCLE_START_SYNC[2])) begin //Delay start of write cycle
+                    PCI_TIPn <= 0;
                     FRAME_OUTn <= 0;
                     CBE_OUT <= CBE_CMD;
-                    BURST_CYCLE <= !(BURSTn);
-                    PCI_WRITE_CYCLE <= WRITE_CYCLE;
+                    BURST_CYCLE <= (!BURSTn_SYNC[1] || !BURSTn_SYNC[0]);
+                    PCI_WRITE_CYCLE <= WRITE_CYCLE_START;
+                    TIMEOUT_STATE <= 2'b0;
                     TIMEOUT_COUNT <= 4'h0;
                     CYCLE_STATE <= 4'h1;
                 end
@@ -175,30 +226,37 @@ always @(negedge CLK33) begin
                 PHASEA_D <= 0;
                 CBE_OUT <= !PCI_WRITE_CYCLE ? 4'h0 : {LLBEn, LMBEn, UMBEn, UUBEn};
                 FRAME_OUTn <= !(BURST_CYCLE);
-                START_CYCLE_RESET <= 1;
                 CYCLE_STATE <= 4'h2;
             end
             4'h2 : begin
-                START_CYCLE_RESET <= 0;
-                if (!DEVSELn_DELAY) begin
-                    CYCLE_IN_PROGRESS <= 0;
-                    CYCLE_STATE <= 4'h3;
-                end else begin
-                    //Timeout if the device takes too long to respond.
-                    TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
-                    if (TIMEOUT_COUNT == TIMEOUT) begin
-                        PCI_TIMEOUT <= 1;
-                        CYCLE_IN_PROGRESS <= 0;
-                        FRAME_OUTn <= 1;
-                        PHASEA_D <= 1;                        
-                    end else if (TIMEOUT_COUNT == TIMEOUT + 1) begin
+                TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
+                case (TIMEOUT_STATE)
+                    2'b00 : begin
+                        if (!DEVSELn_DELAY) begin
+                            CYCLE_STATE <= 4'h3;
+                        end else if (TIMEOUT_COUNT == TIMEOUT) begin
+                            PCI_TIPn <= 1;
+                            FRAME_OUTn <= 1;
+                            PHASEA_D <= 1;
+                            TIMEOUT_STATE <= 2'b01;
+                        end
+                    end
+                    2'b01 : begin
+                        PCI_TIMEOUT <= !(WRITE_CYCLE); //Only assert timeout _TACK for read cycles.
+                        TIMEOUT_STATE <= 2'b10;
+                    end
+                    2'b10 : begin
+                        TIMEOUT_STATE <= 2'b11;
+                    end
+                    2'b11 : begin
                         PCI_TIMEOUT <= 0;
                         CYCLE_STATE <= 4'h0;
                     end
-                end
+                endcase
             end
             4'h3 : begin
                 if (PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.
+                    PCI_TIPn <= 1;
                     FRAME_OUTn <= 1;
                     PHASEA_D <= 1;
                     CYCLE_STATE <= 4'h0;

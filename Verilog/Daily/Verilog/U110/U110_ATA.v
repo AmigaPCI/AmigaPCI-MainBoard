@@ -115,7 +115,8 @@ assign DIOW_SECn = !(RW_EN &&  WRITE_CYCLE && S_CYCLE);
 reg P_CYCLE, S_CYCLE, RW_EN, WRITE_CYCLE, ATA_PENDING;
 reg [3:0] CYCLE_COUNT;
 
-always @(posedge CLK40) begin
+//always @(posedge CLK40) begin
+always @(negedge CLK40) begin
     if (!RESETn) begin        
         ATA_TACK    <= 0;
         WRITE_CYCLE <= 0;

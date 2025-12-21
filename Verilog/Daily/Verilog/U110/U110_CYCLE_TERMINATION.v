@@ -35,35 +35,17 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 module U110_CYCLE_TERMINATION (
 
     //Clcoks
-    input CLK40, CLK33,
+    input CLK40, //CLK33,
     
     //Cycle Start/Terminate
-    input RESETn, ATA_TACK, PCI_TACK_ENn, PCI_TIMEOUT,
+    input RESETn, ATA_TACK, PCI_TACK_ENn, PCI_TIMEOUT, A2P_TACK_EN,
     output TEAn, TACKn, TCIn, TBIn,
+    output reg TACK_OUT
 
     //Condition Signals
-    input ATA_ENn
+    //input ATA_ENn
 
 );
-
-  ////////////////////
- // PCI CLOCK SYNC //
-////////////////////
-
-//The timeout signal is derived from the 33MHz domain.
-//All other PCI _TACK signals are derived from the 40MHz domain.
-
-wire CYCLE_RESET = (!RESETn || (!TACK_OUT && TACK_OUT_EN));
-reg PCI_TIMEOUT_HOLD;
-always @(posedge CLK33, posedge CYCLE_RESET) begin
-    if (CYCLE_RESET) begin
-        PCI_TIMEOUT_HOLD <= 0;
-    end else begin
-        if (PCI_TIMEOUT) begin
-            PCI_TIMEOUT_HOLD <= 1;
-        end
-    end    
-end
 
   ///////////////////////
  // CYCLE TERMINATION //
@@ -73,27 +55,33 @@ end
 //Asserting _TEA alone causes the system to crash.
 
 assign TACKn = TACK_OUT_EN ? TACK_OUT : 1'bz;
+//assign TCIn  = (!PCI_TACK_ENn ? 1'b0 : (TACK_OUT_EN ? TACK_OUT : 1'bz));
+assign TCIn  = TACK_OUT_EN ? TACK_OUT : !PCI_TACK_ENn ? 1'b0 : 1'bz;
+assign TBIn  = TACK_OUT_EN ? TACK_OUT : 1'bz;
 assign TEAn = 1;
-assign TCIn  = TACK_OUT_EN ? TACK_OUT : 1'bz;
-assign TBIn  = TBI_OUT_EN  ? TACK_OUT : 1'bz;
 
-reg TACK_OUT_EN, TACK_OUT, TBI_OUT_EN;
+reg TACK_OUT_EN, TACK_OUT; //, TBI_OUT_EN;
+reg [1:0] PCI_TIMEOUT_SYNC;
 reg [3:0] TACK_COUNT;
 
 always @(posedge CLK40) begin
     if (!RESETn) begin
         TACK_OUT_EN <= 0;
-        TBI_OUT_EN <= 0;
+        //TBI_OUT_EN <= 0;
         TACK_OUT <= 1;
+        PCI_TIMEOUT_SYNC <= 2'b0;
         TACK_COUNT <= 4'h0;
     end else begin
         case (TACK_COUNT)
             4'h0 : begin
-                if (ATA_TACK || !PCI_TACK_ENn || PCI_TIMEOUT_HOLD) begin
+                //if (ATA_TACK || !PCI_TACK_ENn || A2P_TACK_EN || (PCI_TIMEOUT_SYNC[1] || PCI_TIMEOUT_SYNC[0])) begin
+                if (ATA_TACK || A2P_TACK_EN || (PCI_TIMEOUT_SYNC[1] || PCI_TIMEOUT_SYNC[0])) begin
                     TACK_OUT_EN <= 1;
-                    TBI_OUT_EN <= (PCI_TACK_ENn); //Enable _TBI for non-PCI cycles.
+                    //TBI_OUT_EN <= (PCI_TACK_ENn); //Assert _TBI for non-PCI cycles.
                     TACK_OUT <= 0;
                     TACK_COUNT <= 4'h1;
+                end else begin
+                    PCI_TIMEOUT_SYNC <= {PCI_TIMEOUT_SYNC[0], PCI_TIMEOUT};
                 end
             end
             4'h1 : begin
@@ -102,7 +90,8 @@ always @(posedge CLK40) begin
             end
             4'h2 : begin
                 TACK_OUT_EN <= 0;
-                TBI_OUT_EN <= 0;
+                //TBI_OUT_EN <= 0;
+                PCI_TIMEOUT_SYNC <= 2'b0;
                 TACK_COUNT <= 4'h0;
             end
         endcase
@@ -110,3 +99,4 @@ always @(posedge CLK40) begin
 end
 
 endmodule
+

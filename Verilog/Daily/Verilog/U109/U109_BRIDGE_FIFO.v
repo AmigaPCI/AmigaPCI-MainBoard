@@ -18,12 +18,11 @@ module async_fifo_4x32 (
     output reg  [31:0] rd_data,
     output wire        empty,
     output wire        aempty     // not used
-
-    ,output TP0, TP1
 );
     localparam PTR_WIDTH = 3;  // 2 bits addr + 1 bit wrap
 
-    reg [31:0] mem [0:3] /* synthesis syn_ramstyle = "rw_check" */;
+    reg [31:0] mem [0:3] /* synthesis syn_ramstyle = "rw_check" */ ; //no_rw_check
+    //(* syn_ramstyle = "block_ram" *) reg [31:0] mem [0:3];
 
     // Write side
     reg [PTR_WIDTH-1:0] wr_ptr_bin;
@@ -50,9 +49,6 @@ module async_fifo_4x32 (
     assign afull = full;
     assign aempty = empty;
 
-    assign TP0 = wr_en;
-    assign TP1 = empty;
-
     // ==================== Write domain ====================
     always @(posedge wr_clk or negedge RESETn) begin //posedge wr_rst) begin
         //if (wr_rst) begin
@@ -65,19 +61,6 @@ module async_fifo_4x32 (
             wr_ptr_gray <= bin2gray(wr_ptr_bin + 1'd1);
         end
     end
-
-// ==================== Read domain ====================
-always @(posedge rd_clk or negedge RESETn) begin
-    if (!RESETn) begin
-        rd_ptr_bin  <= 0;
-        rd_ptr_gray <= 0;
-        rd_data     <= 0;
-    end else if (rd_en && !empty) begin
-        rd_data     <= mem[rd_ptr_bin[1:0]];
-        rd_ptr_bin  <= rd_ptr_bin + 1'b1;
-        rd_ptr_gray <= bin2gray(rd_ptr_bin + 1'b1);   // now correct
-    end
-end
 
     // Synchronize read pointer into write clock (3 stages)
     always @(posedge wr_clk or negedge RESETn) begin // posedge wr_rst) begin
@@ -92,7 +75,7 @@ end
     end
 
     // ==================== Read domain ====================
-    always @(posedge rd_clk or negedge RESETn) begin // posedge rd_rst) begin
+    always @(negedge rd_clk or negedge RESETn) begin // posedge rd_rst) begin
         //if (rd_rst) begin
         if (!RESETn) begin
             rd_ptr_bin  <= 0;
@@ -106,7 +89,7 @@ end
     end
 
     // Synchronize write pointer into read clock (3 stages)
-    always @(posedge rd_clk or negedge RESETn) begin // posedge rd_rst) begin
+    always @(negedge rd_clk or negedge RESETn) begin // posedge rd_rst) begin
         //if (rd_rst)
         if (!RESETn) begin
             {rd_ptr_gray_sync[2], rd_ptr_gray_sync[1], rd_ptr_gray_sync[0]} <= 0;

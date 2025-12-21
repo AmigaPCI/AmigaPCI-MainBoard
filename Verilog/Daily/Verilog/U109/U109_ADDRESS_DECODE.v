@@ -37,67 +37,49 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 module U409_ADDRESS_DECODE
 (   
   //Cycle Start
-  input CLK40, TSn, RESETn, PHASEA_D, BGn, INIT_READYn,
+  input CLK40, TSn, RESETn, PCI_CYCLEn,
   input [31:16] A,
 
   //Chip Selects
-  //output CONFIG0_ACCESS, CONFIG1_ACCESS, IO_ACCESS,
-  output BRIDGE_ENn, //, BRIDGE_REG_SPACE, //CONFIG0_SPACE, CONFIG1_SPACE, IO_SPACE,
-  output reg [1:0] PCIAT,
-  output [4:0] IDSEL
-
+  output BRIDGE_SPACE, BRIDGE_ENn, BRIDGE_CONF_SPACE
 );
 
   //////////////////////
  // PCI BRIDGE SPACE //
 //////////////////////
 
-//The address space can be snooped up to the completion of the address
-//phase of a PCI cycle. States of these signals should be latched
-//at the start of a new cycle.
-
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
+//We snoop the address on the AD bus and start a PCI cycle when
+//presented the base address with _TS. If we don't latch BRIDGE_ENn
+//during the cycle, it will drop as soon as we drive the AD bus for
+//the PCI cycle. Since the main board buffers are driven by _BRIDGEN,
+//we need to hold the bridge enable signal for the entire cycle.
 
 localparam [3:0] BRIDGE_BASE = 4'h8;
+localparam BRIDGE_ADDRESS  = 4'h0;
+localparam CONF0_ADD_SPACE = 9'b111111100; //$9FC
+localparam [1:0] BRIDGE_HOLD_DELAY = 2'd2;
 
-wire BRIDGE_SPACE  = (RESETn && PHASEA_D && A[31:29] == BRIDGE_BASE[3:1]);
-wire CONFIG0_SPACE = (A[28:20] == 9'b111111100); //$9FC (100111111100)
-wire CONFIG1_SPACE = (A[28:20] == 9'b111111101); //$9FD (100111111101)
-wire IO_SPACE      = (A[28:21] == 8'b11111111);  //$9E - $9F (10011110 - 10011111)
+assign BRIDGE_SPACE =       (RESETn && PCI_CYCLEn && A[31:29] == BRIDGE_BASE[3:1]);
+assign BRIDGE_CONF_SPACE =  (BRIDGE_SPACE && A[28:20] == CONF0_ADD_SPACE && A[19:16] == BRIDGE_ADDRESS);
+assign BRIDGE_ENn        = !(BRIDGE_SPACE || BRIDGE_CONF_SPACE || BRIDGE_HOLD || !PCI_CYCLEn);
 
-assign BRIDGE_ENn = !(BRIDGE_SPACE || !INIT_READYn);
-
-  /////////////////////
- // PCI SLOT _IDSEL //
-/////////////////////
-
-wire SLOT4_ENABLE = (A[19:16] == 4'b0011);
-wire SLOT3_ENABLE = (A[19:16] == 4'b1000);
-wire SLOT2_ENABLE = (A[19:16] == 4'b0100);
-wire SLOT1_ENABLE = (A[19:16] == 4'b0010);
-wire SLOT0_ENABLE = (A[19:16] == 4'b0001);
-wire CONFIG_SPACE = (BRIDGE_SPACE && (CONFIG0_SPACE || CONFIG1_SPACE));
-
-assign IDSEL = !BGn ? IDSEL_OUT : 5'b00000;
-
-reg [4:0] IDSEL_OUT;
-always @(posedge CLK40) begin
-  if (!RESETn) begin
-    IDSEL_OUT <= 5'b00000;
-    PCIAT <= 2'b00;
+reg BRIDGE_HOLD;
+reg [1:0] BRIDGE_HOLD_COUNT;
+wire BRIDGE_ENABLE = (!TSn && BRIDGE_SPACE);
+always @(posedge CLK40 or posedge BRIDGE_ENABLE) begin
+  if (BRIDGE_ENABLE) begin
+    BRIDGE_HOLD <= 1'b1;
+    BRIDGE_HOLD_COUNT <= 2'b00;
+  end else if (!RESETn) begin
+    BRIDGE_HOLD <= 1'b0;
+    BRIDGE_HOLD_COUNT <= 2'b00;
   end else begin
-    if (!TSn) begin
-      PCIAT[1] <= (IO_SPACE || (!IO_SPACE && !CONFIG0_SPACE && !CONFIG1_SPACE));
-      PCIAT[0] <= (IO_SPACE || CONFIG1_SPACE);
-      if (CONFIG_SPACE) begin
-        IDSEL_OUT <= {SLOT4_ENABLE, SLOT3_ENABLE, SLOT2_ENABLE, SLOT1_ENABLE, SLOT0_ENABLE};
-      end else begin
-        IDSEL_OUT <= 5'b00000;
+    if (BRIDGE_HOLD) begin
+      if (BRIDGE_HOLD_COUNT == BRIDGE_HOLD_DELAY) begin
+        BRIDGE_HOLD <= 1'b0;
+      end
+      else begin
+        BRIDGE_HOLD_COUNT <= BRIDGE_HOLD_COUNT + 1;
       end
     end
   end

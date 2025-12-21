@@ -32,7 +32,7 @@ Version=Lattice Semiconductor Corporation iCEcube - Release: 2020.12.27943 - Bui
 ProjectName=APCI_U109
 Vendor=SiliconBlue
 Synthesis=synplify
-ProjectVFiles=../U109_PCI_STATE_MACHINE.v=work,../U109_TOP.v=work,../U109_ADDRESS_DECODE.v=work,../U109_BUFFERS.v=work,../U109_FIFO.v=work
+ProjectVFiles=../U109_PCI_STATE_MACHINE.v=work,../U109_ADDRESS_DECODE.v=work,../U109_BUFFERS.v=work,../U109_FIFO.v=work,../U109_TOP_4080_pll.v=work,../U109_TOP_3366_pll.v=work,../U109_TOP.v=work
 ProjectCFiles=../U109_TOP.sdc
 CurImplementation=APCI_U109_Implmnt
 Implementations=APCI_U109_Implmnt
