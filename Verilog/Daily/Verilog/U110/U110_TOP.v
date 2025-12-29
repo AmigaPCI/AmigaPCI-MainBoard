@@ -49,7 +49,7 @@ module U110_TOP (
     output IDELENn, IDEDIR, IDEHRENn, IDEHWENn, ATA_LATCH,
 
     //PCI 
-    input  DEVSELn, TRDYn, PCI_TACK_ENn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA,
+    input  DEVSELn, TRDYn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, //PCI_TACK_ENn aka PCI_TCI_ENn
     input  [1:0] PCIAT,
     input  [4:0] BUSREQ,
     output DEVSEL_OUTn, FRAMEn, PCI_TIPn, PARITY, W_LATCH_ENn,
@@ -67,6 +67,7 @@ module U110_TOP (
 //assign TP1 = CLK66; //13
 //assign TP2 = CLK40;
 //assign TP0 = PCI_TIPn;
+//assign TP0 = ATA_ENn;
 
 ////////////////////////////
 // INTERNAL SIGNAL WIRES //
@@ -78,8 +79,8 @@ wire CLK40;
 //wire CLK33_PAD = CLK33_IN;
 wire CLK33 = !CLK33_IN;
 wire ATA_TACK;
-wire PCI_TIMEOUT;
-wire A2P_TACK_EN;
+//wire PCI_TIMEOUT;
+//wire A2P_TACK_EN;
 wire TACK_OUT;
 
 assign DEVSEL_OUTn = DEVSELn;
@@ -106,9 +107,10 @@ U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
     .RESETn (RESETn),
     //.ATA_ENn (ATA_ENn),
     .ATA_TACK (ATA_TACK),
-    .PCI_TACK_ENn (PCI_TACK_ENn),
-    .PCI_TIMEOUT (PCI_TIMEOUT),
-    .A2P_TACK_EN (A2P_TACK_EN),
+    .PCI_CYCLEn (PCI_CYCLEn),
+    //.PCI_TACK_ENn (PCI_TACK_ENn),
+    //.PCI_TIMEOUT (PCI_TIMEOUT),
+    //.A2P_TACK_EN (A2P_TACK_EN),
 
     //output
     .TEAn (TEAn),
@@ -216,8 +218,8 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .FRAMEn (FRAMEn),
     .PCI_TIPn (PCI_TIPn),
     .W_LATCH_ENn (W_LATCH_ENn),
-    .PCI_TIMEOUT (PCI_TIMEOUT),
-    .A2P_TACK_EN (A2P_TACK_EN),
+    //.PCI_TIMEOUT (PCI_TIMEOUT),
+    //.A2P_TACK_EN (A2P_TACK_EN),
     .PARITY (PARITY),
     .CBE (CBE)
 

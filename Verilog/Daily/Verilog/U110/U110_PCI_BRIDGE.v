@@ -39,16 +39,16 @@ module U110_PCI_BRIDGE (
     input [1:0] PCIAT,
 
     output FRAMEn, PARITY,
-    output reg PCI_TIMEOUT, A2P_TACK_EN, W_LATCH_ENn, PCI_TIPn,
+    output reg W_LATCH_ENn, PCI_TIPn, // A2P_TACK_EN, PCI_TIMEOUT, 
     output [3:0] CBE
 
     ,output TP0,TP1,TP2
 
 );
 
-assign TP0 = WRITE_CYCLE_SYNC[1] || WRITE_CYCLE_SYNC[0];
+assign TP0 = BURSTn;
 assign TP1 = PCI_TIPn;
-assign TP2 = PCI_CYCLE_START_SYNC[2];
+assign TP2 = PCI_CYCLEn;
 
   ////////////////
  // PARAMETERS //
@@ -82,7 +82,7 @@ always @(posedge CLK40) begin
         PCI_CYCLE_PENDING <= 0;
         PCI_CYCLE_START_HOLD <= 0;
         WRITE_CYCLE <= 0;
-        A2P_TACK_EN <= 0;
+        //A2P_TACK_EN <= 0;
         W_LATCH_ENn <= 1;
         PCI_CYCLE_STATE <= 2'b0;
         PCI_TIPn_SYNC <= 2'b0;
@@ -98,18 +98,24 @@ always @(posedge CLK40) begin
                     if (!RnW) begin
                         W_LATCH_ENn <= 0;
                         WRITE_CYCLE <= 1;
-                        A2P_TACK_EN <= 1;
+                        //A2P_TACK_EN <= 1;
                     end
                     PCI_CYCLE_STATE <= 2'b01;
                 end
             end
             2'b01: begin
-                A2P_TACK_EN <= 0;
+                //A2P_TACK_EN <= 0;
+                W_LATCH_ENn <= 1;
                 PCI_CYCLE_PENDING <= 0;
                 PCI_CYCLE_STATE <= 2'b10;
             end
             2'b10 : begin
-                if (!W_LATCH_ENn) begin
+                if (!PCI_TIPn_SYNC[1]) begin
+                    PCI_CYCLE_START_HOLD <= 0;
+                    WRITE_CYCLE <= 0;
+                    PCI_CYCLE_STATE <= 2'b00;
+                end
+                /*if (!W_LATCH_ENn) begin
                     if (!TACK_OUT) begin
                         W_LATCH_ENn <= 1;
                     end
@@ -117,7 +123,7 @@ always @(posedge CLK40) begin
                     PCI_CYCLE_START_HOLD <= 0;
                     WRITE_CYCLE <= 0;
                     PCI_CYCLE_STATE <= 2'b00;
-                end
+                end*/
             end
         endcase
     end
@@ -175,14 +181,16 @@ end
 
 //------ SYNCHRONIZER ------
 reg [1:0] BURSTn_SYNC, WRITE_CYCLE_SYNC;
-reg [3:0] PCI_CYCLE_START_SYNC;
+//reg [3:0] PCI_CYCLE_START_SYNC;
+reg [1:0] PCI_CYCLE_START_SYNC;
 always @(posedge CLK66) begin
     if (!RESETn) begin
         PCI_CYCLE_START_SYNC <= 4'h0;
         BURSTn_SYNC <= 2'b0;
         WRITE_CYCLE_SYNC <= 2'b0;
     end else begin
-        PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[2:0], PCI_CYCLE_START_HOLD};
+        //PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[2:0], PCI_CYCLE_START_HOLD};
+        PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[0], PCI_CYCLE_START_HOLD};
         WRITE_CYCLE_SYNC <= {WRITE_CYCLE_SYNC[0], WRITE_CYCLE};
         BURSTn_SYNC <= {BURSTn_SYNC[0], BURSTn};
     end
@@ -195,29 +203,29 @@ assign FRAMEn = !BGn ? FRAME_OUTn : 1'bz;
 assign CBE = !BGn ? CBE_OUT : 4'bz;
 
 reg FRAME_OUTn, BURST_CYCLE, PCI_WRITE_CYCLE, PHASEA_D;
-reg [1:0] TIMEOUT_STATE;
+//reg [1:0] TIMEOUT_STATE;
 reg [3:0] CBE_OUT, CYCLE_STATE, TIMEOUT_COUNT;
 always @(negedge CLK33) begin
     if (!RESETn) begin
         PHASEA_D <= 1;
         PCI_TIPn <= 1;
-        PCI_TIMEOUT <= 0;
+        //PCI_TIMEOUT <= 0;
         FRAME_OUTn <= 1;
         BURST_CYCLE <= 0;
         CBE_OUT <= 4'hf;
-        TIMEOUT_STATE <= 2'b0;
+        //TIMEOUT_STATE <= 2'b0;
         TIMEOUT_COUNT <= 4'h0;
         CYCLE_STATE <= 4'h0;
     end else begin
         case (CYCLE_STATE)
             4'h0 : begin
-                if ((!WRITE_CYCLE_START && PCI_CYCLE_START_SYNC[0]) || (WRITE_CYCLE_START && PCI_CYCLE_START_SYNC[2])) begin //Delay start of write cycle
+                if (PCI_CYCLE_START_SYNC[1] || PCI_CYCLE_START_SYNC[0]) begin
                     PCI_TIPn <= 0;
                     FRAME_OUTn <= 0;
                     CBE_OUT <= CBE_CMD;
                     BURST_CYCLE <= (!BURSTn_SYNC[1] || !BURSTn_SYNC[0]);
                     PCI_WRITE_CYCLE <= WRITE_CYCLE_START;
-                    TIMEOUT_STATE <= 2'b0;
+                    //TIMEOUT_STATE <= 2'b0;
                     TIMEOUT_COUNT <= 4'h0;
                     CYCLE_STATE <= 4'h1;
                 end
@@ -230,7 +238,18 @@ always @(negedge CLK33) begin
             end
             4'h2 : begin
                 TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
-                case (TIMEOUT_STATE)
+                if (!DEVSELn_DELAY) begin
+                    CYCLE_STATE <= 4'h3;
+                end else if (TIMEOUT_COUNT == TIMEOUT) begin
+                    PCI_TIPn <= 1;
+                    FRAME_OUTn <= 1;
+                    PHASEA_D <= 1;
+                    //TIMEOUT_STATE <= 2'b01;
+                    CYCLE_STATE <= 4'h0;
+                end
+
+
+                /*case (TIMEOUT_STATE)
                     2'b00 : begin
                         if (!DEVSELn_DELAY) begin
                             CYCLE_STATE <= 4'h3;
@@ -252,7 +271,7 @@ always @(negedge CLK33) begin
                         PCI_TIMEOUT <= 0;
                         CYCLE_STATE <= 4'h0;
                     end
-                endcase
+                endcase*/
             end
             4'h3 : begin
                 if (PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.

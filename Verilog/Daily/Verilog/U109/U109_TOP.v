@@ -45,14 +45,17 @@ module U109_TOP (
     output BRIDGE_ENn, PCI_BUF_ENn, PCI_BUF_DIR, INIT_READYn, PARITY_DIR, PARITY_DA,
     output [1:0] PCIAT,
     output [4:0] IDSEL,
-    inout  TACKn,
+    output TACKn,
 
     //Busses
     inout [31:0] D,
     inout [31:0] AD
 
-    //,output TP0, TP1
+    ,output TP0, TP1
 );
+
+assign TP0 = W_LATCH_ENn;
+assign TP1 = P2A_READ_NEXT;
 
 /////////////////////
 // INTERNAL WIRES //
@@ -81,6 +84,8 @@ wire PCI_WRITE_EN;
 wire BRIDGE_SPACE;
 //wire BRIDGE_CYCLE;
 wire BRIDGE_CONF_SPACE;
+wire BUFFER_EN;
+wire TIMEOUT;
 
 //////////////////////////////
 // PCI CYCLE STATE MACHINE //
@@ -108,6 +113,7 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .TARGET_READYn (TARGET_READYn),
 
     .PCI_CYCLEn (PCI_CYCLEn),
+    .BUFFER_EN (BUFFER_EN),
     .CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
     .INIT_READYn (INIT_READYn),
     .PARITY_DIR (PARITY_DIR),
@@ -115,7 +121,8 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .PCI_RSTn (PCI_RSTn),
     .P2A_READ_NEXT (P2A_READ_NEXT),
     .A2P_READ_NEXT (A2P_READ_NEXT),
-    .TCI_ENn (TCI_ENn)
+    .TCI_ENn (TCI_ENn),
+    .TIMEOUT (TIMEOUT)
     //,.TP0 (TP0), .TP1 (TP1)
 );
 
@@ -134,7 +141,8 @@ U109_BUFFERS U109_BUFFERS(
     .BGn (BGn),
     .PCI_TIPn (PCI_TIPn),
     .BRIDGE_SPACE (BRIDGE_SPACE),
-    .PCI_CYCLEn (PCI_CYCLEn),
+    .BUFFER_EN (BUFFER_EN),
+    .TIMEOUT (TIMEOUT),
     .P2A_DATA (P2A_DATA),
     .A2P_DATA (A2P_DATA),
 
@@ -201,7 +209,8 @@ U109_FIFO P2A_FIFO
 // AMIGA TO PCI FIFO //
 //////////////////////
 
-wire A2P_WR_EN = ((!W_LATCH_ENn) && !DATA_DIRECTION && !TACKn);
+//wire A2P_WR_EN = ((!W_LATCH_ENn) && !DATA_DIRECTION && !TACKn);
+wire A2P_WR_EN = (!W_LATCH_ENn && !DATA_DIRECTION);
 
 U109_FIFO A2P_FIFO
 (
