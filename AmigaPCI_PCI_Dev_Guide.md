@@ -103,7 +103,7 @@ $9FE0 0000|$9FFF FFFF|I/O Expansion Space
 $A000 0000|$BFFF FFFF|Memory Cache Line Expansion Space
 
 ### 2.2.1 PCI Memory Expansion Spaces
-There are two memory expansion spaces available to the PCI bus. The space each device is assigned to is driven by whether the PCI device supports cache line burst transfers. PCI devices configured by AmigaOS option ROMs or software, can operated in either space. The memory space assigned will dictate the PCI bus command used during data transfer cycles.  
+There are two memory expansion spaces available to the PCI bus. The space each device is assigned to is driven by whether the PCI device supports cache line burst transfers. PCI devices configured by AmigaOS option ROMs or software can operated in either space, but not both simultaneously. The memory space assigned will dictate the PCI bus commands used during data transfer cycles.  
 
 #### 2.2.1.1 Memory Expansion Space
 Memory Read and Memory Write commands are posted to the PCI bus in this space. If an attempted cache burst transfer is initiated by the CPU, the cycle will be terminated with assertion of transfer burst inhibit.
