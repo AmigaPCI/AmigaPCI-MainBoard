@@ -95,15 +95,21 @@ Table 2.2 PCI Host Bridge Memory Map
 Starting Address|Ending Address|Description
 -|-|-
 $8000 0000|$9FBF FFFF|Memory Expansion Space
-$9FC0 0000|$9FC0 7FFF|Reserved
+$9FC0 0000|$9FC0 FFFF|Bridge Register Space
 $9FC1 0000|$9FC8 FFFF|Type 0 Configuration Space
 $9FC9 0000|$9FD0 FFFF|Reserved
 $9FD1 0000|$9FDF FFFF|Type 1 Configuration Space
 $9FE0 0000|$9FFF FFFF|I/O Expansion Space
+$A000 0000|$BFFF FFFF|Memory Cache Line Expansion Space
 
-### 2.2.1 PCI Memory Space
+### 2.2.1 PCI Memory Expansion Spaces
+There are two memory expansion spaces available to the PCI bus. The space each device is assigned to is driven by whether the PCI device supports cache line burst transfers. PCI devices configured by AmigaOS option ROMs or software, can operated in either space. The memory space assigned will dictate the PCI bus command used during data transfer cycles.  
 
-PCI devices assigned a base address during configuration, either by AmigaOS option ROMs or Prometheus software, can operated in the memory space. Access to PCI devices during normal operation will occur via the base address assigned. Only memory read and memory write commands are posted to the PCI bus.
+#### 2.2.1.1 Memory Expansion Space
+Memory Read and Memory Write commands are posted to the PCI bus in this space. If an attempted cache burst transfer is initiated by the CPU, the cycle will be terminated with assertion of transfer burst inhibit.
+
+#### 2.2.1.2 Memory Cache Line Expansion Space
+Memory Read, Memory Write, Memory Read Line, and Memory Write and Invalidate commands are posted to the PCI bus in this space. The exact PCI bus command will be dictated by the current CPU cycle type.
 
 ### 2.2.2 I/O Space
 
