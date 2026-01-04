@@ -37,13 +37,13 @@ module U109_TOP (
 
     //Cycle Start/Terminate
     input RESETn, TSn, RnW, BURSTn, BGn,
-    output TCI_ENn,
+    output TBIn,
 
     //PCI
-    input  TARGET_READYn, DEVSELn, PCI_TIPn, W_LATCH_ENn,
+    input  TARGET_READYn, DEVSELn, PCI_TIPn, W_LATCH_ENn, //STOPn,
     output PCI_CYCLEn, CLK_ADDRESS_LATCH, ADDRESS_DIR, ADDRESS_ENn, PCI_RSTn,
     output BRIDGE_ENn, PCI_BUF_ENn, PCI_BUF_DIR, INIT_READYn, PARITY_DIR, PARITY_DA,
-    output [1:0] PCIAT,
+    output [2:0] PCIAT,
     output [4:0] IDSEL,
     output TACKn,
 
@@ -54,8 +54,8 @@ module U109_TOP (
     ,output TP0, TP1
 );
 
-assign TP0 = W_LATCH_ENn;
-assign TP1 = P2A_READ_NEXT;
+//assign TP0 = W_LATCH_ENn;
+//assign TP1 = P2A_READ_NEXT;
 
 /////////////////////
 // INTERNAL WIRES //
@@ -79,13 +79,13 @@ wire P2A_FIFO_EMPTY;
 wire A2P_FIFO_EMPTY;
 wire P2A_READ_NEXT;
 wire A2P_READ_NEXT;
-wire PCI_CYCLE_ACTIVE = (!PCI_CYCLEn || !PCI_TIPn);
 wire PCI_WRITE_EN;
 wire BRIDGE_SPACE;
-//wire BRIDGE_CYCLE;
 wire BRIDGE_CONF_SPACE;
+wire CACHE_SPACE;
 wire BUFFER_EN;
-wire TIMEOUT;
+wire P2A_TIMEOUT;
+wire CACHE_SPACE_EN;
 
 //////////////////////////////
 // PCI CYCLE STATE MACHINE //
@@ -106,11 +106,12 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .PCI_WRITE_EN (PCI_WRITE_EN),
     .BRIDGE_CONF_SPACE (BRIDGE_CONF_SPACE),
     .A (AD[7:0]),
-    //.BRIDGE_CYCLE (BRIDGE_CYCLE),
     .P2A_FIFO_EMPTY (P2A_FIFO_EMPTY),
     .A2P_FIFO_EMPTY (A2P_FIFO_EMPTY),
     .DEVSELn (DEVSELn),
     .TARGET_READYn (TARGET_READYn),
+    .CACHE_SPACE_EN (CACHE_SPACE_EN),
+    //.STOPn (STOPn),
 
     .PCI_CYCLEn (PCI_CYCLEn),
     .BUFFER_EN (BUFFER_EN),
@@ -121,9 +122,9 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .PCI_RSTn (PCI_RSTn),
     .P2A_READ_NEXT (P2A_READ_NEXT),
     .A2P_READ_NEXT (A2P_READ_NEXT),
-    .TCI_ENn (TCI_ENn),
-    .TIMEOUT (TIMEOUT)
-    //,.TP0 (TP0), .TP1 (TP1)
+    .TBIn (TBIn),
+    .P2A_TIMEOUT (P2A_TIMEOUT)
+    ,.TP0 (TP0), .TP1 (TP1)
 );
 
 //////////////////
@@ -137,12 +138,14 @@ U109_BUFFERS U109_BUFFERS(
     .RESETn (RESETn),
     .RnW (RnW),
     .TSn (TSn),
+    .BURSTn (BURSTn),
     .DEVSELn (DEVSELn),
     .BGn (BGn),
     .PCI_TIPn (PCI_TIPn),
     .BRIDGE_SPACE (BRIDGE_SPACE),
+    .CACHE_SPACE (CACHE_SPACE),
     .BUFFER_EN (BUFFER_EN),
-    .TIMEOUT (TIMEOUT),
+    .P2A_TIMEOUT (P2A_TIMEOUT),
     .P2A_DATA (P2A_DATA),
     .A2P_DATA (A2P_DATA),
 
@@ -152,15 +155,16 @@ U109_BUFFERS U109_BUFFERS(
     .PCI_BUF_ENn (PCI_BUF_ENn),
     .PCI_BUF_DIR (PCI_BUF_DIR),
     .PCI_WRITE_EN (PCI_WRITE_EN),
-    //.BRIDGE_CYCLE (BRIDGE_CYCLE),
+    .CACHE_SPACE_EN (CACHE_SPACE_EN),
     .PARITY_DA (PARITY_DA),
     .IDSEL (IDSEL),
     .PCIAT (PCIAT),
-    //.PCI_RSTn (PCI_RSTn),
 
     //inout
     .D (D),
     .AD (AD)
+
+    //,.TP1 (TP1)
 );
 
 ///////////////////////
@@ -173,11 +177,13 @@ U409_ADDRESS_DECODE U409_ADDRESS_DECODE
    .CLK40 (CLK40),
    .RESETn (RESETn),
    .TSn (TSn),
+   .BUFFER_EN (BUFFER_EN),
    .PCI_CYCLEn (PCI_CYCLEn),
    .A (AD[31:16]),
 
    //output
    .BRIDGE_SPACE (BRIDGE_SPACE),
+   .CACHE_SPACE (CACHE_SPACE),
    .BRIDGE_ENn (BRIDGE_ENn),
    .BRIDGE_CONF_SPACE (BRIDGE_CONF_SPACE)
 );
@@ -190,7 +196,7 @@ U409_ADDRESS_DECODE U409_ADDRESS_DECODE
 //PCI_TO_AMIGA  = 1
 //AMIGA_TO_PCI  = 0;
 wire DATA_DIRECTION = (!BGn && !PCI_WRITE_EN);
-wire P2A_WR_EN = (PCI_CYCLE_ACTIVE && DATA_DIRECTION && !TARGET_READYn);
+wire P2A_WR_EN = (BUFFER_EN && DATA_DIRECTION && !TARGET_READYn);
 
 U109_FIFO P2A_FIFO
 (
@@ -209,7 +215,6 @@ U109_FIFO P2A_FIFO
 // AMIGA TO PCI FIFO //
 //////////////////////
 
-//wire A2P_WR_EN = ((!W_LATCH_ENn) && !DATA_DIRECTION && !TACKn);
 wire A2P_WR_EN = (!W_LATCH_ENn && !DATA_DIRECTION);
 
 U109_FIFO A2P_FIFO
@@ -224,29 +229,6 @@ U109_FIFO A2P_FIFO
     .FIFO_EMPTY (A2P_FIFO_EMPTY), //Is the fifo empty?
     .DATA_OUT (A2P_DATA) //Data out from the fifo.
 );
-
-///////////////////////
-// BRIDGE REGISTERS //
-/////////////////////
-
-/*U109_REGISTERS U109_REGISTERS (
-
-    //input
-    .CLK40 (CLK40),
-    .RESETn (RESETn),
-    .RnW (RnW),
-    .TSn (TSn),
-    .BRIDGE_REG_SPACE (BRIDGE_REG_SPACE),
-    .INT_STATUSn (INT_STATUSn),
-    .REG_ADDRESS (AD[5:2]), //This is AD[5:2]
-    .D (D[31:30]),
-    
-    //output
-    .REGISTER_CYCLE (REGISTER_CYCLE),
-    .REG_TACK (REG_TACK),
-    .INT_ENn (INT_ENn),
-    .D_OUT (D_OUT)
-);*/
 
   /////////
  // PLL //

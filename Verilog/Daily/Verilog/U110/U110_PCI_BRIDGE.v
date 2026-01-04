@@ -36,37 +36,40 @@ module U110_PCI_BRIDGE (
 
     input CLK66, CLK40, CLK33, RESETn, TSn, RnW, TACK_OUT,
     input BGn, PCI_CYCLEn, DEVSELn, UUBEn, UMBEn, LMBEn, LLBEn, BURSTn, BRIDGE_ENn, PARITY_DA,
-    input [1:0] PCIAT,
+    input [2:0] PCIAT,
 
     output FRAMEn, PARITY,
-    output reg W_LATCH_ENn, PCI_TIPn, // A2P_TACK_EN, PCI_TIMEOUT, 
+    output reg W_LATCH_ENn, PCI_TIPn,
     output [3:0] CBE
 
     ,output TP0,TP1,TP2
 
 );
 
-assign TP0 = BURSTn;
+assign TP0 = PCI_CYCLE_START_HOLD;
 assign TP1 = PCI_TIPn;
-assign TP2 = PCI_CYCLEn;
+assign TP2 = BURST_CYCLE;
 
   ////////////////
  // PARAMETERS //
 ////////////////
 
 //PCIAT Cycle Types
-localparam CONFIG0_ACCESS = 2'b00;
-localparam CONFIG1_ACCESS = 2'b01;
-localparam MEMORY_ACCESS  = 2'b10;
-localparam IO_ACCESS      = 2'b11;
+localparam CONFIG0_ACCESS = 3'b000;
+localparam CONFIG1_ACCESS = 3'b001;
+localparam MEMORY_ACCESS  = 3'b010;
+localparam IO_ACCESS      = 3'b011;
+localparam CACHE_ACCESS   = 3'b100;
 
 //PCI Bus Commands
-localparam RD_IO  = 4'b0010;
-localparam WR_IO  = 4'b0011;
-localparam RD_MEM = 4'b0110;
-localparam WR_MEM = 4'b0111;
-localparam RD_CON = 4'b1010;
-localparam WR_CON = 4'b1011;
+localparam RD_IO    = 4'b0010;
+localparam WR_IO    = 4'b0011;
+localparam RD_MEM   = 4'b0110;
+localparam WR_MEM   = 4'b0111;
+localparam RD_CON   = 4'b1010;
+localparam WR_CON   = 4'b1011;
+localparam RD_CACHE = 4'b1110;
+localparam WR_CACHE = 4'b1111;
 
 localparam [3:0] TIMEOUT = 4'h2;
 localparam [1:0] BURST_TOTAL = 2'b11;
@@ -75,15 +78,15 @@ localparam [1:0] BURST_TOTAL = 2'b11;
  // CYCLE START //
 /////////////////
 
-reg PCI_CYCLE_PENDING, PCI_CYCLE_START_HOLD, WRITE_CYCLE, W_LATCH_ENn;
+reg PCI_CYCLE_PENDING, PCI_CYCLE_START_HOLD, WRITE_CYCLE, W_LATCH_ENn, BURST_CYCLE_EN;
 reg [1:0] PCI_TIPn_SYNC, PCI_CYCLE_STATE;
 always @(posedge CLK40) begin
     if (!RESETn) begin
         PCI_CYCLE_PENDING <= 0;
         PCI_CYCLE_START_HOLD <= 0;
         WRITE_CYCLE <= 0;
-        //A2P_TACK_EN <= 0;
         W_LATCH_ENn <= 1;
+        BURST_CYCLE_EN <= 0;
         PCI_CYCLE_STATE <= 2'b0;
         PCI_TIPn_SYNC <= 2'b0;
     end else begin
@@ -94,36 +97,27 @@ always @(posedge CLK40) begin
         case (PCI_CYCLE_STATE)
             2'b00 : begin
                 if (PCI_CYCLE_PENDING || (!TSn && !BRIDGE_ENn)) begin
-                    PCI_CYCLE_START_HOLD <= 1;                    
+                    PCI_CYCLE_START_HOLD <= 1;
+                    BURST_CYCLE_EN <= PCIAT[2];           
                     if (!RnW) begin
                         W_LATCH_ENn <= 0;
                         WRITE_CYCLE <= 1;
-                        //A2P_TACK_EN <= 1;
                     end
                     PCI_CYCLE_STATE <= 2'b01;
                 end
             end
             2'b01: begin
-                //A2P_TACK_EN <= 0;
                 W_LATCH_ENn <= 1;
                 PCI_CYCLE_PENDING <= 0;
                 PCI_CYCLE_STATE <= 2'b10;
             end
             2'b10 : begin
-                if (!PCI_TIPn_SYNC[1]) begin
+                if (PCI_TIPn_SYNC != 2'b11) begin
                     PCI_CYCLE_START_HOLD <= 0;
                     WRITE_CYCLE <= 0;
+                    BURST_CYCLE_EN <= 0;
                     PCI_CYCLE_STATE <= 2'b00;
                 end
-                /*if (!W_LATCH_ENn) begin
-                    if (!TACK_OUT) begin
-                        W_LATCH_ENn <= 1;
-                    end
-                end else if (!PCI_TIPn_SYNC[1]) begin
-                    PCI_CYCLE_START_HOLD <= 0;
-                    WRITE_CYCLE <= 0;
-                    PCI_CYCLE_STATE <= 2'b00;
-                end*/
             end
         endcase
     end
@@ -135,18 +129,26 @@ end
 
 //Latch the CBE command here.
 
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
+// Access Type         PCIAT2   PCIAT1   PCIAT0
+//---------------------------------------------
+//PCI Config Space 0     0        0        0
+//PCI Config Space 1     0        0        1
+//PCI Memory Space       0        1        0
+//I/O Space              0        1        1
+//Cache Space            1        0        0
+//Reserved               1        0        1
+//Reserved               1        1        0
+//Reserved               1        1        1
 
 reg [3:0] CBE_CMD;
 always @* begin
     case (PCIAT)
         MEMORY_ACCESS: begin
             CBE_CMD = WRITE_CYCLE ? WR_MEM : RD_MEM;
+        end
+
+        CACHE_ACCESS: begin
+            CBE_CMD = WRITE_CYCLE ? WR_CACHE : RD_CACHE;
         end
 
         IO_ACCESS: begin
@@ -181,7 +183,6 @@ end
 
 //------ SYNCHRONIZER ------
 reg [1:0] BURSTn_SYNC, WRITE_CYCLE_SYNC;
-//reg [3:0] PCI_CYCLE_START_SYNC;
 reg [1:0] PCI_CYCLE_START_SYNC;
 always @(posedge CLK66) begin
     if (!RESETn) begin
@@ -189,10 +190,9 @@ always @(posedge CLK66) begin
         BURSTn_SYNC <= 2'b0;
         WRITE_CYCLE_SYNC <= 2'b0;
     end else begin
-        //PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[2:0], PCI_CYCLE_START_HOLD};
         PCI_CYCLE_START_SYNC <= {PCI_CYCLE_START_SYNC[0], PCI_CYCLE_START_HOLD};
         WRITE_CYCLE_SYNC <= {WRITE_CYCLE_SYNC[0], WRITE_CYCLE};
-        BURSTn_SYNC <= {BURSTn_SYNC[0], BURSTn};
+        BURSTn_SYNC <= {BURSTn_SYNC[0], BURST_CYCLE_EN};
     end
 end
 
@@ -203,17 +203,14 @@ assign FRAMEn = !BGn ? FRAME_OUTn : 1'bz;
 assign CBE = !BGn ? CBE_OUT : 4'bz;
 
 reg FRAME_OUTn, BURST_CYCLE, PCI_WRITE_CYCLE, PHASEA_D;
-//reg [1:0] TIMEOUT_STATE;
 reg [3:0] CBE_OUT, CYCLE_STATE, TIMEOUT_COUNT;
 always @(negedge CLK33) begin
     if (!RESETn) begin
         PHASEA_D <= 1;
         PCI_TIPn <= 1;
-        //PCI_TIMEOUT <= 0;
         FRAME_OUTn <= 1;
         BURST_CYCLE <= 0;
         CBE_OUT <= 4'hf;
-        //TIMEOUT_STATE <= 2'b0;
         TIMEOUT_COUNT <= 4'h0;
         CYCLE_STATE <= 4'h0;
     end else begin
@@ -223,9 +220,8 @@ always @(negedge CLK33) begin
                     PCI_TIPn <= 0;
                     FRAME_OUTn <= 0;
                     CBE_OUT <= CBE_CMD;
-                    BURST_CYCLE <= (!BURSTn_SYNC[1] || !BURSTn_SYNC[0]);
+                    BURST_CYCLE <= (BURSTn_SYNC[1] || BURSTn_SYNC[0]);
                     PCI_WRITE_CYCLE <= WRITE_CYCLE_START;
-                    //TIMEOUT_STATE <= 2'b0;
                     TIMEOUT_COUNT <= 4'h0;
                     CYCLE_STATE <= 4'h1;
                 end
@@ -244,34 +240,8 @@ always @(negedge CLK33) begin
                     PCI_TIPn <= 1;
                     FRAME_OUTn <= 1;
                     PHASEA_D <= 1;
-                    //TIMEOUT_STATE <= 2'b01;
                     CYCLE_STATE <= 4'h0;
                 end
-
-
-                /*case (TIMEOUT_STATE)
-                    2'b00 : begin
-                        if (!DEVSELn_DELAY) begin
-                            CYCLE_STATE <= 4'h3;
-                        end else if (TIMEOUT_COUNT == TIMEOUT) begin
-                            PCI_TIPn <= 1;
-                            FRAME_OUTn <= 1;
-                            PHASEA_D <= 1;
-                            TIMEOUT_STATE <= 2'b01;
-                        end
-                    end
-                    2'b01 : begin
-                        PCI_TIMEOUT <= !(WRITE_CYCLE); //Only assert timeout _TACK for read cycles.
-                        TIMEOUT_STATE <= 2'b10;
-                    end
-                    2'b10 : begin
-                        TIMEOUT_STATE <= 2'b11;
-                    end
-                    2'b11 : begin
-                        PCI_TIMEOUT <= 0;
-                        CYCLE_STATE <= 4'h0;
-                    end
-                endcase*/
             end
             4'h3 : begin
                 if (PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.

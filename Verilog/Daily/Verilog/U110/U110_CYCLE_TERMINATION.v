@@ -38,8 +38,8 @@ module U110_CYCLE_TERMINATION (
     input CLK40,
     
     //Cycle Start/Terminate
-    input RESETn, ATA_TACK, PCI_CYCLEn, // PCI_TACK_ENn, PCI_TIMEOUT, A2P_TACK_EN, 
-    output TEAn, TCIn, TBIn, //TACKn, 
+    input RESETn, ATA_TACK, PCI_CYCLEn,
+    output TEAn, TCIn, TBIn,
     output reg TACK_OUT,
 
     inout TACKn
@@ -54,16 +54,16 @@ module U110_CYCLE_TERMINATION (
 //Asserting _TEA alone causes the system to crash.
 
 //TCIn is enabled by watching for assertion of _PCICYCLE from U109. Once enabled,
-//assertion of _TACK disables it. During normal PCI cycle terminations, U109 drives _TACK while 
-//the signal here asserts TCIn.
+//assertion of _TACK disables it. During normal PCI cycle terminations, U109 drives _TACK and _TBI
+//while the signal here asserts TCIn.
 
-wire TCI_EN = (TACK_OUT_EN || PCI_TCI_EN);
-wire TCI_OUT = ~(!TACK_OUT || !PCI_TCI_OUT);
+wire TCI_EN  =  (TACK_OUT_EN ||  PCI_TCI_EN);
+wire TxI_OUT = !(!TACK_OUT   || !PCI_TCI_OUT);
 
 assign TACKn = TACK_OUT_EN ? TACK_OUT : 1'bz;
-assign TCIn = TCI_EN ? TCI_OUT : 1'bz;
-assign TBIn  = TACK_OUT_EN ? TACK_OUT : 1'bz;
-assign TEAn = 1;
+assign TCIn  = TCI_EN ? TxI_OUT : 1'bz;
+assign TBIn = TACK_OUT_EN ? TACK_OUT : 1'bz;
+assign TEAn  = 1;
 
 //------ _TCI State Machine ------
 reg PCI_TCI_EN, PCI_TCI_OUT;
@@ -102,24 +102,19 @@ end
 
 //------ _TACK State Machine ------
 reg TACK_OUT_EN, TACK_OUT;
-//reg [1:0] PCI_TIMEOUT_SYNC;
 reg [3:0] TACK_COUNT;
 always @(posedge CLK40) begin
     if (!RESETn) begin
         TACK_OUT_EN <= 0;
         TACK_OUT <= 1;
-        //PCI_TIMEOUT_SYNC <= 2'b0;
         TACK_COUNT <= 4'h0;
     end else begin
         case (TACK_COUNT)
             4'h0 : begin
-                //if (ATA_TACK || A2P_TACK_EN || (PCI_TIMEOUT_SYNC[1] || PCI_TIMEOUT_SYNC[0])) begin
                 if (ATA_TACK) begin
                     TACK_OUT_EN <= 1;
                     TACK_OUT <= 0;
                     TACK_COUNT <= 4'h1;
-                //end else begin
-                //    PCI_TIMEOUT_SYNC <= {PCI_TIMEOUT_SYNC[0], PCI_TIMEOUT};
                 end
             end
             4'h1 : begin
@@ -128,7 +123,6 @@ always @(posedge CLK40) begin
             end
             4'h2 : begin
                 TACK_OUT_EN <= 0;
-                //PCI_TIMEOUT_SYNC <= 2'b0;
                 TACK_COUNT <= 4'h0;
             end
         endcase

@@ -15,11 +15,6 @@ module U109_FIFO
 //The other moves the data from the PCI bus to the Amiga.
 //The "write" side ingests data from the device supplying it.
 //The "read" side drives the data to the device requesting it.
-//The sync_clk is 2x the normal read bus clock. For the AmigaPCI,
-//this is done to decrease the time between when the FIFO is 
-//loaded and the time we signal it is OK to terminate. Because the 2x
-//clock is synchronous with the read clock, this works without
-//additional synchronization.
 
 reg [31:0] MEM[0:3] /* synthesis syn_ramstyle = "rw_check" */;
 

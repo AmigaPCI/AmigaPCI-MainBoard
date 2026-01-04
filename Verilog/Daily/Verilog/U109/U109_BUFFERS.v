@@ -34,17 +34,30 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 
 module U109_BUFFERS
 (
-    input CLK40, CLK33, RESETn, RnW, TSn, DEVSELn, BGn, PCI_TIPn, BRIDGE_SPACE, BUFFER_EN, TIMEOUT,
+    //Clocks
+    input CLK40, CLK33, RESETn,
+
+    //Cycle Control Signals
+    input RnW, TSn, BURSTn,
+
+    //FIFO Data
     input [31:0] A2P_DATA, P2A_DATA,
 
+    //PCI Signals
+    input DEVSELn, BGn, PCI_TIPn, BRIDGE_SPACE, CACHE_SPACE, BUFFER_EN, P2A_TIMEOUT,
     output ADDRESS_ENn, ADDRESS_DIR, PCI_BUF_ENn, PCI_BUF_DIR,
-    output reg PARITY_DA, PCI_WRITE_EN,
+    output reg PARITY_DA, PCI_WRITE_EN, CACHE_SPACE_EN;
     output [4:0] IDSEL,
-    output [1:0] PCIAT,
+    output [2:0] PCIAT,
 
+    //Data In/Out
     inout [31:0] D,
     inout [31:0] AD
+
+    //,output TP1
 );
+
+//assign TP1 = ADDRESS_VALID;
 
 /////////////////
 // PARAMETERS //
@@ -63,10 +76,11 @@ localparam IO_ADD_HI_SPACE = 9'b111111111; //$9FF
 
 localparam BURST_ORDER_WRAP = 2'b10;
 
-localparam CONFIG0_ACCESS   = 2'b00;
-localparam CONFIG1_ACCESS   = 2'b01;
-localparam MEM_ACCESS       = 2'b10;
-localparam IO_ACCESS        = 2'b11;
+localparam CONFIG0_ACCESS   = 3'b000;
+localparam CONFIG1_ACCESS   = 3'b001;
+localparam MEM_ACCESS       = 3'b010;
+localparam IO_ACCESS        = 3'b011;
+localparam CACHE_ACCESS     = 3'b100;
 
 ////////////////////
 // ADDRESS LATCH //
@@ -76,13 +90,15 @@ localparam IO_ACCESS        = 2'b11;
 //The direction of the data is determined by who has the bus.
 
 reg ADDRESS_VALID;
-reg [1:0] PHASEn_SYNC, PCIAT_LATCHED;;
+reg [1:0] PHASEn_SYNC;
+reg [2:0] PCIAT_LATCHED;
 reg [31:0] A_LATCH;
 always @(negedge CLK40) begin
     if (!RESETn) begin
         ADDRESS_VALID <= 0;
         PCI_WRITE_EN <= 0;
         PCIAT_LATCHED <= MEM_ACCESS;
+        CACHE_SPACE_EN <= 0;
         A_LATCH <= 32'h0;
         PHASEn_SYNC <= 2'b11;
     end else begin
@@ -96,12 +112,13 @@ always @(negedge CLK40) begin
                 A_LATCH <= AD;
                 ADDRESS_VALID <= 1;
                 PCI_WRITE_EN <= !(RnW);
+                CACHE_SPACE_EN <= CACHE_SPACE;
                 case (AD[28:20])
                     CONF0_ADD_SPACE : PCIAT_LATCHED <= CONFIG0_ACCESS;
                     CONF1_ADD_SPACE : PCIAT_LATCHED <= CONFIG1_ACCESS;
                     IO_ADD_LO_SPACE : PCIAT_LATCHED <= IO_ACCESS;
                     IO_ADD_HI_SPACE : PCIAT_LATCHED <= IO_ACCESS;
-                    default         : PCIAT_LATCHED <= MEM_ACCESS;
+                    default         : PCIAT_LATCHED <= (CACHE_SPACE && !BURSTn) ? CACHE_ACCESS : MEM_ACCESS;
                 endcase
             end
         end
@@ -131,21 +148,25 @@ assign IDSEL = (ADDRESS_VALID && (CONFIG0_SPACE || CONFIG1_SPACE)) ? {SLOT4_ENAB
 //In order to meet the needed setup time, we grab the address early
 //and base PCIAT on that until the latched address becomes available.
 
-// Access Type         PCIAT1   PCIAT0
-//-------------------------------------
-//PCI Config Space 0     0        0
-//PCI Config Space 1     0        1
-//PCI Memory Space       1        0
-//I/O Space              1        1
+// Access Type         PCIAT2   PCIAT1   PCIAT0
+//---------------------------------------------
+//PCI Config Space 0     0        0        0
+//PCI Config Space 1     0        0        1
+//PCI Memory Space       0        1        0
+//I/O Space              0        1        1
+//Cache Space            1        0        0
+//Reserved               1        0        1
+//Reserved               1        1        0
+//Reserved               1        1        1
 
-reg [1:0] PCIAT_PRE;
+reg [2:0] PCIAT_PRE;
 always @* begin
     case (AD[28:20])
         CONF0_ADD_SPACE : PCIAT_PRE <= CONFIG0_ACCESS;
         CONF1_ADD_SPACE : PCIAT_PRE <= CONFIG1_ACCESS;
         IO_ADD_LO_SPACE : PCIAT_PRE <= IO_ACCESS;
         IO_ADD_HI_SPACE : PCIAT_PRE <= IO_ACCESS;
-        default         : PCIAT_PRE <= MEM_ACCESS;
+        default         : PCIAT_PRE <= (CACHE_SPACE && !BURSTn) ? CACHE_ACCESS : MEM_ACCESS;
     endcase
 end
 
@@ -171,7 +192,7 @@ assign AD = AD_OUT_EN ? AD_OUT : 32'bz;
 
 //Set D bus to correct output from FIFO.
 wire D_OUT_EN = (BUFFER_EN && !PCI_WRITE_EN);
-wire [31:0] D_DATA_OUT = TIMEOUT ? 32'hffffffff : {P2A_DATA[7:0], P2A_DATA[15:8], P2A_DATA[23:16], P2A_DATA[31:24]};
+wire [31:0] D_DATA_OUT = P2A_TIMEOUT ? 32'hffffffff : {P2A_DATA[7:0], P2A_DATA[15:8], P2A_DATA[23:16], P2A_DATA[31:24]};
 assign D  = D_OUT_EN ? D_DATA_OUT : 32'bz;
 
 /////////////

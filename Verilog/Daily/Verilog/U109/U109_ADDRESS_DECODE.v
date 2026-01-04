@@ -37,11 +37,11 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 module U409_ADDRESS_DECODE
 (   
   //Cycle Start
-  input CLK40, TSn, RESETn, PCI_CYCLEn,
+  input CLK40, TSn, RESETn, BUFFER_EN, PCI_CYCLEn,
   input [31:16] A,
 
   //Chip Selects
-  output BRIDGE_SPACE, BRIDGE_ENn, BRIDGE_CONF_SPACE
+  output BRIDGE_SPACE, CACHE_SPACE, BRIDGE_ENn, BRIDGE_CONF_SPACE
 );
 
   //////////////////////
@@ -54,14 +54,22 @@ module U409_ADDRESS_DECODE
 //the PCI cycle. Since the main board buffers are driven by _BRIDGEN,
 //we need to hold the bridge enable signal for the entire cycle.
 
-localparam [3:0] BRIDGE_BASE = 4'h8;
-localparam BRIDGE_ADDRESS  = 4'h0;
-localparam CONF0_ADD_SPACE = 9'b111111100; //$9FC
+//Most of the address decoding is compatabile with the Prometheus
+//addressing scheme. We also include a "Cache Base" Address that
+//is intented to support a memory space for devices capable of
+//cache line burst transfers.
+
+localparam BRIDGE_ADDRESS          = 4'h0;
+localparam CONF0_ADD_SPACE         = 9'b111111100; //$9FC
+localparam [3:0] BRIDGE_BASE       = 4'h8;
+localparam [3:0] CACHE_BASE        = 4'hA;
 localparam [1:0] BRIDGE_HOLD_DELAY = 2'd2;
 
-assign BRIDGE_SPACE =       (RESETn && PCI_CYCLEn && A[31:29] == BRIDGE_BASE[3:1]);
+wire   NOCACHE_SPACE     =  (A[31:29] == BRIDGE_BASE[3:1]);
+assign CACHE_SPACE       =  (A[31:29] == CACHE_BASE[3:1]);
+assign BRIDGE_SPACE      =  (RESETn && PCI_CYCLEn && (NOCACHE_SPACE || CACHE_SPACE));
 assign BRIDGE_CONF_SPACE =  (BRIDGE_SPACE && A[28:20] == CONF0_ADD_SPACE && A[19:16] == BRIDGE_ADDRESS);
-assign BRIDGE_ENn        = !(BRIDGE_SPACE || BRIDGE_CONF_SPACE || BRIDGE_HOLD || !PCI_CYCLEn);
+assign BRIDGE_ENn        = !(BRIDGE_SPACE || BRIDGE_HOLD || BUFFER_EN);
 
 reg BRIDGE_HOLD;
 reg [1:0] BRIDGE_HOLD_COUNT;
