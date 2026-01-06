@@ -60,15 +60,15 @@ module U409_ADDRESS_DECODE
 //cache line burst transfers.
 
 localparam BRIDGE_ADDRESS          = 4'h0;
-localparam CONF0_ADD_SPACE         = 9'b111111100; //$9FC
-localparam [3:0] BRIDGE_BASE       = 4'h8;
-localparam [3:0] CACHE_BASE        = 4'hA;
+localparam CONF0_ADD_SPACE         = 10'b0111111100; //$9FC
+localparam [3:0] BRIDGE_BASE       = 4'h8; //3'b100 covers 0x8 and 0x9
+localparam [3:0] CACHE_BASE        = 4'hA; //3'b101 covers 0xA and 0xB
 localparam [1:0] BRIDGE_HOLD_DELAY = 2'd2;
 
 wire   NOCACHE_SPACE     =  (A[31:29] == BRIDGE_BASE[3:1]);
 assign CACHE_SPACE       =  (A[31:29] == CACHE_BASE[3:1]);
 assign BRIDGE_SPACE      =  (RESETn && PCI_CYCLEn && (NOCACHE_SPACE || CACHE_SPACE));
-assign BRIDGE_CONF_SPACE =  (BRIDGE_SPACE && A[28:20] == CONF0_ADD_SPACE && A[19:16] == BRIDGE_ADDRESS);
+assign BRIDGE_CONF_SPACE =  (BRIDGE_SPACE && A[29:20] == CONF0_ADD_SPACE && A[19:16] == BRIDGE_ADDRESS);
 assign BRIDGE_ENn        = !(BRIDGE_SPACE || BRIDGE_HOLD || BUFFER_EN);
 
 reg BRIDGE_HOLD;
