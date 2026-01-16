@@ -35,11 +35,13 @@ module U110_TOP (
     //Clocks
     input CLK66_IN, CLK40_IN, CLK33_IN,
     
-    //Cycle Start/Terminate
-    input  RESETn, TSn, RnW,
-    input  [1:0] SIZ,
+    //Cycle Signals
+    input  RESETn, TSn,
+    inout  RnW,
+    inout  [1:0] SIZ,
     output TEAn, TCIn, TBIn, 
-    inout  TACKn,
+    output [1:0] A_LOW,
+    inout  TACKn,   
     
     //ATA Chip Selects
     input  ATA_ENn, PPIO, SPIO, PCS1 , PCS0, SCS1, SCS0,
@@ -49,15 +51,18 @@ module U110_TOP (
     output IDELENn, IDEDIR, IDEHRENn, IDEHWENn, ATA_LATCH,
 
     //PCI 
-    input  DEVSELn, TRDYn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA,
-    input  [2:0] PCIAT,
-    input  [4:0] BUSREQ,
-    output DEVSEL_OUTn, FRAMEn, PCI_TIPn, PARITY, W_LATCH_ENn,
-    output [3:0] CBE,
-
-
+    input  AD31, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, PCIINTn,
+    input  [2:0] PCIAT,    
+    output DEVSEL_OUTn, PCI_TIPn, PARITY, WLATCH_FRAMEn,
+    inout DEVSELn, FRAMEn,
+    inout [3:0] CBE,
+    
     //Arbitor and Interrupts
-    output INT2n, BUSDIR, BGn, BURSTn
+    input BRn, LOCKn,
+    input  [4:0] BUSREQ,
+    output INT2n, BUSDIR, BGn, BURSTn,
+    output [4:0] BUSGNT,
+    inout BBn
 
     ,output TP0,TP1,TP2
 
@@ -72,19 +77,38 @@ wire CLK40_PAD = CLK40_IN;
 wire CLK40;
 wire CLK33 = !CLK33_IN;
 wire ATA_TACK;
-wire TACK_OUT;
+wire W_LATCH_EN;
+wire DMA_START;
+wire DMA_WRITE_CYCLE;
+wire BB_EN;
+wire [1:0] SIZ_OUT;
 
-assign DEVSEL_OUTn = DEVSELn;
+//The cpu has the bus when _BG is asserted or when
+//_BB is asserted, but not by the PCI DMA state machine.
+wire CPU_BUS = (!BGn || (!BBn && !BB_EN));
+
+////////////////////////////
+// EXTERNAL SIGNAL WIRES //
+//////////////////////////
+
+assign DEVSEL_OUTn = DEVSELn; //Communicates DEVSELn to U109.
+
+//BUSDIR = 1 = PCI HAS BUS
+assign BBn = BUSDIR ? ~BB_EN : 1'bz;
+assign SIZ = BUSDIR ? SIZ_OUT : 2'bz;
+assign RnW = BUSDIR ? ~DMA_WRITE_CYCLE : 1'bz;
+assign WLATCH_FRAMEn = ~(W_LATCH_EN || (BUSDIR && DMA_START));
 
   ///////////////
  // INTERRUPT //
 ///////////////
 
 U110_INTERRUPT U110_INTERRUPT (
+    //input
+    .PCIINTn (PCIINTn),
 
     //output
     .INT2n (INT2n)
-
 );
 
   ///////////////////////
@@ -102,8 +126,7 @@ U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
     .TEAn (TEAn),
     .TACKn (TACKn),
     .TCIn (TCIn),
-    .TBIn (TBIn),
-    .TACK_OUT (TACK_OUT)
+    .TBIn (TBIn)
 );
 
   /////////////
@@ -112,11 +135,12 @@ U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
 
 U110_BUFFERS U110_BUFFERS (
     //INPUT
+    .CLK40 (CLK40),
     .RESETn (RESETn),
     .ATA_ENn (ATA_ENn),
     .RnW (RnW),
     .SIZ (SIZ),
-    .BGn (BGn),
+    .CPU_BUS (CPU_BUS),
 
     //output
     .IDEHRENn (IDEHRENn),
@@ -162,13 +186,22 @@ U110_ATA U110_ATA (
  // BUS ARBITOR //
 /////////////////
 
-U110_ARBITOR U110_ARBITOR (
-
+U110_ARBITER U110_ARBITER (
     //input
+    .CLK40 (CLK40),
+    .CLK33 (CLK33),
+    .RESETn (RESETn),
+    .BRn (BRn),
+    .BBn (BBn),
+    .LOCKn (LOCKn),
+    .CPU_BUS (CPU_BUS),
     .BUSREQ (BUSREQ),
 
     //output
-    .BGn (BGn)
+    .BGn (BGn),
+    .BUSGNT (BUSGNT)
+
+    ,.TP0 (TP0), .TP2 (TP2)
 );
 
   ////////////////////////
@@ -184,7 +217,7 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .RESETn (RESETn),
     .TSn (TSn),
     .RnW (RnW),
-    .TACK_OUT (TACK_OUT),
+    .AD31 (AD31),
     .BGn (BGn),
     .PCI_CYCLEn (PCI_CYCLEn),
     .DEVSELn (DEVSELn),
@@ -192,19 +225,26 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .UMBEn (UMBEn),
     .LMBEn (LMBEn),
     .LLBEn (LLBEn),
-    .BURSTn (BURSTn),
     .BRIDGE_ENn (BRIDGE_ENn), 
     .PARITY_DA (PARITY_DA),
+    .CPU_BUS (CPU_BUS),
     .PCIAT (PCIAT),
 
     //output
     .FRAMEn (FRAMEn),
+    .A_LOW (A_LOW),
+    .SIZ_OUT (SIZ_OUT),
     .PCI_TIPn (PCI_TIPn),
-    .W_LATCH_ENn (W_LATCH_ENn),
+    .DMA_WRITE_CYCLE (DMA_WRITE_CYCLE),
+    .BB_EN (BB_EN),
+    .DMA_START (DMA_START),
+    .W_LATCH_EN (W_LATCH_EN),
     .PARITY (PARITY),
     .CBE (CBE)
 
-    ,.TP0(TP0),.TP1(TP1), .TP2(TP2)
+    //,.TP0(TP0)
+    ,.TP1(TP1)
+    //, .TP2(TP2)
 );
 
   /////////

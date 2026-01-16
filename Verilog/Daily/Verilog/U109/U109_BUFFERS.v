@@ -92,14 +92,14 @@ localparam CACHE_ACCESS     = 3'b100;
 reg ADDRESS_VALID;
 reg [1:0] PHASEn_SYNC;
 reg [2:0] PCIAT_LATCHED;
-reg [29:0] A_LATCH;
+reg [31:0] A_LATCH;
 always @(negedge CLK40) begin
     if (!RESETn) begin
         ADDRESS_VALID <= 0;
         PCI_WRITE_EN <= 0;
         PCIAT_LATCHED <= MEM_ACCESS;
         CACHE_SPACE_EN <= 0;
-        A_LATCH <= 30'b0;
+        A_LATCH <= 32'h0;
         PHASEn_SYNC <= 2'b11;
     end else begin
         PHASEn_SYNC <= {PHASEn_SYNC[0], !BUFFER_EN};        
@@ -109,7 +109,7 @@ always @(negedge CLK40) begin
             end
         end else begin
             if (!TSn && BRIDGE_SPACE) begin
-                A_LATCH <= AD[29:0];
+                A_LATCH <= AD;
                 ADDRESS_VALID <= 1;
                 PCI_WRITE_EN <= !(RnW);
                 CACHE_SPACE_EN <= CACHE_SPACE;
@@ -186,7 +186,8 @@ assign PCIAT = ADDRESS_VALID ? PCIAT_LATCHED : PCIAT_PRE;
 //wire AD_OUT_EN        = ((!BUFFER_EN && ADDRESS_VALID) || (BUFFER_EN && PCI_WRITE_EN)); // || (BGn && RnW)))));
 wire AD_OUT_EN        = ADDRESS_VALID && ((!BUFFER_EN) || (PCI_WRITE_EN && BUFFER_EN));
 wire [1:0]  A_LOW     = CONFIG0_SPACE ? 2'b00 : CONFIG1_SPACE ? 2'b01 : A_LATCH[1:0]; //Sets AD[1:0]
-wire [31:0] AD_A_OUT  = MEMORY_SPACE ? {2'b0, A_LATCH[29:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
+//wire [31:0] AD_A_OUT  = MEMORY_SPACE ? {2'b0, A_LATCH[29:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
+wire [31:0] AD_A_OUT  = MEMORY_SPACE ? {A_LATCH[31:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
 wire [31:0] AD_OUT    = !BUFFER_EN ? AD_A_OUT : {A2P_DATA[7:0], A2P_DATA[15:8], A2P_DATA[23:16], A2P_DATA[31:24]}; //Sets AD source to address or FIFO data.
 assign AD = AD_OUT_EN ? AD_OUT : 32'bz;
 

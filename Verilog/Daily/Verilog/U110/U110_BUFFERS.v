@@ -33,10 +33,11 @@ Date          Who  Description
 
 module U110_BUFFERS (
 
-    input RESETn, ATA_ENn, RnW, BGn,
+    input CLK40, RESETn, ATA_ENn, RnW, CPU_BUS,
     input [1:0] SIZ,
 
-    output IDELENn, IDEHRENn, IDEHWENn, IDEDIR, BURSTn, BUSDIR
+    output IDELENn, IDEHRENn, IDEHWENn, IDEDIR, BURSTn,
+    output reg BUSDIR
 
 );
 
@@ -66,7 +67,17 @@ assign BURSTn = !(SIZ[1] && SIZ[0]);
 //0 = CPU has the bus.
 //1 = PCI has the bus.
 
-//assign BUSDIR = BGn;
-assign BUSDIR = 1'b0;
+always @(negedge CLK40) begin
+  if (!RESETn) begin
+    BUSDIR <= 0;
+  end else begin
+    if (CPU_BUS) begin
+      BUSDIR <= 0;
+    end else begin
+      BUSDIR <= 1;
+    end
+  end
+end
+
 
 endmodule

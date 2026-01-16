@@ -29,16 +29,18 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 Date          Who  Description
 -----------------------------------
 29-NOV-2025   JN   Initial code.
+09-JAN-2026   JN   Connected all PCI interupts to _INT2.
 */
 
 module U110_INTERRUPT (
 
+    input PCIINTn,
     output INT2n
 
 );
 
-//JUST HOLD INT2 HIGH FOR NOW.
+//Pretty simple. Might want to sync this to the 7MHz clock?
 
-assign INT2n = 1;
+assign INT2n = PCIINTn;
 
 endmodule

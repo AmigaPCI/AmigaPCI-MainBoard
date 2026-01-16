@@ -11,50 +11,50 @@ set_io CLK66_IN 81
 set_io RESETn   49
 
 #ADDRESS
-#set_io A[0]     73
-#set_io A[1]     74
+set_io A_LOW[1] 74
+set_io A_LOW[0] 73
 
 #ATA SIGNALS
-set_io PPIO       16
-set_io SPIO       15
-set_io PCS1       24
-set_io PCS0       25
-set_io SCS1       22
-set_io SCS0       23
-set_io ATA_ENn    12 
-set_io DIOW_PRIn  94
+set_io PPIO        16
+set_io SPIO        15
+set_io PCS1        24
+set_io PCS0        25
+set_io SCS1        22
+set_io SCS0        23
+set_io ATA_ENn     12 
+set_io DIOW_PRIn   94
 #set_io IORDY     110
 #set_io INTRS     107
 #set_io INTRP     106
-set_io DIOR_SECn  99
-set_io DIOW_SECn  98
-set_io DIOR_PRIn  96
-set_io CS1_PRIn   95
-set_io CS0_PRIn   91
-set_io IDELENn    87
-set_io IDEHRENn   88
-set_io IDEHWENn   97
-set_io ATA_LATCH  85
-set_io CS0_SECn   84
-set_io CS1_SECn  101
-set_io IDEDIR     83
+set_io DIOR_SECn   99
+set_io DIOW_SECn   98
+set_io DIOR_PRIn   96
+set_io CS1_PRIn    95
+set_io CS0_PRIn    91
+set_io IDELENn     87
+set_io IDEHRENn    88
+set_io IDEHWENn    97
+set_io ATA_LATCH   85
+set_io CS0_SECn    84
+set_io CS1_SECn   101
+set_io IDEDIR      83
 
 #DATA TRANSFER SIGNALS
 
-set_io SIZ[1]  18
-set_io SIZ[0]  17
-set_io TEAn    10
-set_io TCIn    33
-set_io TBIn    34
-set_io TSn     47
-set_io RnW     79
-set_io TACKn   75
-set_io BURSTn  80
+set_io SIZ[1] 18
+set_io SIZ[0] 17
+set_io TEAn   10
+set_io TCIn   33
+set_io TBIn   34
+set_io TSn    47
+set_io RnW    79
+set_io TACKn  75
+set_io BURSTn 80
 
 #BUS ARBRITRATION
-#set_io LOCKn     43
-#set_io BRn       56
-#set_io BBn       48
+set_io LOCKn      43
+set_io BRn        56
+set_io BBn        48 -pullup yes
 set_io BGn        76
 set_io BUSDIR     55
 set_io BUSREQ[0] 112
@@ -62,36 +62,37 @@ set_io BUSREQ[1] 114
 set_io BUSREQ[2] 113
 set_io BUSREQ[3] 116
 set_io BUSREQ[4] 115
-#set_io BUSGNT0n 119
-#set_io BUSGNT1n 120
-#set_io BUSGNT2n 118
-#set_io BUSGNT3n 125
-#set_io BUSGNT4n 124
+set_io BUSGNT[0] 119
+set_io BUSGNT[1] 120
+set_io BUSGNT[2] 118
+set_io BUSGNT[3] 125
+set_io BUSGNT[4] 124
 
 #PCI SIGNALS
-set_io W_LATCH_ENn  11
-set_io BRIDGE_ENn   63
-set_io PCI_TIPn    138
-set_io PCIAT[2]     61
-set_io PCIAT[1]     45
-set_io PCIAT[0]     44
-set_io PARITY      144 -pullup yes
-set_io FRAMEn      137 -pullup yes
-set_io DEVSELn     134
-set_io DEVSEL_OUTn  60
-set_io CBE[0]      129 -pullup yes
-set_io CBE[1]      130 -pullup yes
-set_io CBE[2]      135 -pullup yes
-set_io CBE[3]      136 -pullup yes
-set_io INT2n       121
-set_io PARITY_DA    82
-set_io PCI_CYCLEn   78
+set_io WLATCH_FRAMEn 11
+set_io BRIDGE_ENn    63
+set_io PCI_TIPn     138
+set_io PCIAT[2]      61
+set_io PCIAT[1]      45
+set_io PCIAT[0]      44
+set_io PARITY       144 -pullup yes
+set_io FRAMEn       137 -pullup yes
+set_io DEVSELn      134
+set_io DEVSEL_OUTn   60
+set_io CBE[0]       128 -pullup yes
+set_io CBE[1]       130 -pullup yes
+set_io CBE[2]       135 -pullup yes
+set_io CBE[3]       136 -pullup yes
+set_io INT2n        121
+set_io PARITY_DA     82
+set_io PCI_CYCLEn    78
+set_io AD31          90
+set_io PCIINTn      117
 
 #set_io RESET_PCIn  122
 #set_io SYSERRn       1
 #set_io PERRn       143
 #set_io PLOCKn      142
-#set_io PCIINTn     117
 #set_io PCIMODE0      2 -pullup yes
 #set_io PCIMODE1      3 -pullup yes
 #set_io PCIMODE2      4 -pullup yes

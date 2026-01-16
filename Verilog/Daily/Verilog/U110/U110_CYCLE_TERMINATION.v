@@ -40,7 +40,6 @@ module U110_CYCLE_TERMINATION (
     //Cycle Start/Terminate
     input RESETn, ATA_TACK, PCI_CYCLEn,
     output TEAn, TCIn, TBIn,
-    output reg TACK_OUT,
 
     inout TACKn
 

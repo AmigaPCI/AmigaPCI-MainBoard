@@ -39,7 +39,8 @@ module U109_PCI_STATE_MACHINE (
     input CLK80, CLK66, CLK40, CLK33, RESETn, TSn, RnW,
 
     //Cycle Start/Termination
-    input REG_DATA, BURSTn, PCI_TIPn, BGn, PCI_WRITE_EN, BRIDGE_CONF_SPACE,
+    input [1:0] REG_DATA,
+    input BURSTn, PCI_TIPn, BGn, PCI_WRITE_EN, BRIDGE_CONF_SPACE,
     input [7:0] A,
 
     //FIFO
@@ -50,13 +51,13 @@ module U109_PCI_STATE_MACHINE (
     output CLK_ADDRESS_LATCH, INIT_READYn, TACKn, TBIn, PARITY_DIR, PCI_RSTn,
     output reg P2A_READ_NEXT, A2P_READ_NEXT, TCI_ENn, BUFFER_EN, P2A_TIMEOUT, PCI_CYCLEn
 
-    ,output TP0, TP1
+    ,output reg TP0, output TP1
 );
 
 //assign TP1 = REG_DATA;
 //assign TP0 = REG_CYCLE;
-assign TP0 = A2P_TIMEOUT;
-assign TP1 = PCI_CYCLEn;
+//assign TP0 = A2P_TIMEOUT;
+assign TP1 = TP0;
 
 /////////////////
 // PARAMETERS //
@@ -297,23 +298,46 @@ end
 //config0 space.
 
 //D[31] = PCI bus reset bit
+//D[30] = Test bit to drive _BREQ on the test card.
 
 assign PCI_RSTn = !(!RESETn || PCI_RST_REG);
 wire REG_CYCLE_START = (!TSn && !RnW && BRIDGE_CONF_SPACE && A == BRIDGE_REGISTER_ADDRESS);
 
-reg REG_CYCLE, PCI_RST_REG;
+reg REG_CYCLE, PCI_RST_REG, BREQ_TEST;
 always @(posedge CLK40 or posedge REG_CYCLE_START) begin
     if (REG_CYCLE_START) begin
         REG_CYCLE <= 1;
     end else if (!RESETn) begin
         PCI_RST_REG <= 0;
+        BREQ_TEST <= 0;
         REG_CYCLE <= 0;
     end else begin
         if (REG_CYCLE) begin
-            PCI_RST_REG <= REG_DATA;
+            PCI_RST_REG <= REG_DATA[1];
+            BREQ_TEST   <= REG_DATA[0]; //THIS IS JUST FOR TESTING, NOT AN ACTUAL REGISTER!
             REG_CYCLE <= 0;
         end
     end    
+end
+
+//THIS IS JUST FOR TESTING!
+reg [3:0] BREQ_COUNT;
+always @(negedge CLK33) begin
+    if (!RESETn) begin
+        TP0 <= 1;
+        BREQ_COUNT <= 4'h0;
+    end else begin
+        if (BREQ_TEST) begin
+            if (BREQ_COUNT == 4'ha) begin
+                TP0 <= 1;
+            end else begin
+                TP0 <= 0;
+                BREQ_COUNT <= BREQ_COUNT + 1;
+            end
+        end else begin
+            BREQ_COUNT <= 4'h0;
+        end
+    end
 end
 
 ////////////////////////

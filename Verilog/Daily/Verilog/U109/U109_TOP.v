@@ -51,7 +51,7 @@ module U109_TOP (
     inout [31:0] D,
     inout [31:0] AD
 
-    ,output TP0, TP1
+    ,output TP0, output TP1
 );
 
 //assign TP0 = W_LATCH_ENn;
@@ -99,7 +99,7 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .RESETn (RESETn),
     .TSn (TSn),
     .RnW (RnW),
-    .REG_DATA (D[31]),
+    .REG_DATA (D[31:30]),
     .BURSTn (BURSTn),
     .PCI_TIPn (PCI_TIPn),
     .BGn (BGn),
