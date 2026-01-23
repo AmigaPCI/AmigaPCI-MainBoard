@@ -202,14 +202,6 @@ When a PCI device wants to take ownership of the system bus, it will assert **_R
 
 During DMA cycles, the cycle is directed by the initiating PCI device. The Local PCI Bridge is responsible for driving MC68040 compatable signals on the CPU bus to support the current cycle. These signals are **_TS**, **_TIP**, **R_W**, **TT0**, **TT1**, **SIZ0**, **SIZ1**, **A[31..0]**, and **D[0..31]** (write cycle only). When not actively driving a DMA cycle on the CPU bus, these Local Bridge holds these signals in a high impedence state. The Local PCI Bridge must respond to the assertion of **_TA** in order to recognize when data is placed on **D[0..31]** for read cycles, or when data has been latched by the target device for write cycles. Unless actively driving a DMA cycle against onboard AmigaPCI resources, **AD[31..0]**, **_TRDY**, **_DEVSEL** must be held in a high impedence state by the Local PCI Bridge during DMA cycles.
 
-#### 3.2.1.1 Transfer Type
-
-The Local PCI Bridge will assert **TT0** and **TT1**, as required, in response to a normal or burst transfer request from the PCI initiating device. The assertion of transfer type (**TT0** and **TT1**) is determined by whether **_FRAME** is held asserted after the address phase of the current cycle. If **_FRAME** is negated on the first rising PCI clock edge after the address phase, this is a normal cycle. If **_FRAME** is held asserted on the first rising PCI clock edge after the address phase, this is a burst cycle. This means the Local PCI Bridge cannot set **TT0** and **TT1** until the first falling BCLK edge after the first rising PCLK edge after the cycle address phase.
-
-#### 3.2.1.2 Bus Synchronization
-
-It must be considered that the PCI bus clock and the MC68040 bus clocks are asynchronous. If not handled correctly, this can lead to a condition where the devices become out of sync. This will result in data transfer errors. While PCI initiator devices may, or may not, insert wait states, we must consider this possiblity as wait states are defined in the PCI specification for all cycle types. Synchronozation of the bus clocks is acheived by the PCI Local Bridge implementing a FIFO approach. Data is latched into a register in one clock domain and passed out to the other clock domain at the appropriate timings.
-
 ## 3.3 Cycle Termination
 
 The PCI cycle can end in several ways and may be terminated by the Local PCI Bridge or target device.
