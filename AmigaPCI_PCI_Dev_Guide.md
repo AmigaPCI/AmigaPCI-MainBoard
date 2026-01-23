@@ -32,15 +32,13 @@ Revision|Date|Status
 
 # 1.0 PCI Bus
 
-The PCI Local Bus (PCI, herein) is a processor independent, 32-bit expasion bus. The AmigaPCI specification is designed to comply with the PCI Local Bus Revision 2.3 specificiation. Each slot supports Universal and 5V cards, as defined in the PCI Local Bus Revision 2.3 specification. Like Zorro 2 and Zorro 3, PCI supports auto configuration of devices on power up. This allows for the use of Amiga AUTOCONFIG to configure devices at start up. This fits well with Amiga OS as PCI devices can be configured as Zorro 3 devices, which function natively with Amiga OS. 
+The PCI Local Bus (PCI, herein) is a processor independent, 32-bit expasion bus. The AmigaPCI specification is designed to comply with the PCI Local Bus Revision 2.3 specificiation. Each slot supports Universal and 5V cards, as defined in the PCI Local Bus Revision 2.3 specification. Like Zorro 2 and Zorro 3, PCI supports auto configuration of devices on power up. This allows for the use of an Amiga AUTOCONFIG-like appraoch to configure devices at start up.
 
-The PCI Bridge is implemented via a Motorola MC68040/MC68060 to PCI Bridge (Local PCI Bridge, herein). The Local PCI Bridge logic translates data requests from the Motorola processor and PCI devices in order that they may communicate. This specification is compatable with Motorola MC68040 and newer predecessors. While this document is written with the Motorola MC68040 in mind, the information can be applied to newer Motorola processors, such as the MC68060.
-
-Each PCI slot on the PCI Local Bridge can operate in either AUTOCONFIG mode or Prometheus mode, but not both simultaneously. 
+The PCI Bridge is implemented via a Motorola MC68040/MC68060 to PCI Bridge (Local PCI Bridge, herein). The Local PCI Bridge logic translates data requests from the Motorola processor and PCI devices in order that they may communicate. This specification is compatable with Motorola MC68000 series processors. While this document is written with the Motorola MC68040 in mind, the information can be applied to other Motorola processors, such as the MC68060.
 
 ## 1.1 Endianness
 
-Motorola MC68000 series processors are big endian devices. PCI devices, by contrast, are little endian devices. This means we must byte swap the data signals to provide compatability between devices with different endianness*. The AmigaPCI specification implements address invariance to achieve the endian conversion necessary for the CPU and PCI devices to communicate.
+Motorola MC68000 series processors are big endian devices. PCI devices, by contrast, are little endian devices. This means the data bus must be byte swapped to provide compatability between devices with different endianness*. The AmigaPCI specification implements an address invariance system with byte swapping to achieve the endian conversion necessary for the CPU and PCI devices to communicate.
 
 Table 1.1a. Order of byte consumption in big and little endian devices.
 Endianess|Hex Value<br />Order of Consumption
@@ -61,23 +59,21 @@ Little|0x0408 0200|0x04|0x08|0x02|0x00
 
 ## 1.2 Interrupt Handling
 
-Each PCI slot has four interrupt signals, identified as **_INTA**, **_INTB**, **_INTC**, and **_INTD**. Single function PCI devices are only allowed to use **_INTA**. The remaining signals are used in the event of a multifunction PCI device, with one interrupt line per PCI function. As a hyptothetical example, a multifunction I/O device may use **_INTA** for a floppy drive interface, **_INTB** for a hard drive interface, **_INTC** for a serial interface, etc. For the purposes of the AmigaPCI design, **_INTA**, **_INTB**, **_INTC**, and **_INTD** are OR'd together and connected to **_INT2**. Drivers are expected to look for assertion of **_INT2** to signal an interrupt request from devices on the PCI bus. When an interrupt is asserted, the driver needs to poll its device on the PCI bus to determine if its device is asserting the interrupt. The Local PCI Bridge will continue to assert **_INT2** until all PCI devices have negated their interrupt requests. 
+Each PCI slot has four interrupt signals, identified as **_INTA**, **_INTB**, **_INTC**, and **_INTD**. Single function PCI devices are only allowed to use **_INTA**. The remaining signals are used in the event of a multifunction PCI device, with one interrupt line per PCI function. As a hyptothetical example, a multifunction I/O device may use **_INTA** for a floppy drive interface, **_INTB** for a hard drive interface, **_INTC** for a serial interface, etc. For the purposes of the AmigaPCI design, **_INTA**, **_INTB**, **_INTC**, and **_INTD** are OR'd together and connected to the Amiga's **_INT2**. Drivers are expected to look for assertion of **_INT2** to signal an interrupt request from devices on the PCI bus. When an interrupt is asserted, the driver needs to poll its device on the PCI bus to determine if its device is asserting the interrupt. The Local PCI Bridge will continue to assert **_INT2** until all PCI devices have negated their interrupt requests. 
 
 ## 1.3 Modes of Operation
 
-Amiga PCI slots can operate in AUTOCONFIG mode or Prometheus compatable mode. Each individual PCI slot may operate in one of these modes, but never both simultaneously.
+Amiga PCI slots can operate in an AUTOCONFIG-like mode or Prometheus compatable mode. Each individual PCI slot may operate in one of these modes, but not both simultaneously.
 
-In AUTOCONFIG mode, the PCI target device will be configured on startup like any Amiga AUTOCONFIG device. The advantage of AUTOCONFIG mode is the ability to use a PCI device upon startup without the need to load drivers from disk. This supports devices such as auto booting hard drives, video, sound cards, etc. Once the PCI target device is configured by the AUTOCONFIG process, the target device may be directly accessed by its base address(es). 
+In AUTOCONFIG mode, the PCI target device will be configured on startup like any Amiga AUTOCONFIG device. The advantage of AUTOCONFIG mode is the ability to use a PCI device upon startup without the need to load drivers from disk. This supports devices such as auto booting hard drives, video, sound cards, etc. Once the PCI target device is configured by the AUTOCONFIG-like process, the target device may be directly accessed by its base address(es). 
 
-Prometheus mode requires the PCI target device be configured in software in order to function. This mode can support PCI target devices not designed for the Amiga. During startup, the Local PCI Bridge is configured via AUTOCONFIG in the 32-bit Zorro 3 address space, which will supply a base address for the Local PCI Bridge through which the slots in Prometheus mode may be accessed. Driver software may then poll the Local PCI Bridge base address with each device selection bit. The Local PCI bridge will return 0xFFFF FFFF if an AUTOCONFIG slot is polled via the Local PCI Bridge base address. 
+Prometheus mode requires the PCI target device be configured in software in order to function.
 
 ## 1.4 Developing PCI Cards for the AmigaPCI and Upgrade Path
 
-New PCI hardware developed specifically for the AmigaPCI should be based on specifications for the Universal* PCI card. Should demand justify it, future upgrade options may include the move to a 3.3V signaling environment capable of running at 66MHz**. Plug in hardware based on the Universal concept will permit cards to work in either 5V or 3.3V signaling environments. In addition, any hardware developed for the AmigaPCI must limit address spaces to Memory and Configuration only. The I/O address space is not recommended for new hardware development*** and is not supported by the AmigaPCI with AUTOCONFIG devices.  
+Hardware developed specifically for the AmigaPCI must should limit address spaces to Memory and Configuration only. The I/O address space is not recommended for new hardware development*. The most likely next step in developing the AmigaPCI concept will be to implement a PCI-Express bus interface.  
 
 *PCI Local Bus Specification Revision 2.3. PCI Special Interest Group. Section 4.1.1. Transition Road Map. pp. 113.  
-**PCI Local Bus Specification Revision 2.3. PCI Special Interest Group. Section 7.6.3. Signaling Environment. pp. 230.  
-***PCI Local Bus Specification Revision 2.3. PCI Special Interest Group. Section 3.2.2. Addressing. pp. 27.  
 
 # 2.0 PCI Configuration
 
@@ -103,21 +99,21 @@ $9FE0 0000|$9FFF FFFF|I/O Expansion Space
 $A000 0000|$BFFF FFFF|Memory Cache Line Expansion Space
 
 ### 2.2.1 PCI Memory Expansion Spaces
-There are two memory expansion spaces available to the PCI bus. The space each device is assigned to is driven by whether the PCI device supports cache line burst transfers. PCI devices configured by AmigaOS option ROMs or software can operated in either space, but not both simultaneously. The memory space assigned will dictate the PCI bus commands used during data transfer cycles.  
+There are two memory expansion spaces available to the PCI bus. The space a device is assigned to is determined by whether the PCI device supports cache line burst transfers. When a PCI device is configured, it may be placed in either space, but not both simultaneously. The memory space assigned will dictate the PCI bus commands issued during data transfer cycles.  
 
 #### 2.2.1.1 Memory Expansion Space
-Memory Read and Memory Write commands are posted to the PCI bus in this space. If an attempted cache burst transfer is initiated by the CPU, the cycle will be terminated with assertion of transfer burst inhibit.
+Memory Read and Memory Write commands are posted to the PCI bus in this space. If an attempted cache burst transfer is initiated by the CPU, the cycle will be terminated with assertion of transfer burst inhibit. Devices not supporting cache line transfers should be placed in this space.  
 
 #### 2.2.1.2 Memory Cache Line Expansion Space
-Memory Read, Memory Write, Memory Read Line, and Memory Write and Invalidate commands are posted to the PCI bus in this space. The exact PCI bus command will be dictated by the current CPU cycle type.
+Memory Read, Memory Write, Memory Read Line, and Memory Write and Invalidate commands are posted to the PCI bus in this space. The exact PCI bus command will be determined by the current CPU cycle type. Devices supporting cache line transfers should be placed in this space.  
 
 ### 2.2.2 I/O Space
 
-Two megabytes of space is available for I/O devices. In this space, only I/O read and I/O write commands are posted to the PCI bus. I/O devices are not recommended for new designs. Address bits AD(31:20) are set to $0 during an I/O space access.
+Two megabytes of space is available for I/O devices. In this space, only I/O read and I/O write commands are posted to the PCI bus. I/O devices are not recommended for new designs. Address bits AD[31:20] on the PCI bus are set to $0 during an I/O space access.
 
 ### 2.2.3 PCI Type 0 Configuration Access
 
-The Type 0 configuration space of each device on the PCI bus can be accessed by probing the correct address. The addressing scheme is described below. The data bit order shown in the tables is aligned to big endian accesses from the CPU. The host bridge automatically byte swaps the data bus in both directions. Thus, any data on the CPU side of the bridge will be in big endian order. Conversely, any data on the PCI side of the bus is in little endian order. Becuase of the byte swapping, it is critical to consider how the data will be presented when referencing tables in the PCI specifications. Address translation that may be required is implemented by the host bridge. For example, AD(1:0) must be $0 for accesses to the Type 0 Configuration space. To support this, the host bridge automatically sets AD(1:0) = $0 during this access type. In addition, AD[31:20] are set to $0.
+The Type 0 configuration space of each device on the PCI bus can be accessed by probing the correct address. The addressing scheme is described below. The data bit order shown in the tables is aligned to big endian accesses from the CPU. The host bridge automatically byte swaps the data bus in both directions. Thus, any data on the CPU side of the bridge will be in big endian order. Conversely, any data on the PCI side of the bus is in little endian order. Becuase of the byte swapping, it is critical to consider how the data will be presented when referencing tables in the PCI specifications. Address translation that may be required is implemented by the host bridge. For example, AD[1:0] must be $0 for accesses to the Type 0 Configuration space. To support this, the host bridge automatically sets AD[1:0] = $0 during this access type. In addition, AD[31:20] are set to $0.
 
 Table 2.2.3a Type 0 Configuration Space Access.
 CPU Address Bus Bits|Description
@@ -151,7 +147,7 @@ $9FC0 8004|Write|Writes to register 0x4 of the host bridge.
 
 ### 2.2.4 Type 1 Configuration Access
 
-The Type 1 configuration space of each device on the PCI bus can be accessed by probing the correct address. Up to 14 additional buses can be supported using the addressing scheme described below. Bus 0 is reserved for the system host bridge. The host bridge automatically byte swaps the data bus in both directions. Thus, any data on the CPU side of the bridge will be in big endian order. Conversely, any data on the PCI side of the bus is in little endian order. Becuase of the byte swapping, it is critical to consider how the data will be presented when referencing tables in the PCI specifications. Address translation that may be required is implemented by the host bridge. For example, AD(1:0) must be $1 for accesses to the Type 1 Configuration space. To support this, the host bridge automatically sets AD(1:0) = $1 during this access type. In addition, AD(31:20) is set to $0.  
+The Type 1 configuration space of each device on the PCI bus can be accessed by probing the correct address. Up to 14 additional buses can be supported using the addressing scheme described below. Bus 0 is reserved for the system host bridge. The host bridge automatically byte swaps the data bus in both directions. Thus, any data on the CPU side of the bridge will be in big endian order. Conversely, any data on the PCI side of the bus is in little endian order. Becuase of the byte swapping, it is critical to consider how the data will be presented when referencing tables in the PCI specifications. Address translation that may be required is implemented by the host bridge. For example, AD[1:0) must be $1 for accesses to the Type 1 Configuration space. To support this, the host bridge automatically sets AD[1:0] = $1 during this access type. In addition, AD[31:20] is set to $0.  
 
 Table 2.2.4a Type 1 Configuration Space Access
 CPU Address Bus|Description
