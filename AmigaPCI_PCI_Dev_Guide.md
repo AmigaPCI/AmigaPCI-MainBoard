@@ -77,7 +77,7 @@ Hardware developed specifically for the AmigaPCI must should limit address space
 
 # 2.0 PCI Configuration
 
-Each PCI target device may be configured by an AUTOCONFIG-like process or by software configuration. During configuration each traget PCI slot is polled to obtain the capabilities and address space needs of the target device(s) present.
+Each PCI target device may be configured by an AUTOCONFIG-like process or by software configuration. During configuration each target PCI slot is polled to obtain the capabilities and address space needs of the target device(s) present.
 
 ## 2.1 PCI Host Bridge
 
@@ -85,18 +85,18 @@ The host bridge base address is $8000 0000. All PCI devices may be accessed thro
 
 ## 2.2 Accessing Devices on the PCI Bus
 
-The AmigaPCI uses the addressing scheme shown below for accessing the parallel address spaces of each PCI device. The address spaces are as follows: Memory space, I/O space, Type 0 Config space, and Type 1 Config space. The following sections describe how to access each of these spaces on the AmigaPCI.
+The AmigaPCI uses the addressing scheme shown below for accessing the parallel address spaces of each PCI device. The address spaces are as follows: Memory space (broken into cachable and non-cachable), I/O space, Type 0 Config space, and Type 1 Config space. The following sections describe how to access each of these spaces on the AmigaPCI.
 
 Table 2.2 PCI Host Bridge Memory Map
 Starting Address|Ending Address|Description
 -|-|-
-$8000 0000|$9FBF FFFF|Memory Expansion Space
+$8000 0000|$9FBF FFFF|Non-cachable Memory Expansion Space
 $9FC0 0000|$9FC0 FFFF|Bridge Register Space
 $9FC1 0000|$9FC8 FFFF|Type 0 Configuration Space
 $9FC9 0000|$9FD0 FFFF|Reserved
 $9FD1 0000|$9FDF FFFF|Type 1 Configuration Space
 $9FE0 0000|$9FFF FFFF|I/O Expansion Space
-$A000 0000|$BFFF FFFF|Memory Cache Line Expansion Space
+$A000 0000|$BFFF FFFF|Cachable Memory Expansion Space
 
 ### 2.2.1 PCI Memory Expansion Spaces
 There are two memory expansion spaces available to the PCI bus. The space a device is assigned to is determined by whether the PCI device supports cache line burst transfers. When a PCI device is configured, it may be placed in either space, but not both simultaneously. The memory space assigned will dictate the PCI bus commands issued during data transfer cycles.  
