@@ -38,15 +38,15 @@ module U109_BUFFERS
     input CLK40, CLK33, RESETn,
 
     //Cycle Control Signals
-    input RnW, TSn, BURSTn,
+    input RnW, TSn, BURSTn, CPU_BUS,
 
     //FIFO Data
     input [31:0] A2P_DATA, P2A_DATA,
 
     //PCI Signals
-    input DEVSELn, BGn, PCI_TIPn, BRIDGE_SPACE, CACHE_SPACE, BUFFER_EN, P2A_TIMEOUT,
-    output ADDRESS_ENn, ADDRESS_DIR, PCI_BUF_ENn, PCI_BUF_DIR,
-    output reg PARITY_DA, PCI_WRITE_EN, CACHE_SPACE_EN;
+    input DEVSELn, PCI_TIPn, BRIDGE_SPACE, CACHE_SPACE, BUFFER_EN, P2A_TIMEOUT, W_LATCH_FRAMEn,
+    output ADDRESS_ENn, PCI_BUF_ENn, PCI_BUF_DIR, ADDRESS_DIR,
+    output reg PARITY_DA, PCI_WRITE_EN, CACHE_SPACE_EN, CLK_ADDRESS_LATCH,
     output [4:0] IDSEL,
     output [2:0] PCIAT,
 
@@ -108,7 +108,7 @@ always @(negedge CLK40) begin
                 ADDRESS_VALID <= 0;
             end
         end else begin
-            if (!TSn && BRIDGE_SPACE) begin
+            if (CPU_BUS && !TSn && BRIDGE_SPACE) begin
                 A_LATCH <= AD;
                 ADDRESS_VALID <= 1;
                 PCI_WRITE_EN <= !(RnW);
@@ -136,9 +136,35 @@ wire SLOT2_ENABLE  = (A_LATCH[19:16] == SLOT2_ADDRESS);
 wire SLOT1_ENABLE  = (A_LATCH[19:16] == SLOT1_ADDRESS);
 wire SLOT0_ENABLE  = (A_LATCH[19:16] == SLOT0_ADDRESS);
 
-assign ADDRESS_ENn = (ADDRESS_VALID || !PCI_TIPn || BUFFER_EN); //Turn off address buffers to prevent contention on AD bus.
-assign ADDRESS_DIR = BGn;
 assign IDSEL = (ADDRESS_VALID && (CONFIG0_SPACE || CONFIG1_SPACE)) ? {SLOT4_ENABLE, SLOT3_ENABLE, SLOT2_ENABLE, SLOT1_ENABLE, SLOT0_ENABLE} : 5'b00000;
+
+//////////////////////
+// ADDRESS BUFFERS //
+////////////////////
+
+//The address buffers must be turned on in order to snoop the 
+//address and respond to a CPU driven PCI cycle. Once we latch
+//the CPU address at the start of the cycle, we turn the buffers off
+//to prevent contention on AD. During a DMA cycle, the buffers
+//must latch the address from AD during the address phase. This
+//presents and holds the address on the Amiga bus until the cycle ends.
+
+//WLATCH_FRAMEn is a duplexed signal. When the CPU has the bus,
+//it tells us when to latch data being written from the CPU.
+//When PCI has the bus, it tells us when to start a DMA cycle.
+
+wire ADDRESS_DIS = (ADDRESS_VALID || !PCI_TIPn || BUFFER_EN);
+wire DMA_START = (RESETn && !CPU_BUS && !W_LATCH_FRAMEn);
+assign ADDRESS_DIR = ~CPU_BUS;
+assign ADDRESS_ENn = ~((CPU_BUS && !ADDRESS_DIS) || !CPU_BUS);
+
+always @(posedge CLK40, posedge DMA_START) begin
+    if (DMA_START) begin
+        CLK_ADDRESS_LATCH <= 1;
+    end else begin
+        CLK_ADDRESS_LATCH <= 0;
+    end
+end
 
 //////////////////////
 // PCI ACCESS TYPE //
@@ -183,10 +209,8 @@ assign PCIAT = ADDRESS_VALID ? PCIAT_LATCHED : PCIAT_PRE;
 //These are CPU driven cycles only!!!!
 
 //Set AD bus to correct output depending on access type and address or data phase.
-//wire AD_OUT_EN        = ((!BUFFER_EN && ADDRESS_VALID) || (BUFFER_EN && PCI_WRITE_EN)); // || (BGn && RnW)))));
 wire AD_OUT_EN        = ADDRESS_VALID && ((!BUFFER_EN) || (PCI_WRITE_EN && BUFFER_EN));
 wire [1:0]  A_LOW     = CONFIG0_SPACE ? 2'b00 : CONFIG1_SPACE ? 2'b01 : A_LATCH[1:0]; //Sets AD[1:0]
-//wire [31:0] AD_A_OUT  = MEMORY_SPACE ? {2'b0, A_LATCH[29:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
 wire [31:0] AD_A_OUT  = MEMORY_SPACE ? {A_LATCH[31:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
 wire [31:0] AD_OUT    = !BUFFER_EN ? AD_A_OUT : {A2P_DATA[7:0], A2P_DATA[15:8], A2P_DATA[23:16], A2P_DATA[31:24]}; //Sets AD source to address or FIFO data.
 assign AD = AD_OUT_EN ? AD_OUT : 32'bz;
@@ -208,9 +232,9 @@ always @(posedge CLK33) begin
     end
 end
 
-/////////////////////////////
-// LEVEL SHIFTING BUFFERS //
-///////////////////////////
+/////////////////////
+// AD BUS BUFFERS //
+///////////////////
 
 //The level shifting buffers can be enabled for most cycles.
 //The only exception is a PCI to PCI DMA cycle, which can 
@@ -229,16 +253,16 @@ end
 //  W   A<B (0) A>B (1)   A<B (0) A>B (1)
 
 //assign PCI_BUF_ENn = !(PHASEA_D || (!BGn && !PHASEA_D && !DEVSELn));
-assign PCI_BUF_ENn = !(!BUFFER_EN || (!BGn && BUFFER_EN)); // && !DEVSELn));
+//When !BUFFER_EN, we are broadcasting the current address to the bus unfiltered.
+//When BUFFEN_EN, we are in a CPU driven DMA cycle.
+//When there is a PCI to Amiga DMA cycle, we enable these buffers.
+//When there is a PCI to PCI DMA cycle, we disable these buffers.
+//A PCI to PCI DMA cycle is identified by address bit 31 = 1.
+//assign PCI_BUF_ENn = !(!BUFFER_EN || (CPU_BUS && BUFFER_EN)); // && !DEVSELn));
+assign PCI_BUF_ENn = 0;
 
-//wire CPU_WRITE = !BGn && !RnW && !PHASEA_D;
-//wire DMA_READ  =  BGn &&  RnW && !PHASEA_D;
-
-//wire CPU_READ  = !BGn &&  RnW && !PHASEA_D;
-//wire DMA_WRITE =  BGn && !RnW && !PHASEA_D;
-
-//assign PCI_BUF_DIR =  ((!BUFFER_EN && BGn) || (BUFFER_EN && ((RnW && !BGn) || (!RnW && BGn))));
-//assign PCI_BUF_DIR =  ((!BUFFER_EN && BGn) || (BUFFER_EN && (PCI_WRITE_EN && !BGn)));// || (!RnW && BGn))));
-assign PCI_BUF_DIR = (BUFFER_EN && !PCI_WRITE_EN); // && !BGn));
+wire CPU_RD_CYCLE = CPU_BUS && BUFFER_EN && !PCI_WRITE_EN;
+//wire DMA_WR_CYCLE = !CPU_BUS && BUFFER_EN && !RnW;
+assign PCI_BUF_DIR = (CPU_RD_CYCLE || !CPU_BUS);
 
 endmodule

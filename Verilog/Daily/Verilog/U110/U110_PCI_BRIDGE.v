@@ -331,7 +331,7 @@ always @(posedge CLK33) begin
                 //if (!FRAMEn && BGn_SYNC[1] && !AD31) begin
                 if (DMA_START && BGn_SYNC[1]) begin
                     //DMA cycle has started
-                    //NEED TO LATCH THE ADDRESS FROM U109!
+                    //NEED TO DRIVE TT BUS FROM HERE!
                     PCI_BB_EN <= 1;
                     DMA_CYCLE_ACTIVE <= 1;                    
                     DMA_WRITE_CYCLE <= CBE[0]; //1=Write
@@ -368,9 +368,9 @@ always @(posedge CLK33) begin
                 endcase
             end
             2'd2 : begin
+                DEVSEL_EN <= 0;
                 if (PCI_CYCLEn) begin
                     PCI_BB_EN <= 0;
-                    DEVSEL_EN <= 0;
                     DMA_STATE <= 2'd0;
                 end
             end
@@ -384,7 +384,11 @@ always @(negedge CLK33) begin
     if (!RESETn) begin
         DEVSEL_OUT <= 1;
     end else begin
-        DEVSEL_OUT <= ~DEVSEL_EN;
+        if (DEVSEL_EN) begin
+            DEVSEL_OUT <= 0;
+        end else if (PCI_CYCLEn) begin
+            DEVSEL_OUT <= 1;
+        end
     end
 end
 

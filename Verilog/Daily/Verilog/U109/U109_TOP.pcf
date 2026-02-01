@@ -73,18 +73,19 @@ set_io D[30] 106 #D30
 set_io D[31] 107 #D31
 
 #DATA TRANSFER SIGNALS
-set_io TACKn    23
-set_io TSn      29
-set_io BGn      28
-set_io TBIn     47
-set_io RnW      18
-set_io BURSTn   17
+set_io TACKn  23
+set_io TSn    29
+set_io BGn    28
+set_io BBn    32
+set_io TBIn   47
+set_io RnW    18
+set_io BURSTn 17
 
 #PCI CYCLE SIGNALS
-#set_io STOPn              10
+set_io STOPn              10
 set_io PCI_RSTn          128
 set_io CLK_ADDRESS_LATCH  41
-set_io W_LATCH_ENn        44
+set_io W_LATCH_FRAMEn     44
 set_io DEVSELn            20
 set_io PCI_TIPn           25
 set_io PCI_BUF_ENn        33

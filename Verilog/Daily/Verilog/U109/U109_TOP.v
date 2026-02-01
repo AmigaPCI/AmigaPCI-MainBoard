@@ -36,16 +36,17 @@ module U109_TOP (
     output CLK66_OUT,
 
     //Cycle Start/Terminate
-    input RESETn, TSn, RnW, BURSTn, BGn,
+    input  RESETn, RnW, BURSTn, BGn, BBn,
     output TBIn,
+    inout  TSn, 
 
     //PCI
-    input  TARGET_READYn, DEVSELn, PCI_TIPn, W_LATCH_ENn, //STOPn,
+    input  DEVSELn, PCI_TIPn, W_LATCH_FRAMEn, //W_LATCH_ENn,
     output PCI_CYCLEn, CLK_ADDRESS_LATCH, ADDRESS_DIR, ADDRESS_ENn, PCI_RSTn,
-    output BRIDGE_ENn, PCI_BUF_ENn, PCI_BUF_DIR, INIT_READYn, PARITY_DIR, PARITY_DA,
+    output BRIDGE_ENn, PCI_BUF_ENn, PCI_BUF_DIR, PARITY_DIR, PARITY_DA,
     output [2:0] PCIAT,
     output [4:0] IDSEL,
-    output TACKn,
+    inout  INIT_READYn, TARGET_READYn, TACKn, STOPn,
 
     //Busses
     inout [31:0] D,
@@ -87,6 +88,24 @@ wire BUFFER_EN;
 wire P2A_TIMEOUT;
 wire CACHE_SPACE_EN;
 
+////////////////
+// BUS OWNER //
+//////////////
+
+ //Identfiy when the CPU is actively using the bus.
+reg CPU_BUS;
+always @(posedge CLK40) begin
+    if (!RESETn) begin
+        CPU_BUS <= 1;
+    end else begin
+        if (!BGn) begin
+            CPU_BUS <= 1;
+        end else if (BBn) begin
+            CPU_BUS <= 0;
+        end
+    end
+end
+
 //////////////////////////////
 // PCI CYCLE STATE MACHINE //
 ////////////////////////////
@@ -99,23 +118,24 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .RESETn (RESETn),
     .TSn (TSn),
     .RnW (RnW),
+    .CPU_BUS (CPU_BUS),
     .REG_DATA (D[31:30]),
     .BURSTn (BURSTn),
     .PCI_TIPn (PCI_TIPn),
-    .BGn (BGn),
-    .PCI_WRITE_EN (PCI_WRITE_EN),
+    //.BGn (BGn),
+    //.PCI_WRITE_EN (PCI_WRITE_EN),
     .BRIDGE_CONF_SPACE (BRIDGE_CONF_SPACE),
     .A (AD[7:0]),
-    .P2A_FIFO_EMPTY (P2A_FIFO_EMPTY),
-    .A2P_FIFO_EMPTY (A2P_FIFO_EMPTY),
+    //.P2A_FIFO_EMPTY (P2A_FIFO_EMPTY),
+    //.A2P_FIFO_EMPTY (A2P_FIFO_EMPTY),
     .DEVSELn (DEVSELn),
     .TARGET_READYn (TARGET_READYn),
+    .STOPn (STOPn),
     .CACHE_SPACE_EN (CACHE_SPACE_EN),
-    //.STOPn (STOPn),
 
     .PCI_CYCLEn (PCI_CYCLEn),
     .BUFFER_EN (BUFFER_EN),
-    .CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
+    //.CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
     .INIT_READYn (INIT_READYn),
     .PARITY_DIR (PARITY_DIR),
     .TACKn (TACKn),
@@ -139,13 +159,14 @@ U109_BUFFERS U109_BUFFERS(
     .RnW (RnW),
     .TSn (TSn),
     .BURSTn (BURSTn),
+    .CPU_BUS (CPU_BUS),
     .DEVSELn (DEVSELn),
-    .BGn (BGn),
     .PCI_TIPn (PCI_TIPn),
     .BRIDGE_SPACE (BRIDGE_SPACE),
     .CACHE_SPACE (CACHE_SPACE),
     .BUFFER_EN (BUFFER_EN),
     .P2A_TIMEOUT (P2A_TIMEOUT),
+    .W_LATCH_FRAMEn (W_LATCH_FRAMEn),
     .P2A_DATA (P2A_DATA),
     .A2P_DATA (A2P_DATA),
 
@@ -156,6 +177,7 @@ U109_BUFFERS U109_BUFFERS(
     .PCI_BUF_DIR (PCI_BUF_DIR),
     .PCI_WRITE_EN (PCI_WRITE_EN),
     .CACHE_SPACE_EN (CACHE_SPACE_EN),
+    .CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
     .PARITY_DA (PARITY_DA),
     .IDSEL (IDSEL),
     .PCIAT (PCIAT),
@@ -188,14 +210,15 @@ U409_ADDRESS_DECODE U409_ADDRESS_DECODE
    .BRIDGE_CONF_SPACE (BRIDGE_CONF_SPACE)
 );
 
-////////////////////////
-// PCI TO AMIGA FIFO //
-//////////////////////
+//////////////////////////////
+// PCI TO AMIGA (P2A) FIFO //
+////////////////////////////
 
 //DATA_ DIRECTION
 //PCI_TO_AMIGA  = 1
 //AMIGA_TO_PCI  = 0;
-wire DATA_DIRECTION = (!BGn && !PCI_WRITE_EN);
+//wire DATA_DIRECTION = (!BGn && !PCI_WRITE_EN);
+wire DATA_DIRECTION = ((CPU_BUS && !PCI_WRITE_EN) || (!CPU_BUS && !RnW));
 wire P2A_WR_EN = (BUFFER_EN && DATA_DIRECTION && !TARGET_READYn);
 
 U109_FIFO P2A_FIFO
@@ -211,11 +234,11 @@ U109_FIFO P2A_FIFO
     .DATA_OUT (P2A_DATA) //Data out from the fifo.
 );
 
-////////////////////////
-// AMIGA TO PCI FIFO //
-//////////////////////
+//////////////////////////////
+// AMIGA TO PCI (A2P) FIFO //
+////////////////////////////
 
-wire A2P_WR_EN = (!W_LATCH_ENn && !DATA_DIRECTION);
+wire A2P_WR_EN = (!DATA_DIRECTION && ((CPU_BUS && !W_LATCH_FRAMEn) || (!CPU_BUS && !TACKn))) ;
 
 U109_FIFO A2P_FIFO
 (

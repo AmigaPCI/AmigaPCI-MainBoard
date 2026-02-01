@@ -36,20 +36,23 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 module U109_PCI_STATE_MACHINE (
 
     //Clocks
-    input CLK80, CLK66, CLK40, CLK33, RESETn, TSn, RnW,
+    input CLK80, CLK66, CLK40, CLK33, RESETn, RnW,
 
     //Cycle Start/Termination
+    input CPU_BUS,
     input [1:0] REG_DATA,
-    input BURSTn, PCI_TIPn, BGn, PCI_WRITE_EN, BRIDGE_CONF_SPACE,
+    input BURSTn, PCI_TIPn, BGn, BRIDGE_CONF_SPACE, //PCI_WRITE_EN, 
     input [7:0] A,
 
     //FIFO
     input P2A_FIFO_EMPTY, A2P_FIFO_EMPTY,
 
     //PCI Signals
-    input DEVSELn, TARGET_READYn, CACHE_SPACE_EN, //STOPn,
-    output CLK_ADDRESS_LATCH, INIT_READYn, TACKn, TBIn, PARITY_DIR, PCI_RSTn,
-    output reg P2A_READ_NEXT, A2P_READ_NEXT, TCI_ENn, BUFFER_EN, P2A_TIMEOUT, PCI_CYCLEn
+    input DEVSELn, CACHE_SPACE_EN,
+    output TACKn, TBIn, PARITY_DIR, PCI_RSTn, //CLK_ADDRESS_LATCH,
+    output reg P2A_READ_NEXT, A2P_READ_NEXT, TCI_ENn, BUFFER_EN, P2A_TIMEOUT, PCI_CYCLEn, TS_OUT_EN,
+
+    inout TSn, INIT_READYn, TARGET_READYn, STOPn
 
     ,output reg TP0, output TP1
 );
@@ -72,23 +75,39 @@ localparam BRIDGE_REGISTER_ADDRESS  = 8'hfc;
 // WIRE ASSIGNMENTS //
 /////////////////////
 
-assign CLK_ADDRESS_LATCH = 0;
-assign INIT_READYn = !BGn ? !(INIT_EN) : 1'bz;
-assign PARITY_DIR = (PCI_CYCLEn || A2P_CYCLE_EN) ? AMIGA_TO_PCI : PCI_TO_AMIGA;
+//assign CLK_ADDRESS_LATCH = 0;
+assign INIT_READYn   =  CPU_BUS ? ~INIT_EN   : 1'bz;
+assign TARGET_READYn = !CPU_BUS ? ~TRDY_EN   : 1'bz;
+assign STOPn         = !CPU_BUS ? ~STOP_EN   : 1'bz;
+assign TSn           = !CPU_BUS ? ~TS_OUT_EN : 1'bz;
 
-/////////////////////////////////
-// AMIGA TO PCI STATE MACHINE //
-///////////////////////////////
+assign PARITY_DIR    = (PCI_CYCLEn || A2P_CYCLE_EN) ? AMIGA_TO_PCI : PCI_TO_AMIGA;
 
-//------ CPU R/W cycle synchornizer ------
-reg [1:0] PCI_WRITE_EN_SYNC;
+///////////////////////////////////////
+// AMIGA TO PCI (A2P) STATE MACHINE //
+/////////////////////////////////////
+
+//------ R/W cycle synchornizer ------
+//Data moves from the Amiga bus to the PCI bus during CPU writes or DMA reads.
+wire A2P_EN = CPU_BUS ? ~RnW : RnW;
+reg PREV_CLK33;
+reg [1:0] A2P_SYNC;
 always @(negedge CLK66) begin
     if (!RESETn) begin
-        PCI_WRITE_EN_SYNC <= 2'b0;
+        PREV_CLK33 <= 0;
+        A2P_SYNC <= 2'b0;
     end else begin
-        PCI_WRITE_EN_SYNC <= {PCI_WRITE_EN_SYNC[0], PCI_WRITE_EN};
+        PREV_CLK33 <= CLK33;
+        A2P_SYNC <= {A2P_SYNC[0], A2P_EN};
     end
 end
+
+//------ Drive PCI_CYCLEn ------
+//PCI_CYCLEn conditions many important signals for the PCI cycle.
+//It also is the handshaking signal to U110 that indicates when
+//a PCI cycle is active. It tells U110 when to negate _FRAME and
+//_DEVSEL. In U109, it causes the address latch/conditin to be held
+//during the cycle so we don't drop buffers.
 
 //_STOP may asserted by the target device as a means to terminate the cycle.
 //It takes precedence over our wishes. If the target device
@@ -97,7 +116,9 @@ end
 //If _STOP is asserted _TRDY is asserted, well,
 //that's a problem and will need to result in a bus error.
 //wire PCI_CYCLE_RST = (!RESETn || !STOPn || PCI_CYCLE_END);
-wire PCI_CYCLE_RST = (!RESETn || PCI_CYCLE_END);
+
+//PCI_CYCLE_END terminates CPU driven cycles, TRDY_COMPLETE terminates DMA cycles.
+wire PCI_CYCLE_RST = (!RESETn || PCI_CYCLE_END || TRDY_COMPLETE);
 always @(posedge CLK33 or posedge PCI_CYCLE_RST) begin
     if (PCI_CYCLE_RST) begin
         PCI_CYCLEn <= 1;
@@ -109,12 +130,14 @@ always @(posedge CLK33 or posedge PCI_CYCLE_RST) begin
 end
 
 //Capture _TRDY so we can sample it on the falling edge.
-reg TARGET_RDY_DELAY;
+reg TARGET_RDY_DELAY, INIT_READY_DELAY;
 always @(posedge CLK33) begin
     if (!RESETn) begin
         TARGET_RDY_DELAY <= 0;
+        INIT_READY_DELAY <= 0;
     end else begin
-        TARGET_RDY_DELAY <= !(TARGET_READYn);
+        TARGET_RDY_DELAY <= ~TARGET_READYn;
+        INIT_READY_DELAY <= ~INIT_READYn;
     end
 end
 
@@ -125,78 +148,115 @@ end
 //This state machine also pushes data to the AD bus.
 
 wire P2A_RST = (!RESETn || P2A_CYCLE_RST);
-reg INIT_EN, A2P_CYCLE_EN, P2A_CYCLE_EN, PCI_CYCLE_EN, A2P_TIMEOUT;
+wire BURST_CYCLE_EN = (CACHE_SPACE_EN || (!CPU_BUS && !BURSTn));
+reg INIT_EN, A2P_CYCLE_EN, P2A_CYCLE_EN, PCI_CYCLE_EN, TS_EN, A2P_TIMEOUT;
+reg A2P_BURST_CYCLE, P2A_BURST_CYCLE;
 reg [3:0] PCI_CYCLE_STATE;
 always @(negedge CLK33 or posedge P2A_RST) begin
     if (P2A_RST) begin
         INIT_EN <= 0;
+        TS_EN <= 0;
         BUFFER_EN <= 0;
         A2P_READ_NEXT <= 0;
         A2P_CYCLE_EN <= 0;
         P2A_CYCLE_EN <= 0;
         PCI_CYCLE_EN <= 0;
         A2P_TIMEOUT <= 0;
+        A2P_BURST_CYCLE <= 0;
+        P2A_BURST_CYCLE <= 0;
         PCI_CYCLE_STATE <= 4'h0;
     end else begin
+
+        A2P_READ_NEXT <= 0;
+
         case (PCI_CYCLE_STATE)
-            4'h0 : begin
+            4'h0: begin
                 if (!PCI_TIPn) begin
-                    INIT_EN <= 1;
-                    BUFFER_EN <= 1;
-                    PCI_CYCLE_EN <= 1;
-                    A2P_TIMEOUT <= 0;
+                    PCI_CYCLE_EN    <= 1;
+                    BUFFER_EN       <= 1; //Also holds BRIDGE_ENn asserted.
+                    INIT_EN         <= CPU_BUS;
                     PCI_CYCLE_STATE <= 4'h1;
                 end
             end
-            4'h1 : begin
-                if (PCI_WRITE_EN_SYNC[1]) begin
-                    A2P_CYCLE_EN <= 1;
-                    P2A_CYCLE_EN <= 0;
-                end else begin
-                    A2P_CYCLE_EN <= 0;
-                    P2A_CYCLE_EN <= 1;
+            4'h1: begin
+                //TRDY_COMPLETE is a stop gap for lack of handshaking with SDRAM during P2A DMA cycles.
+                //Get rid of this when we have this handshaking.
+                //A2P_CYCLE_EN    <=  A2P_SYNC[1];
+                //P2A_CYCLE_EN    <= ~A2P_SYNC[1];
+                //A2P_BURST_CYCLE <= ( A2P_SYNC[1] && BURST_CYCLE_EN);
+                //P2A_BURST_CYCLE <= (!A2P_SYNC[1] && BURST_CYCLE_EN);
+                if (CPU_BUS || (A2P_SYNC[1] || TRDY_COMPLETE)) begin
+                    A2P_CYCLE_EN    <=  A2P_SYNC[1];
+                    P2A_CYCLE_EN    <= ~A2P_SYNC[1];
+                    A2P_BURST_CYCLE <= ( A2P_SYNC[1] && BURST_CYCLE_EN);
+                    P2A_BURST_CYCLE <= (!A2P_SYNC[1] && BURST_CYCLE_EN);
+                    PCI_CYCLE_STATE <= 4'h2;
+                    TS_EN <= !CPU_BUS;
                 end
-                PCI_CYCLE_STATE <= 4'h2;
             end
-            4'h2 : begin
-                //Watch for A2P cycle termination.
-                //P2A cycle is terminated via the asynchronous reset.
+            4'h2: begin
+                //P2A cycles stop here.
+                //A2P cycles continue on.
                 PCI_CYCLE_EN <= 0;
                 if (A2P_CYCLE_EN) begin
-                    A2P_TIMEOUT <= (PCI_TIPn && DEVSELn);
-                    if (TARGET_RDY_DELAY || A2P_TIMEOUT) begin
-                        INIT_EN <= 0;
-                        A2P_READ_NEXT <= 1;
-                        A2P_CYCLE_EN <= 0;
-                        BUFFER_EN <= 0;
-                        A2P_TIMEOUT <= 0;
+                    if (TARGET_RDY_DELAY || A2P_TIMEOUT) begin //Word 1
+                        A2P_READ_NEXT   <= 1;
+                        INIT_EN         <= 0;
+                        TS_EN           <= 0;
                         PCI_CYCLE_STATE <= 4'h3;
+                    end else begin
+                        A2P_TIMEOUT <= (PCI_TIPn && DEVSELn);
                     end
                 end
             end
-            4'h3 : begin
-                A2P_READ_NEXT <= 0;
+            4'h3: begin
+                if (A2P_TIMEOUT || !A2P_BURST_CYCLE) begin
+                    A2P_CYCLE_EN    <= 0;
+                    BUFFER_EN       <= 0;
+                    A2P_TIMEOUT     <= 0;
+                    PCI_CYCLE_STATE <= 4'h0;
+                end else if (TARGET_RDY_DELAY) begin //Word 2
+                    A2P_READ_NEXT   <= 1;
+                    PCI_CYCLE_STATE <= 4'h4;
+                end
+            end
+            4'h4: begin
+                if (TARGET_RDY_DELAY) begin //Word 3
+                    A2P_READ_NEXT   <= 1;
+                    PCI_CYCLE_STATE <= 4'h5;
+                end
+            end
+            4'h5: begin
+                if (TARGET_RDY_DELAY) begin //Word 4
+                    A2P_READ_NEXT   <= 1;
+                    PCI_CYCLE_STATE <= 4'h6;
+                end
+            end
+            4'h6: begin
+                A2P_CYCLE_EN    <= 0;
+                BUFFER_EN       <= 0;
                 PCI_CYCLE_STATE <= 4'h0;
             end
         endcase
     end
 end
 
-/////////////////////////////////
-// PCI TO AMIGA STATE MACHINE //
-///////////////////////////////
+///////////////////////////////////////
+// PCI TO AMIGA (P2A) STATE MACHINE //
+/////////////////////////////////////
+
+//CPU read or DMA write.
 
 //Push data to the Amiga bus on the 40MHz clock.
-reg P2A_CYCLE_RST, PREV_CLK, BURST_CYCLE, READ_NEXT_COUNT;
+reg P2A_CYCLE_RST, PREV_CLK40, READ_NEXT_COUNT;
 reg [1:0] P2A_CYCLE_SYNC, PCI_TIPn_SYNC;
 reg [3:0] P2A_CYCLE_STATE;
 always @(negedge CLK80) begin
     if (!RESETn) begin
-        PREV_CLK <= 0;
+        PREV_CLK40 <= 0;
         TCI_ENn <= 1;
         P2A_READ_NEXT <= 0;
         P2A_CYCLE_RST <= 0;
-        BURST_CYCLE <= 0;
         READ_NEXT_COUNT <= 0;
         P2A_TIMEOUT <= 0;
         P2A_CYCLE_SYNC <= 2'b0;
@@ -207,14 +267,13 @@ always @(negedge CLK80) begin
         PCI_TIPn_SYNC <= {PCI_TIPn_SYNC[0], PCI_TIPn};
 
         //Get the 40MHz clock state. Capture this on the falling edge.
-        PREV_CLK <= CLK40;
+        PREV_CLK40 <= CLK40;
 
         //------ PCI to Amiga state machine ------
         case (P2A_CYCLE_STATE)
             4'h0 : begin
                 if (P2A_CYCLE_SYNC[1] || P2A_CYCLE_SYNC[0]) begin
                     TCI_ENn <= 0;
-                    BURST_CYCLE <= (!BURSTn && CACHE_SPACE_EN);
                     P2A_TIMEOUT <= 0;
                     P2A_CYCLE_STATE <= 4'h1;
                 end else begin
@@ -224,9 +283,9 @@ always @(negedge CLK80) begin
                 end
             end
             4'h1 : begin
-                 if (TACK_COUNT[0]) begin //Word 1
+                 if (CPU_TACK0 || DMA_TRDY0) begin //Word 1
                     //if (STOP_CYCLE || !BURST_CYCLE) begin
-                    if (!BURST_CYCLE) begin
+                    if (!P2A_BURST_CYCLE) begin
                         P2A_CYCLE_STATE <= 4'h8;
                     end else begin
                         READ_NEXT_COUNT <= 0;
@@ -241,12 +300,12 @@ always @(negedge CLK80) begin
                 P2A_CYCLE_STATE <= 4'h3;
             end
             4'h3 : begin
-                if (TACK_COUNT[1]) begin //Word 2
+                if (CPU_TACK1 || DMA_TRDY1) begin //Word 2
                     READ_NEXT_COUNT <= 0;
                     P2A_CYCLE_STATE <= 4'h4;
                 end else begin
-                    READ_NEXT_COUNT <= 1;
-                    P2A_READ_NEXT <= READ_NEXT_COUNT ? 0 : 1;                  
+                    READ_NEXT_COUNT <= 1;                 
+                    P2A_READ_NEXT <= !READ_NEXT_COUNT;
                 end
             end
             4'h4 : begin
@@ -254,12 +313,12 @@ always @(negedge CLK80) begin
                 P2A_CYCLE_STATE <= 4'h5;
             end
             4'h5 : begin
-                if (TACK_COUNT[2]) begin //Word 3
+                if (CPU_TACK2 || DMA_TRDY2) begin //Word 3
                     READ_NEXT_COUNT <= 0;
                     P2A_CYCLE_STATE <= 4'h6;
                 end else begin
                     READ_NEXT_COUNT <= 1;
-                    P2A_READ_NEXT <= READ_NEXT_COUNT ? 0 : 1;
+                    P2A_READ_NEXT <= !READ_NEXT_COUNT;
                 end
             end
             4'h6 : begin
@@ -267,24 +326,63 @@ always @(negedge CLK80) begin
                 P2A_CYCLE_STATE <= 4'h7;
             end
             4'h7 : begin
-                if (TACK_COUNT[3]) begin //Word 4
+                if (CPU_TACK3 || DMA_TRDY3) begin //Word 4
                     READ_NEXT_COUNT <= 0;
                     P2A_CYCLE_STATE <= 4'h8;
                 end else begin
                     READ_NEXT_COUNT <= 1;
-                    P2A_READ_NEXT <= READ_NEXT_COUNT ? 0 : 1;
+                    P2A_READ_NEXT <= !READ_NEXT_COUNT;
                 end
             end
             4'h8 : begin
                 TCI_ENn <= 1;
-                P2A_READ_NEXT <= !(P2A_TIMEOUT);
-                P2A_TIMEOUT <= 0;
+                P2A_READ_NEXT <= !P2A_TIMEOUT;
                 P2A_CYCLE_SYNC <= 2'b0;
                 P2A_CYCLE_STATE <= 4'h9;
             end
             4'h9 : begin
+                P2A_TIMEOUT <= 0;
                 P2A_CYCLE_RST <= 1;
                 P2A_CYCLE_STATE <= 4'h0;
+            end
+        endcase
+    end
+end
+
+//////////////////////////////////
+// DMA AMIGA BUS STATE MACHINE //
+////////////////////////////////
+
+//During DMA cycles, we need to assert _TS to start the cycle
+//on the AmigaPCI bus.
+
+//reg TS_OUT_EN;
+reg [1:0] TS_EN_SYNC, TS_STATE;
+always @(posedge CLK80) begin
+    if (!RESETn) begin
+        TS_OUT_EN  <= 0;
+        TS_EN_SYNC <= 2'b0;
+        TS_STATE   <= 2'b0;
+    end else begin
+        TS_EN_SYNC <= {TS_EN_SYNC[0], TS_EN};
+        case (TS_STATE)
+            2'd0 : begin
+                if (TS_EN_SYNC != 2'b0) begin
+                    TS_OUT_EN <= 1;
+                    TS_STATE <= 2'd1;
+                end
+            end
+            2'd1 : begin
+                TS_STATE <= 2'd2;
+            end
+            2'd2 : begin
+                TS_OUT_EN <= 0;
+                TS_STATE <= 2'd3;
+            end
+            2'd3 : begin
+                if (TS_EN_SYNC == 2'b0) begin
+                    TS_STATE <= 2'd0;
+                end
             end
         endcase
     end
@@ -315,12 +413,13 @@ always @(posedge CLK40 or posedge REG_CYCLE_START) begin
         if (REG_CYCLE) begin
             PCI_RST_REG <= REG_DATA[1];
             BREQ_TEST   <= REG_DATA[0]; //THIS IS JUST FOR TESTING, NOT AN ACTUAL REGISTER!
-            REG_CYCLE <= 0;
+            REG_CYCLE   <= 0;
         end
     end    
 end
 
-//THIS IS JUST FOR TESTING!
+//THIS IS JUST FOR TESTING THE ARBITER!
+//DELETE THIS LATER
 reg [3:0] BREQ_COUNT;
 always @(negedge CLK33) begin
     if (!RESETn) begin
@@ -340,37 +439,209 @@ always @(negedge CLK33) begin
     end
 end
 
-////////////////////////
-// CYCLE TERMINATION //
-//////////////////////
+////////////////////////////
+// DMA CYCLE TERMINATION //
+//////////////////////////
+
+//------ Count _TACK assertions ------
+//During A2P DMA cycles, we capture the number of times _TACK was
+//asserted by the AmigaPCI bus in the 40MHz domain.
+//These are the responding target devices. This value is then
+//synchronized into the 33MHz domain to driver assertion of _TRDY.
+//In the event of an P2A DMA cycle, we enable all TRDY assertions
+//simultaneously. This will allow us to assert _TRDY either 1 or 4
+//times, based on whether this is a burst cycle. This will fill the FIFO.
+
+wire DMA_TACK_RST = (!RESETn || TRDY_RST || P2A_CYCLE_RST);
+reg [1:0] TACK_POINTER;
+reg [3:0] DMA_TACK_COUNT;
+always @(posedge CLK40, posedge DMA_TACK_RST) begin
+    if (DMA_TACK_RST) begin
+        TACK_POINTER   <= 2'b0;
+        DMA_TACK_COUNT <= 4'h0;
+    end else begin
+        if (!CPU_BUS) begin
+            if (P2A_CYCLE_EN) begin
+                DMA_TACK_COUNT <= 4'b1111;
+            end else if (!TACKn) begin
+                TACK_POINTER <= TACK_POINTER + 1;
+                case (TACK_POINTER)
+                    2'd0 : DMA_TACK_COUNT[0] <= 1;
+                    2'd1 : DMA_TACK_COUNT[1] <= 1;
+                    2'd2 : DMA_TACK_COUNT[2] <= 1;
+                    2'd3 : DMA_TACK_COUNT[3] <= 1;
+                endcase
+            end
+        end else begin
+            DMA_TACK_COUNT <= 4'h0;
+        end
+    end
+end
+
+//------ Assert TRDY on PCI bus ------
+//During DMA cycles to the AmigaPCI, we need to assert
+//_TRDY on the PCI bus once we have driven data for read
+//cycles or latched data for write cycles.
+
+//For DMA write cycles, we count the number of
+//_TRDY assertions so we know when we can start the Amiga side
+//of the cycle. PCI can insert waits at any time. Since we can't
+//predict when those waits will happen, we need to wait for all
+//expected assertions of _TRDY before we can start the Amiga side of the
+//cycle. For bursts, this is a very slow and temporary solution. 
+//A handshaking signal needs to be added. Once a handshaking signal
+//is added, we should be able to drop the TRDY_COMPLETE wire.
+
+wire DMA_TRDY0 = (INIT_READY_DELAY && (TACK_COUNT_SYNC[4] || TACK_COUNT_SYNC[0]));
+wire DMA_TRDY1 = (INIT_READY_DELAY && (TACK_COUNT_SYNC[5] || TACK_COUNT_SYNC[1]));
+wire DMA_TRDY2 = (INIT_READY_DELAY && (TACK_COUNT_SYNC[6] || TACK_COUNT_SYNC[2]));
+wire DMA_TRDY3 = (INIT_READY_DELAY && (TACK_COUNT_SYNC[7] || TACK_COUNT_SYNC[3]));
+
+reg TRDY_EN, TRDY_RST, STOP_EN, TRDY_COMPLETE;
+reg [3:0] TRDY_STATE;
+reg [7:0] TACK_COUNT_SYNC;
+always @(posedge CLK66) begin
+    if (!RESETn) begin
+        TRDY_EN         <= 0;
+        TRDY_RST        <= 0;
+        TRDY_COMPLETE   <= 0;
+        TACK_COUNT_SYNC <= 8'h0;
+        TRDY_STATE      <= 4'h0;
+    end else begin
+
+        if (TRDY_RST) begin
+            TACK_COUNT_SYNC <= 8'h0;
+        end else begin
+            TACK_COUNT_SYNC <= {TACK_COUNT_SYNC[3:0], DMA_TACK_COUNT};
+        end
+
+        case (TRDY_STATE)
+            4'h0: begin
+                TRDY_COMPLETE <= 0;
+                if (DMA_TRDY0 && PREV_CLK33) begin //First word.
+                    TRDY_EN <= 1;
+                    STOP_EN <= BURSTn;
+                    TRDY_STATE <= 4'h1;
+                end
+            end
+            4'h1 : begin
+                if (!BURSTn) begin
+                    TRDY_STATE <= 4'h2;
+                end else begin
+                    TRDY_STATE <= 4'h8;
+                end
+            end
+            4'h2: begin
+                if (DMA_TRDY1 && PREV_CLK33) begin //Second word.
+                    TRDY_EN <= 1;
+                    TRDY_STATE <= 4'h3;
+                end else begin
+                    TRDY_EN <= 0;
+                end
+            end
+            4'h3 : begin
+                TRDY_STATE <= 4'h4;
+            end
+            4'h4: begin
+                if (DMA_TRDY2 && PREV_CLK33) begin //Third word.
+                    TRDY_EN <= 1;
+                    TRDY_STATE <= 4'h5;
+                end else begin
+                    TRDY_EN <= 0;
+                end
+            end
+            4'h5 : begin
+                TRDY_STATE <= 4'h6;
+            end
+            4'h6: begin
+                if (DMA_TRDY3 && PREV_CLK33) begin //Fourth word.
+                    TRDY_EN <= 1;
+                    STOP_EN <= 1;
+                    TRDY_STATE <= 4'h7;
+                end else begin
+                    TRDY_EN <= 0;
+                end
+            end
+            4'h7 : begin
+                TRDY_STATE <= 4'h8;
+            end
+            4'h8 : begin
+                TRDY_EN <= 0;
+                STOP_EN <= 0;
+                //TRDY_RST <= 1;
+                TRDY_RST <= A2P_CYCLE_EN; //Only reset during A2P cycles! P2A cycles have a different reset condition.
+                TRDY_COMPLETE <= 1;
+                TRDY_STATE <= 4'h9;
+            end
+            4'h9 : begin
+                TRDY_RST <= 0;
+                TRDY_STATE <= 4'h0;
+            end
+        endcase
+    end
+end
+
+////////////////////////////
+// P2A CYCLE TERMINATION //
+//////////////////////////
 
 //------ Count _TRDY assertions ------
 //We capture the number of target ready assertions in the 
-//33MHz domain. It should never exceed 4. This value is then 
+//33MHz domain. It should never exceed 4.
+
+//For CPU read cycles, This value is then 
 //synchrnonized into the 80MHz domain for assertion of _TACK.
 //The target ready count is asynchronously reset from the 80MHz
 //domain once each data transfer has been terminated.
 
-wire TRDY_RST = (!RESETn || TACK_RST);
-reg PCI_CYCLE_END;
+wire CPU_TRDY_RST = (!RESETn || TACK_RST);
+reg PCI_CYCLE_END; //, TRDY_COMPLETE;
 reg [1:0] TRDY_POINTER;
-reg [3:0] TRDY_COUNT;
-always @(posedge CLK33 or posedge TRDY_RST) begin
-    if (TRDY_RST) begin
+reg [3:0] CPU_TRDY_COUNT;
+always @(posedge CLK33 or posedge CPU_TRDY_RST) begin
+    if (CPU_TRDY_RST) begin
         PCI_CYCLE_END <= 1;
-        TRDY_COUNT <= 4'h0;
-        TRDY_POINTER <= 2'h0;
+        //TRDY_COMPLETE <= 0;
+        CPU_TRDY_COUNT <= 4'h0;
+        TRDY_POINTER <= 2'd0;
     end else begin
-        if (!TARGET_READYn || A2P_TIMEOUT) begin
+        if (CPU_BUS && (!TARGET_READYn || A2P_TIMEOUT)) begin
+        //if (!TARGET_READYn || A2P_TIMEOUT) begin
             TRDY_POINTER <= TRDY_POINTER + 1;
             case (TRDY_POINTER)
-                2'h00 : TRDY_COUNT[0] <= 1;
-                2'h01 : TRDY_COUNT[1] <= 1;
-                2'h02 : begin TRDY_COUNT[2] <= 1; PCI_CYCLE_END <= 1; end
-                2'h03 : TRDY_COUNT[3] <= 1;
+                2'h0 : CPU_TRDY_COUNT[0] <= 1;
+                2'h1 : CPU_TRDY_COUNT[1] <= 1;
+                2'h2 : begin CPU_TRDY_COUNT[2] <= 1; PCI_CYCLE_END <= 1; end
+                2'h3 : CPU_TRDY_COUNT[3] <= 1;
+                /*2'd0: begin
+                    if (CPU_BUS) begin
+                        CPU_TRDY_COUNT[0] <= 1;
+                    end else begin
+                        TRDY_COMPLETE <= ~BURSTn;
+                    end
+                end
+                2'd1: begin
+                    if (CPU_BUS) begin
+                        CPU_TRDY_COUNT[1] <= 1;
+                    end
+                end
+                2'd2: begin
+                    if (CPU_BUS) begin
+                        CPU_TRDY_COUNT[2] <= 1;
+                        PCI_CYCLE_END     <= 1;
+                    end
+                end
+                2'd3: begin
+                    if (CPU_BUS) begin
+                        CPU_TRDY_COUNT[3] <= 1;
+                    end else begin
+                        TRDY_COMPLETE <= 1;
+                    end
+                end*/
             endcase
         end else begin
             PCI_CYCLE_END <= 0;
+            //TRDY_COMPLETE <= 0;
         end
     end
 end
@@ -405,58 +676,60 @@ always @(posedge CLK80 or posedge TBI_SET) begin
     end
 end*/
 
-//------ Cycle termination (_TACK) ------
-//Cycles can be terminated either by normal assertion of _TRDY by
+//------ CPU cycle termination (_TACK) ------
+//CPU cycles can be terminated either by normal assertion of _TRDY by
 //the PCI device or by timeout where no PCI device claims the bus.
 
 assign TACKn = TACK_EN ? TACK_OUT : 1'bz;
-assign TBIn  = (TACK_EN && !BURST_CYCLE) ? TACK_OUT : 1'bz;
+//assign TBIn  = (TACK_EN && !BURST_CYCLE) ? TACK_OUT : 1'bz;
+assign TBIn  = (TACK_EN && !P2A_BURST_CYCLE) ? TACK_OUT : 1'bz;
 
-wire TACK0 = ((TRDY_COUNT_SYNC[4] || TRDY_COUNT_SYNC[0]) || P2A_TIMEOUT);
-wire TACK1 = ((TRDY_COUNT_SYNC[5] || TRDY_COUNT_SYNC[1]) || P2A_TIMEOUT);
-wire TACK2 = ((TRDY_COUNT_SYNC[6] || TRDY_COUNT_SYNC[2]) || P2A_TIMEOUT);
-wire TACK3 = ((TRDY_COUNT_SYNC[7] || TRDY_COUNT_SYNC[3]) || P2A_TIMEOUT);
+wire CPU_TACK0 = ((TRDY_COUNT_SYNC[4] || TRDY_COUNT_SYNC[0]) || P2A_TIMEOUT);
+wire CPU_TACK1 = ((TRDY_COUNT_SYNC[5] || TRDY_COUNT_SYNC[1]) || P2A_TIMEOUT);
+wire CPU_TACK2 = ((TRDY_COUNT_SYNC[6] || TRDY_COUNT_SYNC[2]) || P2A_TIMEOUT);
+wire CPU_TACK3 = ((TRDY_COUNT_SYNC[7] || TRDY_COUNT_SYNC[3]) || P2A_TIMEOUT);
 
 reg TACK_EN, TACK_OUT, TACK_RST;
-reg [3:0] TACK_STATE, TACK_COUNT;
+reg [3:0] TACK_STATE; //, TACK_COUNT;
 reg [7:0] TRDY_COUNT_SYNC;
 always @(posedge CLK80) begin
     if (!RESETn) begin
-        TACK_EN <= 0;
+        TACK_EN  <= 0;
         TACK_OUT <= 1;
         TACK_RST <= 0;
-        TACK_COUNT <= 4'h0;
+        //TACK_COUNT      <= 4'h0;
         TRDY_COUNT_SYNC <= 8'h0;
-        TACK_STATE <= 4'h0;
+        TACK_STATE      <= 4'h0;
     end else begin
 
         if (TACK_RST) begin
             TRDY_COUNT_SYNC <= 8'h0;
         end else begin
-            TRDY_COUNT_SYNC <= {TRDY_COUNT_SYNC[3:0], TRDY_COUNT};
+            TRDY_COUNT_SYNC <= {TRDY_COUNT_SYNC[3:0], CPU_TRDY_COUNT};
         end
 
         case (TACK_STATE)
             4'h0 : begin
-                if ((TACK0) && !PREV_CLK) begin //First word
+                if ((CPU_TACK0) && !PREV_CLK40) begin //First word
                     TACK_EN <= 1;
                     TACK_OUT <= 0;
-                    TACK_COUNT[0] <= 1;
+                    //TACK_COUNT[0] <= 1;
                     TACK_STATE <= 4'h1;
                 end
             end
             4'h1 : begin
                 //if (BURSTn || STOP_CYCLE) begin
-                if (!BURST_CYCLE) begin
+                //if (!BURST_CYCLE) begin
+                if (!P2A_BURST_CYCLE) begin
                     TACK_STATE <= 4'h8;
                 end else begin
                     TACK_STATE <= 4'h2;
                 end
             end
             4'h2 : begin
-                if ((TACK1) && !PREV_CLK) begin //Second word
+                if ((CPU_TACK1) && !PREV_CLK40) begin //Second word
                     TACK_OUT <= 0;
-                    TACK_COUNT[1] <= 1;
+                    //TACK_COUNT[1] <= 1;
                     TACK_STATE <= 4'h3;
                 end else begin
                     TACK_OUT <= 1;
@@ -466,9 +739,9 @@ always @(posedge CLK80) begin
                 TACK_STATE <= 4'h4;
             end
             4'h4 : begin
-                if ((TACK2) && !PREV_CLK) begin //Third word
+                if ((CPU_TACK2) && !PREV_CLK40) begin //Third word
                     TACK_OUT <= 0;
-                    TACK_COUNT[2] <= 1;
+                    //TACK_COUNT[2] <= 1;
                     TACK_STATE <= 4'h5;
                 end else begin
                     TACK_OUT <= 1;
@@ -478,9 +751,9 @@ always @(posedge CLK80) begin
                 TACK_STATE <= 4'h6;
             end
             4'h6 : begin
-                if ((TACK3) && !PREV_CLK) begin //Fourth word
+                if ((CPU_TACK3) && !PREV_CLK40) begin //Fourth word
                     TACK_OUT <= 0;
-                    TACK_COUNT[3] <= 1;
+                    //TACK_COUNT[3] <= 1;
                     TACK_STATE <= 4'h7;
                 end else begin
                     TACK_OUT <= 1;
@@ -497,7 +770,7 @@ always @(posedge CLK80) begin
             4'h9 : begin
                 TACK_EN <= 0;
                 TACK_RST <= 0;
-                TACK_COUNT <= 4'h0;
+                //TACK_COUNT <= 4'h0;
                 TACK_STATE <= 4'h0;
             end
         endcase

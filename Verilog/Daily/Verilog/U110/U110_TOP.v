@@ -94,6 +94,7 @@ wire CPU_BUS = (!BGn || (!BBn && !BB_EN));
 assign DEVSEL_OUTn = DEVSELn; //Communicates DEVSELn to U109.
 
 //BUSDIR = 1 = PCI HAS BUS
+//assign TT = BUSDIR ? xxxx : 2'bz;
 assign BBn = BUSDIR ? ~BB_EN : 1'bz;
 assign SIZ = BUSDIR ? SIZ_OUT : 2'bz;
 assign RnW = BUSDIR ? ~DMA_WRITE_CYCLE : 1'bz;
