@@ -44,7 +44,7 @@ module U109_BUFFERS
     input [31:0] A2P_DATA, P2A_DATA,
 
     //PCI Signals
-    input DEVSELn, PCI_TIPn, BRIDGE_SPACE, CACHE_SPACE, BUFFER_EN, P2A_TIMEOUT, W_LATCH_FRAMEn,
+    input DEVSELn, PCI_TIPn, BRIDGE_SPACE, CACHE_SPACE, BUFFER_EN, P2A_TIMEOUT, W_LATCH_FRAMEn, RETRY_CYCLE,
     output ADDRESS_ENn, PCI_BUF_ENn, PCI_BUF_DIR, ADDRESS_DIR,
     output reg PARITY_DA, PCI_WRITE_EN, CACHE_SPACE_EN, CLK_ADDRESS_LATCH,
     output [4:0] IDSEL,
@@ -81,6 +81,7 @@ localparam CONFIG1_ACCESS   = 3'b001;
 localparam MEM_ACCESS       = 3'b010;
 localparam IO_ACCESS        = 3'b011;
 localparam CACHE_ACCESS     = 3'b100;
+localparam RETRY_ACCESS     = 3'b111;
 
 ////////////////////
 // ADDRESS LATCH //
@@ -89,7 +90,7 @@ localparam CACHE_ACCESS     = 3'b100;
 //The on board address buffers are enabled any time the PCI state machine is idle.
 //The direction of the data is determined by who has the bus.
 
-reg ADDRESS_VALID;
+/*reg ADDRESS_VALID;
 reg [1:0] PHASEn_SYNC;
 reg [2:0] PCIAT_LATCHED;
 reg [31:0] A_LATCH;
@@ -123,8 +124,64 @@ always @(negedge CLK40) begin
             end
         end
     end
+end*/
+
+reg CPU_ADDRESS_VALID;
+reg [1:0] PHASEn_SYNC;
+reg [2:0] PCIAT_LATCHED;
+reg [31:0] A_LATCH;
+always @(negedge CLK40) begin
+    if (!RESETn) begin
+        CPU_ADDRESS_VALID <= 0;
+        PCI_WRITE_EN <= 0;
+        PCIAT_LATCHED <= MEM_ACCESS;
+        CACHE_SPACE_EN <= 0;
+        A_LATCH <= 32'h0;
+        PHASEn_SYNC <= 2'b11;
+    end else begin
+        PHASEn_SYNC <= {PHASEn_SYNC[0], !BUFFER_EN};        
+        if (CPU_ADDRESS_VALID) begin
+            if (!PHASEn_SYNC[1]) begin
+                CPU_ADDRESS_VALID <= 0;
+            end
+        end else begin
+            if (CPU_BUS && !TSn && BRIDGE_SPACE) begin
+                A_LATCH <= AD;
+                CPU_ADDRESS_VALID <= 1;
+                PCI_WRITE_EN <= !(RnW);
+                CACHE_SPACE_EN <= CACHE_SPACE;
+                case (AD[29:20])
+                    CONF0_ADD_SPACE : PCIAT_LATCHED <= CONFIG0_ACCESS;
+                    CONF1_ADD_SPACE : PCIAT_LATCHED <= CONFIG1_ACCESS;
+                    IO_ADD_LO_SPACE : PCIAT_LATCHED <= IO_ACCESS;
+                    IO_ADD_HI_SPACE : PCIAT_LATCHED <= IO_ACCESS;
+                    default         : PCIAT_LATCHED <= (CACHE_SPACE && !BURSTn) ? CACHE_ACCESS : MEM_ACCESS;
+                endcase
+            end
+        end
+    end
 end
 
+//////////////////////////////////////////
+// ENABLE THE ADDRESS FOR RETRY CYCLES //
+////////////////////////////////////////
+
+//For retry cycles, the address is already latched.
+
+reg RETRY_ADDRESS_VALID;
+always @(posedge CLK33, posedge RETRY_CYCLE) begin
+    if (RETRY_CYCLE) begin
+        RETRY_ADDRESS_VALID <= 1;
+    end else if (!RESETn || BUFFER_EN) begin
+        RETRY_ADDRESS_VALID <= 0;
+    end
+end
+
+///////////////////////
+// ADDRESSING WIRES //
+/////////////////////
+
+wire ADDRESS_VALID = (CPU_ADDRESS_VALID || RETRY_ADDRESS_VALID);
 wire CONFIG0_SPACE = (A_LATCH[29:20] == CONF0_ADD_SPACE);
 wire CONFIG1_SPACE = (A_LATCH[29:20] == CONF1_ADD_SPACE);
 wire IO_SPACE      = (A_LATCH[29:21] == IO_ADD_LO_SPACE[8:1]);
@@ -183,7 +240,7 @@ end
 //Cache Space            1        0        0
 //Reserved               1        0        1
 //Reserved               1        1        0
-//Reserved               1        1        1
+//Retry                  1        1        1
 
 reg [2:0] PCIAT_PRE;
 always @* begin
@@ -196,7 +253,7 @@ always @* begin
     endcase
 end
 
-assign PCIAT = ADDRESS_VALID ? PCIAT_LATCHED : PCIAT_PRE;
+assign PCIAT = RETRY_CYCLE ? RETRY_ACCESS : (ADDRESS_VALID ? PCIAT_LATCHED : PCIAT_PRE);
 
 ///////////////////////
 // D/AD BUS BUFFERS //

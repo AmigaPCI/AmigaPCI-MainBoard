@@ -68,6 +68,7 @@ localparam CONFIG1_ACCESS = 3'b001;
 localparam MEMORY_ACCESS  = 3'b010;
 localparam IO_ACCESS      = 3'b011;
 localparam CACHE_ACCESS   = 3'b100;
+localparam RETRY_ACCESS   = 3'b111;
 
 //PCI Bus Commands
 localparam RD_IO    = 4'b0010;
@@ -170,6 +171,8 @@ always @(posedge CLK40) begin
                     if (!RnW) begin
                         W_LATCH_EN <= 1;
                         WRITE_CYCLE <= 1;
+                    end else begin
+                        WRITE_CYCLE <= 0;
                     end
                     PCI_CYCLE_STATE <= 2'b01;
                 end
@@ -181,7 +184,7 @@ always @(posedge CLK40) begin
             2'b10 : begin
                 if (PCI_CYCLE_ACTIVE_SYNC != 2'b0) begin
                     PCI_CYCLE_START_HOLD <= 0;
-                    WRITE_CYCLE <= 0;
+                    //WRITE_CYCLE <= 0;
                     BURST_CYCLE_EN <= 0;
                     PCI_CYCLE_STATE <= 2'b00;
                 end
@@ -205,10 +208,16 @@ end
 //Cache Space            1        0        0
 //Reserved               1        0        1
 //Reserved               1        1        0
-//Reserved               1        1        1
+//Retry                  1        1        1
 
+reg RETRY_CYCLE;
 reg [3:0] CBE_CMD;
 always @* begin
+    
+    //Defaults
+    CBE_CMD = WRITE_CYCLE ? WR_CON : RD_CON;
+    RETRY_CYCLE <= 0;
+    
     case (PCIAT)
         MEMORY_ACCESS: begin
             CBE_CMD = WRITE_CYCLE ? WR_MEM : RD_MEM;
@@ -222,11 +231,30 @@ always @* begin
             CBE_CMD = WRITE_CYCLE ? WR_IO : RD_IO;
         end
 
-        default: begin
-            CBE_CMD = WRITE_CYCLE ? WR_CON : RD_CON;
+        RETRY_ACCESS : begin
+            RETRY_CYCLE <= 1;
         end
+
+        //default: begin
+        //    CBE_CMD = WRITE_CYCLE ? WR_CON : RD_CON;
+        //end
     endcase
 end
+
+  /////////////////
+ // RETRY CYCLE //
+/////////////////
+
+//Latch the the assertion of a retry cycle here.
+/*reg RETRY_CYCLE;
+always @(posedge CLK33, posedge RETRY_EN) begin
+    if (RETRY_EN) begin
+        RETRY_CYCLE <= 1;
+    end else begin
+        RETRY_CYCLE <= ~RETRY_RESET;
+    end
+end*/
+
 
   //////////////////////////
  // CPU DRIVEN PCI CYCLE //
@@ -251,21 +279,22 @@ end
 //------ FALLING EDGE DRIVERS ------
 wire WRITE_CYCLE_START = (WRITE_CYCLE_SYNC[1] || WRITE_CYCLE_SYNC[0]);
 
-reg FRAME_OUTn, BURST_CYCLE, PCI_WRITE_CYCLE, PHASEA_D, PCI_CYCLE_ACTIVE;
+reg FRAME_OUTn, BURST_CYCLE, PCI_WRITE_CYCLE, PHASEA_D, PCI_CYCLE_ACTIVE, RETRY_EN;
 reg [3:0] CBE_OUT, CYCLE_STATE, TIMEOUT_COUNT;
 always @(negedge CLK33) begin
     if (!RESETn) begin
-        PHASEA_D <= 1;
+        PHASEA_D         <= 1;
         PCI_CYCLE_ACTIVE <= 0;
-        FRAME_OUTn <= 1;
-        BURST_CYCLE <= 0;
-        CBE_OUT <= 4'hf;
-        TIMEOUT_COUNT <= 4'h0;
-        CYCLE_STATE <= 4'h0;
+        FRAME_OUTn       <= 1;
+        BURST_CYCLE      <= 0;
+        RETRY_EN         <= 0;
+        CBE_OUT          <= 4'hf;
+        TIMEOUT_COUNT    <= 4'h0;
+        CYCLE_STATE      <= 4'h0;
     end else begin
         case (CYCLE_STATE)
             4'h0 : begin
-                if (PCI_CYCLE_START_SYNC[1] || PCI_CYCLE_START_SYNC[0]) begin
+                if ((PCI_CYCLE_START_SYNC[1] || PCI_CYCLE_START_SYNC[0]) || RETRY_EN) begin
                     PCI_CYCLE_ACTIVE <= 1;
                     FRAME_OUTn <= 0;
                     CBE_OUT <= CBE_CMD;
@@ -277,12 +306,15 @@ always @(negedge CLK33) begin
             end
             4'h1 : begin
                 PHASEA_D <= 0;
+                RETRY_EN <= 0;
                 CBE_OUT <= !PCI_WRITE_CYCLE ? 4'h0 : {LLBEn, LMBEn, UMBEn, UUBEn};
                 FRAME_OUTn <= !(BURST_CYCLE);
+                //RETRY_RESET <= 1;
                 CYCLE_STATE <= 4'h2;
             end
             4'h2 : begin
                 TIMEOUT_COUNT <= TIMEOUT_COUNT + 1;
+                //RETRY_RESET <= 0;
                 if (!DEVSELn_DELAY) begin
                     CYCLE_STATE <= 4'h3;
                 end else if (TIMEOUT_COUNT == TIMEOUT) begin
@@ -293,12 +325,21 @@ always @(negedge CLK33) begin
                 end
             end
             4'h3 : begin
-                if (PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.
+                if (RETRY_CYCLE || PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.
                     PCI_CYCLE_ACTIVE <= 0;
                     FRAME_OUTn <= 1;
                     PHASEA_D <= 1;
-                    CYCLE_STATE <= 4'h0;
+                    RETRY_EN <= RETRY_CYCLE;
+                    CYCLE_STATE <= RETRY_CYCLE ? 4'h4 : 4'h0;
                 end
+            end
+            4'h4 : begin
+                if (!RETRY_CYCLE) begin                    
+                    CYCLE_STATE <= 4'h5;
+                end
+            end
+            4'h5 : begin                
+                CYCLE_STATE <= 4'h0;
             end
         endcase
     end    

@@ -68,6 +68,8 @@ module U110_TOP (
 
 );
 
+assign TP2 = PCI_CYCLEn;
+
 ////////////////////////////
 // INTERNAL SIGNAL WIRES //
 //////////////////////////
@@ -202,7 +204,7 @@ U110_ARBITER U110_ARBITER (
     .BGn (BGn),
     .BUSGNT (BUSGNT)
 
-    ,.TP0 (TP0), .TP2 (TP2)
+    ,.TP0 (TP0)//, .TP2 (TP2)
 );
 
   ////////////////////////
