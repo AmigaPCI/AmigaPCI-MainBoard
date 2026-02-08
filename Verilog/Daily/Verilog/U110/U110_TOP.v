@@ -68,6 +68,7 @@ module U110_TOP (
 
 );
 
+assign TP0 = CPU_BUS_OWN;
 assign TP2 = PCI_CYCLEn;
 
 ////////////////////////////
@@ -83,24 +84,30 @@ wire W_LATCH_EN;
 wire DMA_START;
 wire DMA_WRITE_CYCLE;
 wire BB_EN;
+wire CPU_BUS_OWN;
 wire [1:0] SIZ_OUT;
 
 //The cpu has the bus when _BG is asserted or when
 //_BB is asserted, but not by the PCI DMA state machine.
-wire CPU_BUS = (!BGn || (!BBn && !BB_EN));
+
+//wire CPU_BUS = (!BGn || (!BBn && !BB_EN));
 
 ////////////////////////////
 // EXTERNAL SIGNAL WIRES //
 //////////////////////////
 
 assign DEVSEL_OUTn = DEVSELn; //Communicates DEVSELn to U109.
+assign BUSDIR = ~CPU_BUS_OWN;
 
 //BUSDIR = 1 = PCI HAS BUS
 //assign TT = BUSDIR ? xxxx : 2'bz;
-assign BBn = BUSDIR ? ~BB_EN : 1'bz;
-assign SIZ = BUSDIR ? SIZ_OUT : 2'bz;
-assign RnW = BUSDIR ? ~DMA_WRITE_CYCLE : 1'bz;
-assign WLATCH_FRAMEn = ~(W_LATCH_EN || (BUSDIR && DMA_START));
+assign BBn = !CPU_BUS_OWN ? ~BB_EN : 1'bz;
+//assign SIZ = BUSDIR ? SIZ_OUT : 2'bz;
+assign SIZ = !CPU_BUS_OWN ? SIZ_OUT : 2'bz;
+//assign RnW = BUSDIR ? ~DMA_WRITE_CYCLE : 1'bz;
+assign RnW = !CPU_BUS_OWN ? ~DMA_WRITE_CYCLE : 1'bz;
+//assign WLATCH_FRAMEn = ~(W_LATCH_EN || (BUSDIR && DMA_START));
+assign WLATCH_FRAMEn = ~(W_LATCH_EN || (!CPU_BUS_OWN && DMA_START));
 
   ///////////////
  // INTERRUPT //
@@ -143,15 +150,15 @@ U110_BUFFERS U110_BUFFERS (
     .ATA_ENn (ATA_ENn),
     .RnW (RnW),
     .SIZ (SIZ),
-    .CPU_BUS (CPU_BUS),
+    //.CPU_BUS (CPU_BUS),
 
     //output
     .IDEHRENn (IDEHRENn),
     .IDEHWENn (IDEHWENn),
     .IDELENn (IDELENn),
     .IDEDIR (IDEDIR),
-    .BURSTn (BURSTn),
-    .BUSDIR (BUSDIR)
+    .BURSTn (BURSTn)
+    //.BUSDIR (BUSDIR)
 );
 
   ////////////////////
@@ -196,15 +203,17 @@ U110_ARBITER U110_ARBITER (
     .RESETn (RESETn),
     .BRn (BRn),
     .BBn (BBn),
+    //.BB_EN (BB_EN),
     .LOCKn (LOCKn),
-    .CPU_BUS (CPU_BUS),
+    //.CPU_BUS (CPU_BUS),
     .BUSREQ (BUSREQ),
 
     //output
     .BGn (BGn),
+    .CPU_BUS_OWN (CPU_BUS_OWN),
     .BUSGNT (BUSGNT)
 
-    ,.TP0 (TP0)//, .TP2 (TP2)
+    //,.TP0 (TP0)//, .TP2 (TP2)
 );
 
   ////////////////////////
@@ -230,7 +239,8 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .LLBEn (LLBEn),
     .BRIDGE_ENn (BRIDGE_ENn), 
     .PARITY_DA (PARITY_DA),
-    .CPU_BUS (CPU_BUS),
+    //.CPU_BUS (CPU_BUS),
+    .CPU_BUS_OWN (CPU_BUS_OWN),
     .PCIAT (PCIAT),
 
     //output

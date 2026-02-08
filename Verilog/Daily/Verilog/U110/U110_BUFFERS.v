@@ -33,11 +33,10 @@ Date          Who  Description
 
 module U110_BUFFERS (
 
-    input CLK40, RESETn, ATA_ENn, RnW, CPU_BUS,
+    input CLK40, RESETn, ATA_ENn, RnW,
     input [1:0] SIZ,
 
-    output IDELENn, IDEHRENn, IDEHWENn, IDEDIR, BURSTn,
-    output reg BUSDIR
+    output IDELENn, IDEHRENn, IDEHWENn, IDEDIR, BURSTn
 
 );
 
@@ -56,28 +55,5 @@ assign IDEDIR = !RnW;
 /////////////////
 
 assign BURSTn = !(SIZ[1] && SIZ[0]);
-
-  ///////////////////
- // BUS DIRECTION //
-///////////////////
-
-//Sets the direction of unidirectional busses and signals, like the A bus or _TS.
-//Will reverse direction during PCI DMA.
-
-//0 = CPU has the bus.
-//1 = PCI has the bus.
-
-always @(negedge CLK40) begin
-  if (!RESETn) begin
-    BUSDIR <= 0;
-  end else begin
-    if (CPU_BUS) begin
-      BUSDIR <= 0;
-    end else begin
-      BUSDIR <= 1;
-    end
-  end
-end
-
 
 endmodule

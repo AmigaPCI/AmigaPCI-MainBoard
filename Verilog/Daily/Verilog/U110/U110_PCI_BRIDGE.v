@@ -37,7 +37,7 @@ module U110_PCI_BRIDGE (
 
     input CLK66, CLK40, CLK33, RESETn, TSn, RnW,
     input AD31, BGn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA,
-    input CPU_BUS,
+    input CPU_BUS_OWN,
     
 
     output PARITY, PCI_TIPn, BB_EN, DMA_START,
@@ -88,7 +88,7 @@ localparam [1:0] BURST_TOTAL = 2'b11;
 ///////////
 
 assign DMA_START = (RESETn && !FRAMEn && !AD31);
-assign PCI_TIPn = ~(PCI_CYCLE_ACTIVE || DMA_CYCLE_ACTIVE);
+assign PCI_TIPn = ~(PCI_CYCLE_ACTIVE || DMA_PCI_CYCLE);
 assign BB_EN = BB_EN_SYNC[1];
 
   /////////////////////
@@ -99,13 +99,13 @@ assign PARITY = PARITY_EN ? PARITY_OUT : 1'bz;
 
 //Drive when the CPU has the bus.
 //Listen when PCI has the bus.
-assign CBE    = CPU_BUS ? CBE_OUT    : 4'bz;
-assign FRAMEn = CPU_BUS ? FRAME_OUTn : 1'bz;
+assign CBE    = CPU_BUS_OWN ? CBE_OUT    : 4'bz;
+assign FRAMEn = CPU_BUS_OWN ? FRAME_OUTn : 1'bz;
 
 //Drive when PCI has the bus.
 //Listen when CPU has the bus.
-assign DEVSELn = !CPU_BUS ? DEVSEL_OUT  : 1'bz;
-assign A_LOW   = !CPU_BUS ? A_LOW_OUT   : 2'bz;
+assign DEVSELn = !CPU_BUS_OWN ? ~DEVSEL_EN  : 1'bz;
+assign A_LOW   = !CPU_BUS_OWN ? A_LOW_OUT   : 2'bz;
 
   ///////////////////
  // MULTIPLEX I/O //
@@ -165,7 +165,7 @@ always @(posedge CLK40) begin
 
         case (PCI_CYCLE_STATE)
             2'b00 : begin
-                if (!TSn && !BRIDGE_ENn) begin
+                if (!TSn && !BRIDGE_ENn && !DMA_PCI_CYCLE) begin
                     PCI_CYCLE_START_HOLD <= 1;
                     BURST_CYCLE_EN <= PCIAT[2];           
                     if (!RnW) begin
@@ -354,21 +354,22 @@ end
 //Other bus commands may cause the state machine to fail.
 
 //------ Sample Signals from PCI Bus ------
-reg DEVSEL_EN, DMA_BURST_CYCLE, DMA_CYCLE_ACTIVE, PCI_BB_EN;
-reg [1:0] DMA_STATE, A_LOW_OUT;
+reg DMA_BURST_CYCLE, DMA_CYCLE_ACTIVE, PCI_BB_EN;
+reg [1:0] A_LOW_OUT;
+reg [2:0] DMA_STATE;
 always @(posedge CLK33) begin
     if (!RESETn) begin
-        DEVSEL_EN <= 0;
+        //DEVSEL_EN <= 0;
         DMA_CYCLE_ACTIVE <= 0;
         DMA_BURST_CYCLE <= 0;
         DMA_WRITE_CYCLE <= 0;
         PCI_BB_EN <= 0;
         SIZ_OUT <= 2'b0;
         A_LOW_OUT <= 2'b0;
-        DMA_STATE <= 2'd0;
+        DMA_STATE <= 3'd0;
     end else begin
         case (DMA_STATE)
-            2'd0 : begin
+            3'd0 : begin
                 //if (!FRAMEn && BGn_SYNC[1] && !AD31) begin
                 if (DMA_START && BGn_SYNC[1]) begin
                     //DMA cycle has started
@@ -380,8 +381,8 @@ always @(posedge CLK33) begin
                     DMA_STATE <= 2'd1;
                 end
             end
-            2'd1 : begin
-                DEVSEL_EN <= 1;
+            3'd1 : begin
+                //DEVSEL_EN <= 1;
                 DMA_CYCLE_ACTIVE <= 0;
                 DMA_STATE <= 2'd2;
                 case (CBE)
@@ -408,8 +409,13 @@ always @(posedge CLK33) begin
                     end
                 endcase
             end
-            2'd2 : begin
-                DEVSEL_EN <= 0;
+            3'd2 : begin
+                if (!PCI_CYCLEn) begin
+                    DMA_STATE <= 3'd3;
+                end
+            end
+            3'd3 : begin
+                //DEVSEL_EN <= 0;
                 if (PCI_CYCLEn) begin
                     PCI_BB_EN <= 0;
                     DMA_STATE <= 2'd0;
@@ -420,17 +426,52 @@ always @(posedge CLK33) begin
 end
 
 //------ Drive PCI DMA signals on falling edge ------
-reg DEVSEL_OUT;
+reg DEVSEL_OUT, DMA_PCI_CYCLE, DEVSEL_EN;
+reg [1:0] DMA_SIGNAL_STATE;
 always @(negedge CLK33) begin
     if (!RESETn) begin
-        DEVSEL_OUT <= 1;
+        DEVSEL_EN <= 0;
+        DMA_PCI_CYCLE <= 0;
+        DMA_SIGNAL_STATE <= 2'd0;
     end else begin
+        case (DMA_SIGNAL_STATE)
+            2'd0 : begin
+                if (DMA_CYCLE_ACTIVE) begin
+                    DMA_PCI_CYCLE <= 1; //Asert PCI_TIPn
+                    DMA_SIGNAL_STATE <= 2'd1;
+                end
+            end
+            2'd1 : begin
+                DEVSEL_EN <= 1; //Assert DEVSELn
+                DMA_SIGNAL_STATE <= 2'd2;
+            end
+            2'd2 : begin
+                if (!PCI_CYCLEn) begin
+                    DMA_SIGNAL_STATE <= 2'd3;
+                end
+            end
+            2'd3 : begin
+                if (PCI_CYCLEn) begin
+                    DMA_PCI_CYCLE <= 0;
+                    DEVSEL_EN <= 0;
+                    DMA_SIGNAL_STATE <= 2'd0;
+                end
+            end
+        endcase
+    end
+
+        /*if (DMA_CYCLE_ACTIVE) begin
+            DMA_PCI_CYCLE <= 1;
+        end else if (PCI_CYCLEn) begin
+            DMA_PCI_CYCLE <= 0;
+        end
+
         if (DEVSEL_EN) begin
             DEVSEL_OUT <= 0;
         end else if (PCI_CYCLEn) begin
             DEVSEL_OUT <= 1;
         end
-    end
+    end*/
 end
 
   ////////////
@@ -456,7 +497,7 @@ always @(negedge CLK33) begin
         PARITY_EN <= 0;
         PARITY_OUT <= 1;
     end else begin
-        if (CPU_BUS && (PHASEA_D || PCI_WRITE_CYCLE)) begin
+        if (CPU_BUS_OWN && (PHASEA_D || PCI_WRITE_CYCLE)) begin
             PARITY_OUT <= ^{PARITY_CBE, PARITY_DA};
             PARITY_EN <= 1;
         end else begin
