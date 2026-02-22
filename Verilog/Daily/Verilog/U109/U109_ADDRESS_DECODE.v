@@ -34,7 +34,7 @@ Date          Who  Description
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
 
-module U409_ADDRESS_DECODE
+module U109_ADDRESS_DECODE
 (   
   //Cycle Start
   input CLK40, TSn, RESETn, BUFFER_EN, PCI_CYCLEn,

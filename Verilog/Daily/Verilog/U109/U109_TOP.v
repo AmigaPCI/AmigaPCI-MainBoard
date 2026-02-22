@@ -55,6 +55,13 @@ module U109_TOP (
     ,output TP0, output TP1
 );
 
+//assign TP0 = TACK_EN;
+//assign TP1 = TACKn_OUT;
+
+//assign TP0 = CPU_BUS;
+//assign TP1 = A2P_WR_EN;
+//assign TP0 = CPU_BUS;
+//assign TP1 = A2P_FIFO_EMPTY;
 //assign TP0 = W_LATCH_ENn;
 //assign TP1 = P2A_READ_NEXT;
 
@@ -77,7 +84,9 @@ assign CLK66_OUT = CLK66_PLL;
 wire [31:0] P2A_DATA;
 wire [31:0] A2P_DATA;
 wire P2A_FIFO_EMPTY;
+wire P2A_FIFO_FULL;
 wire A2P_FIFO_EMPTY;
+wire A2P_FIFO_FULL;
 wire P2A_READ_NEXT;
 wire A2P_READ_NEXT;
 wire PCI_WRITE_EN;
@@ -88,6 +97,16 @@ wire BUFFER_EN;
 wire P2A_TIMEOUT;
 wire CACHE_SPACE_EN;
 wire RETRY_CYCLE;
+wire TACK_EN, TACKn_OUT;
+wire TACKn_IN = TACKn;
+wire P2A_BURST_CYCLE;
+
+/////////////////////
+// EXTERNAL WIRES //
+///////////////////
+
+assign TACKn  = TACK_EN ? TACKn_OUT : 1'bz;
+assign TBIn   = (TACK_EN && !P2A_BURST_CYCLE) ? TACKn_OUT : 1'bz;
 
 ////////////////
 // BUS OWNER //
@@ -120,16 +139,12 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .TSn (TSn),
     .RnW (RnW),
     .CPU_BUS (CPU_BUS),
-    .REG_DATA (D[31:30]),
+    .REG_DATA (D[31]),
     .BURSTn (BURSTn),
     .PCI_TIPn (PCI_TIPn),
-    //.BGn (BGn),
-    //.PCI_WRITE_EN (PCI_WRITE_EN),
     .BRIDGE_CONF_SPACE (BRIDGE_CONF_SPACE),
-    .A (AD[7:0]),
-    //.P2A_FIFO_EMPTY (P2A_FIFO_EMPTY),
-    //.A2P_FIFO_EMPTY (A2P_FIFO_EMPTY),
-    //.DEVSELn (DEVSELn),
+    //.A (AD[7:0]),
+    .A (AD[15]),
     .TARGET_READYn (TARGET_READYn),
     .STOPn (STOPn),
     .CACHE_SPACE_EN (CACHE_SPACE_EN),
@@ -137,16 +152,18 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .PCI_CYCLEn (PCI_CYCLEn),
     .RETRY_CYCLE (RETRY_CYCLE),
     .BUFFER_EN (BUFFER_EN),
-    //.CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
     .INIT_READYn (INIT_READYn),
     .PARITY_DIR (PARITY_DIR),
-    .TACKn (TACKn),
     .PCI_RSTn (PCI_RSTn),
     .P2A_READ_NEXT (P2A_READ_NEXT),
     .A2P_READ_NEXT (A2P_READ_NEXT),
-    .TBIn (TBIn),
-    .P2A_TIMEOUT (P2A_TIMEOUT)
-    ,.TP0 (TP0), .TP1 (TP1)
+    .P2A_BURST_CYCLE (P2A_BURST_CYCLE),
+    .P2A_TIMEOUT (P2A_TIMEOUT),
+    .TACKn_IN (TACKn_IN),
+    .TACK_EN (TACK_EN),
+    .TACKn_OUT (TACKn_OUT)
+    ,.TP0 (TP0)
+    ,.TP1 (TP1)
 );
 
 //////////////////
@@ -162,7 +179,7 @@ U109_BUFFERS U109_BUFFERS(
     .TSn (TSn),
     .BURSTn (BURSTn),
     .CPU_BUS (CPU_BUS),
-    .DEVSELn (DEVSELn),
+    //.DEVSELn (DEVSELn),
     .PCI_TIPn (PCI_TIPn),
     .BRIDGE_SPACE (BRIDGE_SPACE),
     .CACHE_SPACE (CACHE_SPACE),
@@ -189,14 +206,14 @@ U109_BUFFERS U109_BUFFERS(
     .D (D),
     .AD (AD)
 
-    //,.TP1 (TP1)
+    //,.TP0 (TP0),.TP1 (TP1)
 );
 
 ///////////////////////
 // ADDRESS DECODING //
 /////////////////////
 
-U409_ADDRESS_DECODE U409_ADDRESS_DECODE
+U109_ADDRESS_DECODE U109_ADDRESS_DECODE
 (
    //input
    .CLK40 (CLK40),
@@ -220,7 +237,6 @@ U409_ADDRESS_DECODE U409_ADDRESS_DECODE
 //DATA_ DIRECTION
 //PCI_TO_AMIGA  = 1
 //AMIGA_TO_PCI  = 0;
-//wire DATA_DIRECTION = (!BGn && !PCI_WRITE_EN);
 wire DATA_DIRECTION = ((CPU_BUS && !PCI_WRITE_EN) || (!CPU_BUS && !RnW));
 wire P2A_WR_EN = (BUFFER_EN && DATA_DIRECTION && !TARGET_READYn);
 
@@ -228,12 +244,14 @@ U109_FIFO P2A_FIFO
 (
     .RESETn (RESETn),
     .CLK_WR (CLK33), //Data generating device bus clock.
+    .CLK_WR_SYNC (CLK66), //2x Write Clock
     .CLK_RD (CLK40), //Data consuming device bus clock.
-    .CLK_SYNC (CLK80), //2x Read Clock
+    .CLK_RD_SYNC (CLK80), //2x Read Clock
     .WR_EN (P2A_WR_EN), //Write data into the fifo.
     .READ_NEXT (P2A_READ_NEXT), //Advance to next stored fifo value.
     .DATA_IN (AD), //Data input to fifo.
     .FIFO_EMPTY (P2A_FIFO_EMPTY), //Is the fifo empty?
+    .FIFO_FULL (P2A_FIFO_FULL), //Is the FIFO full?
     .DATA_OUT (P2A_DATA) //Data out from the fifo.
 );
 
@@ -241,18 +259,32 @@ U109_FIFO P2A_FIFO
 // AMIGA TO PCI (A2P) FIFO //
 ////////////////////////////
 
-wire A2P_WR_EN = (!DATA_DIRECTION && ((CPU_BUS && !W_LATCH_FRAMEn) || (!CPU_BUS && !TACKn))) ;
+wire A2P_WR_EN = (!DATA_DIRECTION && ((CPU_BUS && !W_LATCH_FRAMEn) || (!CPU_BUS && !TACKn_IN)));
+
+//Hackmasters unite!
+//There is a whopping 16ns latency between the external _TACK assertion and 
+//A2P_WR_EN goeing high, missing the desired clock edge.
+//Only DMA cycles are effected, so we invert the clock during DMA cycles.
+//This means we latch the data 1/2 clock late.
+//This delay is certainly due to the i/o nature of this pin. The real fix may be
+//to implement a second _TACK pin that is input only. These types of delays seem to
+//be common with the the ice40 FPGA and can be observed on other i/o pins. This delay
+//is an extreme example.
+wire A2P_CLK40 = CPU_BUS ? CLK40_PLL : !CLK40_PLL;
 
 U109_FIFO A2P_FIFO
 (
     .RESETn (RESETn),
-    .CLK_WR (CLK40), //Data generating device bus clock.
+    //.CLK_WR (CLK40), //Data generating device bus clock.
+    .CLK_WR (A2P_CLK40), //Data generating device bus clock.
+    .CLK_WR_SYNC (CLK80), //2x Write Clock
     .CLK_RD (CLK33), //Data consuming device bus clock.
-    .CLK_SYNC (CLK66), //2x Read Clock
+    .CLK_RD_SYNC (CLK66), //2x Read Clock
     .WR_EN (A2P_WR_EN), //Write data into the fifo.
     .READ_NEXT (A2P_READ_NEXT), //Advance to next stored fifo value.
     .DATA_IN (D), //Data input to fifo.
     .FIFO_EMPTY (A2P_FIFO_EMPTY), //Is the fifo empty?
+    .FIFO_FULL (A2P_FIFO_FULL), //Is the FIFO full?
     .DATA_OUT (A2P_DATA) //Data out from the fifo.
 );
 
