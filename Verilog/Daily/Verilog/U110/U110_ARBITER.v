@@ -30,23 +30,19 @@ Date          Who  Description
 -----------------------------------
 29-NOV-2025   JN   Initial code.
 09-JAN-2026   JN   Implement round-robin arbiter.
+07-FEB-2026   JN   Fixed early bus revocation.
 */
 
 module U110_ARBITER (
 
-    input CLK40, CLK33, RESETn, BRn, BBn, LOCKn,// CPU_BUS, BB_EN
+    input CLK40, CLK33, RESETn, BRn, BBn, LOCKn,
     input [4:0] BUSREQ,
 
     output BGn,
     output reg CPU_BUS_OWN,
     output reg [4:0] BUSGNT
 
-    //,output TP0, TP2
-
 );
-
-//assign TP0 = REQ[4];
-//assign TP2 = REQ[5];
 
 /////////////////
 // PARAMETERS //

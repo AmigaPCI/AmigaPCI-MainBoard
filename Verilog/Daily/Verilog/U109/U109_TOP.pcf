@@ -107,7 +107,6 @@ set_io PCIAT[2]           21
 set_io PCIAT[1]           43
 set_io PCIAT[0]           42
 
-
 #set_io CONFIG_ENn    24
 
 set_io TP0 38

@@ -31,6 +31,7 @@ Date          Who  Description
 29-NOV-2025   JN   Initial code.
 05-DEC-2025   JN   Assert _TACK for write to PCI cycles.
 10-JAN-2026   JN   Added DMA state machine.
+15-FEB-2025   JN   Drop BURST when _FRAME negates after one clock.
 */
 
 module U110_PCI_BRIDGE (
@@ -50,12 +51,12 @@ module U110_PCI_BRIDGE (
     inout [3:0] CBE
 
     //,output TP0,TP1,TP2
-    ,output TP1
+    //,output TP1
 
 );
 
-//assign TP0 = PCI_CYCLE_START_HOLD;
-assign TP1 = PCI_TIPn;
+//assign TP0 = PCI_CYCLE_ACTIVE;
+//assign TP1 = DMA_PCI_CYCLE;
 //assign TP2 = BURST_CYCLE;
 
   ////////////////
@@ -108,13 +109,6 @@ assign DEVSELn = !CPU_BUS_OWN ? ~DEVSEL_EN  : 1'bz;
 assign A_LOW   = !CPU_BUS_OWN ? A_LOW_OUT   : 2'bz;
 
   ///////////////////
- // MULTIPLEX I/O //
-///////////////////
-
-//assign WLATCH_FRAMEn = ~(W_LATCH_EN || !FRAMEn);
-//assign WLATCH_FRAMEn = ~(W_LATCH_EN || DMA_START);
-
-  ///////////////////
  // SYNCHRONIZERS //
 ///////////////////
 
@@ -165,7 +159,7 @@ always @(posedge CLK40) begin
 
         case (PCI_CYCLE_STATE)
             2'b00 : begin
-                if (!TSn && !BRIDGE_ENn && !DMA_PCI_CYCLE) begin
+                if (!TSn && !BRIDGE_ENn && CPU_BUS_OWN) begin
                     PCI_CYCLE_START_HOLD <= 1;
                     BURST_CYCLE_EN <= PCIAT[2];           
                     if (!RnW) begin
@@ -267,12 +261,14 @@ end*/
 
 
 //------ RISING SIGNAL LATCH ------
-reg DEVSELn_DELAY;
+reg DEVSELn_DELAY, PCI_CYCLEn_DELAY;
 always @(posedge CLK33) begin
     if (!RESETn) begin
         DEVSELn_DELAY <= 1;
+        PCI_CYCLEn_DELAY <= 1;
     end else begin
         DEVSELn_DELAY <= DEVSELn;
+        PCI_CYCLEn_DELAY <= PCI_CYCLEn;
     end
 end
 
@@ -325,7 +321,8 @@ always @(negedge CLK33) begin
                 end
             end
             4'h3 : begin
-                if (RETRY_CYCLE || PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.
+                //if (RETRY_CYCLE || PCI_CYCLEn || DEVSELn_DELAY) begin //The cycle is done.
+                if (RETRY_CYCLE || PCI_CYCLEn_DELAY || DEVSELn_DELAY) begin //The cycle is done.
                     PCI_CYCLE_ACTIVE <= 0;
                     FRAME_OUTn <= 1;
                     PHASEA_D <= 1;
@@ -352,6 +349,8 @@ end
 //For PCI driven (DMA) cycles, we support four bus commands:
 //Memory Read and Write, Memory Read Line, and Memory Write and Invalidate.
 //Other bus commands may cause the state machine to fail.
+//In the event the PCI device drives a cache line cycle, but only holds
+//_FRAME for one clock, we revert to a non-burst cycle on the APCI.
 
 //------ Sample Signals from PCI Bus ------
 reg DMA_BURST_CYCLE, DMA_CYCLE_ACTIVE, PCI_BB_EN;
@@ -386,8 +385,9 @@ always @(posedge CLK33) begin
                 DMA_CYCLE_ACTIVE <= 0;
                 DMA_STATE <= 2'd2;
                 case (CBE)
+                    //Byte Lanes
                     4'b0000 : begin
-                        SIZ_OUT <= DMA_BURST_CYCLE ? 2'b11 : 2'b00;
+                        SIZ_OUT <= (DMA_BURST_CYCLE && !FRAMEn) ? 2'b11 : 2'b00;
                         A_LOW_OUT <= 2'b00;
                     end
                     4'b0011 : begin
@@ -425,8 +425,12 @@ always @(posedge CLK33) begin
     end
 end
 
+//WE NEED ANOTHER SIGNAL TO DRIVE NEGATION OF _DEVSEL.
+//WE NEED TO DROP DEVSEL ON THE SAME EDGE THE LAST
+//_TRDY IS NEGATED.
+
 //------ Drive PCI DMA signals on falling edge ------
-reg DEVSEL_OUT, DMA_PCI_CYCLE, DEVSEL_EN;
+reg DMA_PCI_CYCLE, DEVSEL_EN;
 reg [1:0] DMA_SIGNAL_STATE;
 always @(negedge CLK33) begin
     if (!RESETn) begin
@@ -446,12 +450,12 @@ always @(negedge CLK33) begin
                 DMA_SIGNAL_STATE <= 2'd2;
             end
             2'd2 : begin
-                if (!PCI_CYCLEn) begin
+                if (!PCI_CYCLEn_DELAY) begin //Wait for U109 to ack cycle.
                     DMA_SIGNAL_STATE <= 2'd3;
                 end
             end
             2'd3 : begin
-                if (PCI_CYCLEn) begin
+                if (PCI_CYCLEn_DELAY) begin //Cycle is over.
                     DMA_PCI_CYCLE <= 0;
                     DEVSEL_EN <= 0;
                     DMA_SIGNAL_STATE <= 2'd0;
@@ -459,19 +463,6 @@ always @(negedge CLK33) begin
             end
         endcase
     end
-
-        /*if (DMA_CYCLE_ACTIVE) begin
-            DMA_PCI_CYCLE <= 1;
-        end else if (PCI_CYCLEn) begin
-            DMA_PCI_CYCLE <= 0;
-        end
-
-        if (DEVSEL_EN) begin
-            DEVSEL_OUT <= 0;
-        end else if (PCI_CYCLEn) begin
-            DEVSEL_OUT <= 1;
-        end
-    end*/
 end
 
   ////////////
@@ -480,18 +471,32 @@ end
 
 //We only assert PARITY one cycle after we drive the bus.
 
+//Parity Direction
+//0 = PCI to FPGA
+//1 = FPGA to PCI
+
+//    ADDRESS PHASE   DATA PHASE
+//      CPU  DMA      CPU     DMA
+//    --------------------------
+// RD    1    0       0 (P2A) 1 (A2P)
+// WR    1    0       1 (A2P) 0 (P2A)
+
+//Only drive parity where the table above is true.
+
 //------ Calculate the parity. ------
-reg PARITY_CBE, PARITY_OUT;
+reg PARITY_CBE, PARITY_EN;;
 always @(posedge CLK33) begin
     if (!RESETn) begin
-        PARITY_CBE <= 1;
+        PARITY_CBE <= 0;
+        PARITY_EN  <= 0;
     end else begin
         PARITY_CBE <= ^{CBE_OUT};
+        PARITY_EN <= CPU_BUS_OWN ? (PHASEA_D || !RnW) : RnW;//((CPU_BUS_OWN && (PHASEA_D == ADDRESS_PHASE || !RnW)) || (!CPU_BUS_OWN && RnW));
     end    
 end
 
 //------ Assert Parity ------
-reg PARITY_EN;
+/*reg PARITY_EN;
 always @(negedge CLK33) begin
     if (!RESETn) begin
         PARITY_EN <= 0;
@@ -503,6 +508,23 @@ always @(negedge CLK33) begin
         end else begin
             PARITY_EN <= 0;
         end
+    end    
+end*/
+
+//------ Assert Parity ------
+//reg PARITY_EN;
+reg PARITY_OUT;
+always @(negedge CLK33) begin
+    if (!RESETn) begin
+        //PARITY_EN <= 0;
+        PARITY_OUT <= 1;
+    end else begin
+        //if (CPU_BUS_OWN && (PHASEA_D || PCI_WRITE_CYCLE)) begin
+            PARITY_OUT <= ^{PARITY_CBE, PARITY_DA};
+        //    PARITY_EN <= 1;
+        //end else begin
+        //    PARITY_EN <= 0;
+        //end
     end    
 end
 

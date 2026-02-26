@@ -39,7 +39,7 @@ module U110_TOP (
     input  RESETn, TSn,
     inout  RnW,
     inout  [1:0] SIZ,
-    output TEAn, TCIn, TBIn, 
+    output TEAn, TCIn, TBIn, DATA_DIR,
     output [1:0] A_LOW,
     inout  TACKn,   
     
@@ -64,12 +64,13 @@ module U110_TOP (
     output [4:0] BUSGNT,
     inout BBn
 
-    ,output TP0,TP1,TP2
+    ,output TP0,TP1//,TP2
 
 );
 
-assign TP0 = CPU_BUS_OWN;
-assign TP2 = PCI_CYCLEn;
+assign TP1 = BRIDGE_ENn;
+assign TP0 = PCI_TIPn;
+//assign TP2 = CPU_BUS_OWN;
 
 ////////////////////////////
 // INTERNAL SIGNAL WIRES //
@@ -87,26 +88,17 @@ wire BB_EN;
 wire CPU_BUS_OWN;
 wire [1:0] SIZ_OUT;
 
-//The cpu has the bus when _BG is asserted or when
-//_BB is asserted, but not by the PCI DMA state machine.
-
-//wire CPU_BUS = (!BGn || (!BBn && !BB_EN));
-
 ////////////////////////////
 // EXTERNAL SIGNAL WIRES //
 //////////////////////////
 
 assign DEVSEL_OUTn = DEVSELn; //Communicates DEVSELn to U109.
-assign BUSDIR = ~CPU_BUS_OWN;
+assign BUSDIR = ~CPU_BUS_OWN; //BUSDIR = 1 = PCI HAS BUS
 
-//BUSDIR = 1 = PCI HAS BUS
 //assign TT = BUSDIR ? xxxx : 2'bz;
 assign BBn = !CPU_BUS_OWN ? ~BB_EN : 1'bz;
-//assign SIZ = BUSDIR ? SIZ_OUT : 2'bz;
-assign SIZ = !CPU_BUS_OWN ? SIZ_OUT : 2'bz;
-//assign RnW = BUSDIR ? ~DMA_WRITE_CYCLE : 1'bz;
+assign SIZ = !CPU_BUS_OWN ?  SIZ_OUT : 2'bz;
 assign RnW = !CPU_BUS_OWN ? ~DMA_WRITE_CYCLE : 1'bz;
-//assign WLATCH_FRAMEn = ~(W_LATCH_EN || (BUSDIR && DMA_START));
 assign WLATCH_FRAMEn = ~(W_LATCH_EN || (!CPU_BUS_OWN && DMA_START));
 
   ///////////////
@@ -145,20 +137,19 @@ U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
 
 U110_BUFFERS U110_BUFFERS (
     //INPUT
-    .CLK40 (CLK40),
     .RESETn (RESETn),
     .ATA_ENn (ATA_ENn),
     .RnW (RnW),
+    .CPU_BUS_OWN (CPU_BUS_OWN),
     .SIZ (SIZ),
-    //.CPU_BUS (CPU_BUS),
 
     //output
     .IDEHRENn (IDEHRENn),
     .IDEHWENn (IDEHWENn),
     .IDELENn (IDELENn),
     .IDEDIR (IDEDIR),
-    .BURSTn (BURSTn)
-    //.BUSDIR (BUSDIR)
+    .BURSTn (BURSTn),
+    .DATA_DIR (DATA_DIR)
 );
 
   ////////////////////
@@ -256,7 +247,7 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .CBE (CBE)
 
     //,.TP0(TP0)
-    ,.TP1(TP1)
+    //,.TP1(TP1)
     //, .TP2(TP2)
 );
 

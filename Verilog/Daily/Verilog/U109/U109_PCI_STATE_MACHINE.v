@@ -39,11 +39,10 @@ module U109_PCI_STATE_MACHINE (
     input CLK80, CLK66, CLK40, CLK33, RESETn, RnW,
 
     //Cycle Start/Termination
-    input CPU_BUS,
-    input REG_DATA,
-    input BURSTn, PCI_TIPn, BRIDGE_CONF_SPACE, //PCI_WRITE_EN, 
-    //input [7:0] A,
-    input A,
+    input CPU_BUS, REG_DATA,
+    input BURSTn, PCI_TIPn, BRIDGE_CONF_SPACE, A, TACKn_IN,
+    output reg TACKn_OUT, TACK_EN,
+    inout TSn, 
 
     //FIFO
     //input P2A_FIFO_EMPTY, A2P_FIFO_EMPTY,
@@ -51,12 +50,12 @@ module U109_PCI_STATE_MACHINE (
 
     //PCI Signals
     input CACHE_SPACE_EN, //DEVSELn,
-    output PARITY_DIR, PCI_RSTn, //CLK_ADDRESS_LATCH,
+    output PARITY_DIR, PCI_RSTn,
     output reg P2A_BURST_CYCLE, P2A_READ_NEXT, A2P_READ_NEXT, TCI_ENn, BUFFER_EN, P2A_TIMEOUT, PCI_CYCLEn, RETRY_CYCLE,
 
-    inout TSn, INIT_READYn, TARGET_READYn, STOPn, //,TACKn
+    inout INIT_READYn, TARGET_READYn, STOPn
 
-    input TACKn_IN, output reg TACKn_OUT, TACK_EN
+    
 
     ,output TP0
     ,output TP1
@@ -70,8 +69,8 @@ assign TP1 = PCI_CYCLEn;
 ///////////////
 
 localparam [1:0] BURST_TOTAL = 2'd4;
-localparam PCI_TO_AMIGA = 0;
-localparam AMIGA_TO_PCI = 1;
+//localparam PCI_TO_AMIGA = 0;
+//localparam AMIGA_TO_PCI = 1;
 //localparam BRIDGE_REGISTER_ADDRESS  = 8'hfc;
 
 ///////////////////////
@@ -84,7 +83,18 @@ assign TARGET_READYn = !CPU_BUS ? ~TRDY_EN   : 1'bz;
 assign STOPn         = !CPU_BUS ? ~STOP_EN   : 1'bz;
 assign TSn           = !CPU_BUS ? ~TS_OUT_EN : 1'bz;
 
-assign PARITY_DIR    = (PCI_CYCLEn || A2P_CYCLE_EN) ? AMIGA_TO_PCI : PCI_TO_AMIGA;
+
+//Parity Direction
+//0 = PCI to FPGA
+//1 = FPGA to PCI
+
+//    ADDRESS PHASE   DATA PHASE
+//      CPU  DMA      CPU     DMA
+//    --------------------------
+// RD    1    0       0 (P2A) 1 (A2P)
+// WR    1    0       1 (A2P) 0 (P2A)
+
+assign PARITY_DIR = ((CPU_BUS && PCI_CYCLEn) || A2P_CYCLE_EN);
 
 ////////////////////////////
 // BRIDGE REGISTER CYCLE //
@@ -96,7 +106,6 @@ assign PARITY_DIR    = (PCI_CYCLEn || A2P_CYCLE_EN) ? AMIGA_TO_PCI : PCI_TO_AMIG
 //D[31] = PCI bus reset bit
 
 assign PCI_RSTn = !(!RESETn || PCI_RST_REG);
-//wire REG_CYCLE_START = (!TSn && !RnW && BRIDGE_CONF_SPACE && A == BRIDGE_REGISTER_ADDRESS);
 wire REG_CYCLE_START = (!TSn && !RnW && BRIDGE_CONF_SPACE && A);
 
 reg REG_CYCLE, PCI_RST_REG;

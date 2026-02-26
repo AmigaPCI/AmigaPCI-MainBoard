@@ -40,16 +40,16 @@ set_io CS1_SECn   101
 set_io IDEDIR      83
 
 #DATA TRANSFER SIGNALS
-
-set_io SIZ[1] 18
-set_io SIZ[0] 17
-set_io TEAn   10
-set_io TCIn   33
-set_io TBIn   34
-set_io TSn    47
-set_io RnW    79
-set_io TACKn  75
-set_io BURSTn 80
+set_io SIZ[1]   18
+set_io SIZ[0]   17
+set_io TEAn     10
+set_io TCIn     33
+set_io TBIn     34
+set_io TSn      47
+set_io RnW      79
+set_io TACKn    75
+set_io BURSTn   80
+set_io DATA_DIR  9
 
 #BUS ARBRITRATION
 set_io LOCKn      43

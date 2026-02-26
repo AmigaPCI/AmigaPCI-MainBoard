@@ -33,10 +33,10 @@ Date          Who  Description
 
 module U110_BUFFERS (
 
-    input CLK40, RESETn, ATA_ENn, RnW,
+    input RESETn, ATA_ENn, RnW, CPU_BUS_OWN,
     input [1:0] SIZ,
 
-    output IDELENn, IDEHRENn, IDEHWENn, IDEDIR, BURSTn
+    output IDELENn, IDEHRENn, IDEHWENn, IDEDIR, BURSTn, DATA_DIR
 
 );
 
@@ -55,5 +55,18 @@ assign IDEDIR = !RnW;
 /////////////////
 
 assign BURSTn = !(SIZ[1] && SIZ[0]);
+
+  //////////////////////
+ // BUFFER DIRECTION //
+//////////////////////
+
+//This controls the direction of data flow for the data buffers
+//on the APCI board.
+
+//   CPU   DMA
+//R   1     0
+//W   0     1
+
+assign DATA_DIR = ((CPU_BUS_OWN && RnW) || (!CPU_BUS_OWN && !RnW));
 
 endmodule
