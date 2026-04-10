@@ -36,7 +36,7 @@ module U712_TOP
 (
     //CLOCKS
     input CLK40_IN, CLK7, C1, C3, RESETn,
-    output CLK40B_OUT, CLK40C_OUT, CLK40D_OUT, CLKRAM,
+    output CLK40B_OUT, CLK40C_OUT, CLK40D_OUT, CLK40n_OUT, CLKRAM,
 
     //AGNUS
     input DBRn, RAMSPACEn, REGSPACEn, AWEn, CASLn, CASUn, RAS1n, RAS0n, AGNUS_REV,
@@ -88,6 +88,7 @@ assign DRD_DIR = !((REG_CYCLE && !REG_WRITE_CYCLE) || (DMA_CYCLE && DMA_WRITE_CY
 assign CLK40B_OUT = !CLK40_PLL;
 assign CLK40C_OUT = !CLK40_PLL;
 assign CLK40D_OUT = !CLK40_PLL;
+assign CLK40n_OUT =  CLK40_PLL;
 assign CLKRAM     = !CLK40_PLL;
 
 //////////////////////////
@@ -222,12 +223,17 @@ assign ATA_AB = ATA_A;
 //WE DISTRIBUTE THE CLOCKS FROM THE PLL TO OTHER DEVICES ON THE AMIGAPCI. SINCE THIS PLL INVERTS THE CLOCK SIGNAL,
 //WE PHASE MATCH IT BEFORE PUTTING THE SIGNAL OUT.
 
+APCI_U712_4040_pll APCI_U712_4040_pll_inst(.PACKAGEPIN(CLK40_PAD),
+                                           .PLLOUTCORE(),
+                                           .PLLOUTGLOBAL(CLK40_PLL),
+                                           .RESET(1'b1));
+
 //Effect of FDA_FEEDBACK value
 //0  = Almost exact peak match
 //7  = ~2ns early peak
 //15 = ~4ns early peak
 
-SB_PLL40_CORE #(
+/*SB_PLL40_CORE #(
     .DIVR (4'b0000),
     .DIVF (7'b0000000),
     .DIVQ (3'b100),
@@ -250,6 +256,6 @@ SB_PLL40_CORE #(
     .SDI               (1'b0),
     .SCLK              (1'b0),
     .LATCHINPUTVALUE   (1'b0)
-);
+);*/
 
 endmodule

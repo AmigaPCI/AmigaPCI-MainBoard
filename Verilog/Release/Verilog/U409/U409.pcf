@@ -55,7 +55,7 @@ set_io A[30]   9
 set_io A[31]  10
 
 #DATA TRANSFER SIGNALS
-set_io TEAn         116
+#set_io TEAn         116
 set_io TCIn         117
 set_io TBIn         118
 set_io PORTSIZE     135
@@ -110,3 +110,6 @@ set_io FLASH_WRITEn   60
 set_io FLASH_RSTn     61
 set_io FLASH_BANK[1]  84
 set_io FLASH_BANK[0]  85
+
+#TEST POINTS
+#set_io J900 110

@@ -38,7 +38,7 @@ module U409_TOP (
     output AGNUS_CLK, TICK60, TICK50, CLK_CIA, 
     
     //Cycle Start/Termination    
-    input  TSn, OVL, RnW, TEAn,
+    input  TSn, OVL, RnW, //TEAn,
     output TBIn, TCIn,
     input [1:0] TT,
     inout TACKn,
@@ -62,6 +62,7 @@ module U409_TOP (
 
     //ATA
     input AUTOBOOT, SPIO_J, PPIO_J,
+
     output PCS0, PCS1, SCS0, SCS1, PPIO, SPIO, ATA_ENn,
 
     //Flash
@@ -139,12 +140,13 @@ U409_TRANSFER_ACK U409_TRANSFER_ACK (
     .CLK40 (CLK40),
     .RESETn (RESETn),
     .TSn (TSn),
-    .TEAn (TEAn),
+    //.TEAn (TEAn),
     .ROM_SPACE (ROM_SPACE),
     .CIA_ENABLE (CIA_ENABLE),
     .CLK_CIA (CLK_CIA),
     .AGNUS_SPACE (AGNUS_SPACE),
     .AUTOVECTOR (AUTOVECTOR),
+    .BRIDGE_ENn (BRIDGE_ENn),
     //.AC_TACK (AC_TACK),
     .ROM_DELAY (ROM_DELAY),
     .FLASH_TACK (FLASH_TACK),

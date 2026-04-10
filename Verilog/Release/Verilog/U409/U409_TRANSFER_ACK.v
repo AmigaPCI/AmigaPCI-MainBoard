@@ -45,12 +45,12 @@ module U409_TRANSFER_ACK (
     input CLK40_IN, CLK40, CLK_CIA, RESETn,
     
     //Cycle Start/Termination
-    input TSn, TEAn, //AC_TACK,
+    input TSn, //TEAn, //AC_TACK,
     output TBIn, TCIn,
     inout TACKn,
 
     //Address Spaces
-    input ROM_SPACE,CIA_ENABLE, AGNUS_SPACE, AUTOVECTOR,
+    input ROM_SPACE, CIA_ENABLE, AGNUS_SPACE, AUTOVECTOR, BRIDGE_ENn,
     output reg ROM_ENn,
     
     //External TACK Enables
@@ -259,7 +259,7 @@ reg [6:0] DELAYED_TACK_COUNTER;
 reg [1:0] DELAYED_TACK_STATE;
 reg DELAYED_TACK_EN;
     
-wire DELAYED_TACK_RST = !TACKn || !RESETn || AGNUS_SPACE || !TEAn;
+wire DELAYED_TACK_RST = (!TACKn || !RESETn || AGNUS_SPACE || !BRIDGE_ENn); // || !TEAn;
     
 always @(posedge CLK40, posedge DELAYED_TACK_RST) begin
     if (DELAYED_TACK_RST) begin

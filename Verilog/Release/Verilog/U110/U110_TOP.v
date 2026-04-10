@@ -28,84 +28,101 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 
 iceprog D:\AmigaPCI\U110\APCI_U110\APCI_U110_Implmnt\sbt\outputs\bitmap\U110_TOP_bitmap.bin
 
-NOTE:This one has the "slow" PLL!
 */
 
 module U110_TOP (
 
     //Clocks
-    input CLK40_IN, CLK33,
+    input CLK66_IN, CLK40_IN, CLK33_IN,
     
-    //Cycle Start/Terminate
-    input RESETn, TSn, RnW,
-    input [1:0] SIZ,
-    output TEAn, TACKn, TCIn, TBIn,
+    //Cycle Signals
+    input  RESETn, TSn,
+    inout  RnW,
+    inout  [1:0] SIZ,
+    output TEAn, TCIn, TBIn, DATA_DIR,
+    output [1:0] A_LOW,
+    inout  TACKn,   
     
     //ATA Chip Selects
-    input ATA_ENn, PPIO, SPIO, PCS1 , PCS0, SCS1, SCS0,
+    input  ATA_ENn, PPIO, SPIO, PCS1 , PCS0, SCS1, SCS0,
     output CS0_PRIn, CS1_PRIn, CS0_SECn, CS1_SECn, DIOR_PRIn, DIOW_PRIn, DIOR_SECn, DIOW_SECn,
 
     //ATA Buffers
     output IDELENn, IDEDIR, IDEHRENn, IDEHWENn, ATA_LATCH,
 
     //PCI 
-    input BPRO_ENn, DEVSELn, TRDYn, PHASEA_D,
-    input [1:0] PCIAT,
-    //output PCI_CYCLEn,
-
+    input  AD31, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, PCIINTn,
+    input  [2:0] PCIAT,    
+    output DEVSEL_OUTn, PCI_TIPn, PARITY, WLATCH_FRAMEn,
+    inout DEVSELn, FRAMEn,
+    inout [3:0] CBE,
+    
     //Arbitor and Interrupts
-    output INT2n, BUSDIR, BGn, BURSTn
+    input BRn, LOCKn,
+    input  [4:0] BUSREQ,
+    output INT2n, BUSDIR, BGn, BURSTn,
+    output [4:0] BUSGNT,
+    inout BBn
+
+    ,output TP0,TP1//,TP2
 
 );
 
+assign TP1 = BRIDGE_ENn;
+assign TP0 = PCI_TIPn;
+//assign TP2 = CPU_BUS_OWN;
+
+////////////////////////////
+// INTERNAL SIGNAL WIRES //
+//////////////////////////
+
+wire CLK66 = CLK66_IN;
 wire CLK40_PAD = CLK40_IN;
-wire CLK40 = CLK40_PLL;
+wire CLK40;
+wire CLK33 = !CLK33_IN;
+wire ATA_TACK;
+wire W_LATCH_EN;
+wire DMA_START;
+wire DMA_WRITE_CYCLE;
+wire BB_EN;
+wire CPU_BUS_OWN;
+wire [1:0] SIZ_OUT;
 
-  /////////
- // PLL //
-/////////
+////////////////////////////
+// EXTERNAL SIGNAL WIRES //
+//////////////////////////
 
-//DOUBLE CHECK THIS WITH ICECUBE2!
-/*wire CLK66;
+assign DEVSEL_OUTn = DEVSELn; //Communicates DEVSELn to U109.
+assign BUSDIR = ~CPU_BUS_OWN; //BUSDIR = 1 = PCI HAS BUS
 
-SB_PLL40_CORE #(
-    .FEEDBACK_PATH("SIMPLE"),
-    .PLLOUT_SELECT("GENCLK"),
-    .DIVR(4'b0000),     // DIVR = 0
-    .DIVF(7'b0000001),  // DIVF = 9
-    .DIVQ(3'b000),      // DIVQ = 1
-    .FILTER_RANGE(3'b001)
-) pll_inst (
-    .REFERENCECLK(CLK33),
-    .PLLOUTCORE(CLK66),
-    //.PLLOUTGLOBAL(CLK66);
-    .LOCK(),
-    .RESETB(1'b1),
-    .BYPASS(1'b0)
-);*/
+//assign TT = BUSDIR ? xxxx : 2'bz;
+assign BBn = !CPU_BUS_OWN ? ~BB_EN : 1'bz;
+assign SIZ = !CPU_BUS_OWN ?  SIZ_OUT : 2'bz;
+assign RnW = !CPU_BUS_OWN ? ~DMA_WRITE_CYCLE : 1'bz;
+assign WLATCH_FRAMEn = ~(W_LATCH_EN || (!CPU_BUS_OWN && DMA_START));
 
   ///////////////
  // INTERRUPT //
 ///////////////
 
 U110_INTERRUPT U110_INTERRUPT (
+    //input
+    .PCIINTn (PCIINTn),
 
     //output
     .INT2n (INT2n)
-
 );
 
   ///////////////////////
  // CYCLE TERMINATION //
 ///////////////////////
 
-wire ATA_TACK;
 U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
     //INPUT
     .CLK40 (CLK40),
     .RESETn (RESETn),
-    .ATA_ENn (ATA_ENn),
     .ATA_TACK (ATA_TACK),
+    .PCI_CYCLEn (PCI_CYCLEn),
 
     //output
     .TEAn (TEAn),
@@ -123,8 +140,8 @@ U110_BUFFERS U110_BUFFERS (
     .RESETn (RESETn),
     .ATA_ENn (ATA_ENn),
     .RnW (RnW),
+    .CPU_BUS_OWN (CPU_BUS_OWN),
     .SIZ (SIZ),
-    .BGn (BGn),
 
     //output
     .IDEHRENn (IDEHRENn),
@@ -132,7 +149,7 @@ U110_BUFFERS U110_BUFFERS (
     .IDELENn (IDELENn),
     .IDEDIR (IDEDIR),
     .BURSTn (BURSTn),
-    .BUSDIR (BUSDIR)
+    .DATA_DIR (DATA_DIR)
 );
 
   ////////////////////
@@ -170,32 +187,69 @@ U110_ATA U110_ATA (
  // BUS ARBITOR //
 /////////////////
 
-U110_ARBITOR U110_ARBITOR (
+U110_ARBITER U110_ARBITER (
+    //input
+    .CLK40 (CLK40),
+    .CLK33 (CLK33),
+    .RESETn (RESETn),
+    .BRn (BRn),
+    .BBn (BBn),
+    //.BB_EN (BB_EN),
+    .LOCKn (LOCKn),
+    //.CPU_BUS (CPU_BUS),
+    .BUSREQ (BUSREQ),
 
     //output
-    .BGn (BGn)
+    .BGn (BGn),
+    .CPU_BUS_OWN (CPU_BUS_OWN),
+    .BUSGNT (BUSGNT)
+
+    //,.TP0 (TP0)//, .TP2 (TP2)
 );
 
   ////////////////////////
  // PCI STATE MACHINE //
 ////////////////////////
 
-/*U110_PCI_SM U110_PCI_SM (
+U110_PCI_BRIDGE U110_PCI_BRIDGE (
+
     //input
+    .CLK66 (CLK66),
     .CLK40 (CLK40),
     .CLK33 (CLK33),
     .RESETn (RESETn),
-    .RnW (RnW),
     .TSn (TSn),
+    .RnW (RnW),
+    .AD31 (AD31),
+    .BGn (BGn),
+    .PCI_CYCLEn (PCI_CYCLEn),
     .DEVSELn (DEVSELn),
-    .TRDYn (TRDYn),
-    .BURST (BURST),
-    .BPRO_ENn (BPRO_ENn),
+    .UUBEn (UUBEn),
+    .UMBEn (UMBEn),
+    .LMBEn (LMBEn),
+    .LLBEn (LLBEn),
+    .BRIDGE_ENn (BRIDGE_ENn), 
+    .PARITY_DA (PARITY_DA),
+    //.CPU_BUS (CPU_BUS),
+    .CPU_BUS_OWN (CPU_BUS_OWN),
     .PCIAT (PCIAT),
 
     //output
-    .PCI_CYCLEn (PCI_CYCLEn)
-);*/
+    .FRAMEn (FRAMEn),
+    .A_LOW (A_LOW),
+    .SIZ_OUT (SIZ_OUT),
+    .PCI_TIPn (PCI_TIPn),
+    .DMA_WRITE_CYCLE (DMA_WRITE_CYCLE),
+    .BB_EN (BB_EN),
+    .DMA_START (DMA_START),
+    .W_LATCH_EN (W_LATCH_EN),
+    .PARITY (PARITY),
+    .CBE (CBE)
+
+    //,.TP0(TP0)
+    //,.TP1(TP1)
+    //, .TP2(TP2)
+);
 
   /////////
  // PLL //
@@ -213,18 +267,46 @@ SB_PLL40_CORE #(
     //.FDA_RELATIVE   (4'b0000),
     .PLLOUT_SELECT ("SHIFTREG_0deg"),
     .SHIFTREG_DIV_MODE (1'b0)
-) pll (
-    .LOCK           (),
-    .RESETB         (1'b1),
+) pll40 (
+    .LOCK            (),
+    .RESETB          (1'b1),
     .REFERENCECLK   (CLK40_PAD),
-    .PLLOUTGLOBAL   (CLK40_PLL),
-    
-    .EXTFEEDBACK       (1'b0),
-    .DYNAMICDELAY      (8'b00001111),
-    .BYPASS            (1'b0),
-    .SDI               (1'b0),
-    .SCLK              (1'b0),
-    .LATCHINPUTVALUE   (1'b0)
+    //.PACKAGEPIN      (CLK40_PAD),
+    .PLLOUTGLOBAL    (CLK40),
+    .PLLOUTCORE      (),    
+    .EXTFEEDBACK     (1'b0),
+    .DYNAMICDELAY    (8'b00001111),
+    .BYPASS          (1'b0),
+    .SDI             (1'b0),
+    .SCLK            (1'b0),
+    .LATCHINPUTVALUE (1'b0)
 );
+
+/*SB_PLL40_PAD #(
+    .DIVR (4'b0000),
+    .DIVF (7'b0000000),
+    .DIVQ (3'b100),
+    .FILTER_RANGE (3'b011),
+    .FEEDBACK_PATH ("PHASE_AND_DELAY"),
+    .DELAY_ADJUSTMENT_MODE_FEEDBACK ("FIXED"),
+    .FDA_FEEDBACK   (4'b1111),
+    //.DELAY_ADJUSTMENT_MODE_RELATIVE ("FIXED"),
+    //.FDA_RELATIVE   (4'b0000),
+    .PLLOUT_SELECT ("SHIFTREG_0deg"),
+    .SHIFTREG_DIV_MODE (1'b0)
+) pll33 (
+    .LOCK            (),
+    .RESETB          (1'b1),
+    //.REFERENCECLK   (CLK33_PAD),
+    .PACKAGEPIN      (CLK33_PAD),
+    .PLLOUTGLOBAL    (CLK33),
+    .PLLOUTCORE      (),    
+    .EXTFEEDBACK     (1'b0),
+    .DYNAMICDELAY    (8'b00001111),
+    .BYPASS          (1'b0),
+    .SDI             (1'b0),
+    .SCLK            (1'b0),
+    .LATCHINPUTVALUE (1'b0)
+);*/
 
 endmodule

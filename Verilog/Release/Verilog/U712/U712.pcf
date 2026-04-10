@@ -4,7 +4,8 @@ set_io RESETn      94
 set_io CLK40B_OUT 112
 set_io CLK40C_OUT  21
 set_io CLK40D_OUT 115
-set_io CLK40_IN    20
+set_io CLK40n_OUT   4
+set_io CLK40_IN    49
 set_io CLKRAM      38
 set_io C1         142
 set_io C3         143
@@ -12,7 +13,7 @@ set_io C3         143
 #CPU ADDRESS BUS - INPUTS
 set_io A[0]  12
 set_io A[1]  10
-#set_io A[2]   8
+#set_io A[2]   8 THESE BITS ARE UNUSED.
 #set_io A[3]   9
 #set_io A[4]  15
 #set_io A[5]  16
@@ -63,7 +64,7 @@ set_io CMA[10] 56
 
 #DRAM CONTROL SIGNALS
 set_io CLLBEn      45
-set_io BANK1       49
+set_io BANK1       20
 set_io BANK0       52
 set_io SDRAM_CSn   60 #OUTPUT - SDRAM CHIP SELECT SIGNAL
 set_io RASn        61 #OUTPUT - SDRAM RAS
@@ -101,15 +102,14 @@ set_io SAB_LATCH_CLK 137 #OUTPUT - LATCH CLOCK FOR U810
 
 
 #DATA TRANSFER SIGNALS
-set_io SIZ[1]   1
-set_io SIZ[0]   2
-#set_io TT1      3
-#set_io TT0      4
-set_io TACKn    7
-set_io TBIn    39
-set_io TCIn    64
-set_io TSn    136
-set_io RnW    144
+set_io SIZ[1]    1
+set_io SIZ[0]    2
+#set_io DATARDYn  3
+set_io TACKn     7
+set_io TBIn     39
+set_io TCIn     64
+set_io TSn     136
+set_io RnW     144
 
 #BYTE ENABLES FOR PCI BUS CONTROLLER
 set_io UMBEn      121

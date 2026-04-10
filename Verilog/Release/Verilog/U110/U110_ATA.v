@@ -71,13 +71,13 @@ module U110_ATA (
 //localparam M0_T2 = 8'd12; //290ns
 //localparam M0_T0 = 8'd24; //600ns
 
-localparam M2_T1 = 4'd1; //30ns
-localparam M2_T2 = 4'd5; //100ns
-localparam M2_T0 = 4'd9; //240ns
+localparam M2_T1 = 4'd1; //30ns  1
+localparam M2_T2 = 4'd5; //100ns 5
+localparam M2_T0 = 4'd9; //240ns 9
 
-localparam M4_T1 = 4'd0; //25ns
-localparam M4_T2 = 4'd3; //70ns
-localparam M4_T0 = 4'd5; //120ns
+localparam M4_T1 = 4'd0; //25ns  0
+localparam M4_T2 = 4'd3; //70ns  3
+localparam M4_T0 = 4'd5; //120ns 5
 
 wire CS_PRIMARY   = (!CS0_PRIn || !CS1_PRIn);
 wire CS_SECONDARY = (!CS0_SECn || !CS1_SECn);
@@ -115,7 +115,8 @@ assign DIOW_SECn = !(RW_EN &&  WRITE_CYCLE && S_CYCLE);
 reg P_CYCLE, S_CYCLE, RW_EN, WRITE_CYCLE, ATA_PENDING;
 reg [3:0] CYCLE_COUNT;
 
-always @(posedge CLK40) begin
+//always @(posedge CLK40) begin
+always @(negedge CLK40) begin
     if (!RESETn) begin        
         ATA_TACK    <= 0;
         WRITE_CYCLE <= 0;
