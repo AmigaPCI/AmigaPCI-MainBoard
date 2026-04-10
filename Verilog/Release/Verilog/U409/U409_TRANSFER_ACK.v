@@ -42,7 +42,8 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 module U409_TRANSFER_ACK (
 
     //Clocks
-    input CLK40_IN, CLK40, CLK_CIA, RESETn,
+    //input CLK40_IN, CLK40, CLK_CIA, RESETn,
+    input CLK40, CLK_CIA, RESETn,
     
     //Cycle Start/Termination
     input TSn, //TEAn, //AC_TACK,
@@ -77,7 +78,8 @@ assign TBIn  = TACK_EN ? TACK_OUT : 1'bz;
 assign TCIn  = TACK_EN ? (ROM_ENn ? TACK_OUT : 1'b1) : 1'bz;
 
 reg [3:0] TACK_STATE;
-always @(posedge CLK40_IN) begin
+//always @(posedge CLK40_IN) begin
+always @(posedge CLK40) begin
     if (!RESETn) begin
         TACK_EN <= 0;
         TACK_OUT <= 1;

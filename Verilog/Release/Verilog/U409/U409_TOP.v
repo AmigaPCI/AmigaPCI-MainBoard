@@ -61,9 +61,9 @@ module U409_TOP (
     //output [1:0] PCIAT,
 
     //ATA
-    input AUTOBOOT, SPIO_J, PPIO_J,
+    input AUTOBOOT,
 
-    output PCS0, PCS1, SCS0, SCS1, PPIO, SPIO, ATA_ENn,
+    output PCS0, PCS1, SCS0, SCS1, ATA_ENn,
 
     //Flash
     input  FLASH_DISJn,
@@ -136,7 +136,7 @@ end*/
 
 U409_TRANSFER_ACK U409_TRANSFER_ACK (
     //INPUTS
-    .CLK40_IN (CLK40_IN),
+    //.CLK40_IN (CLK40_IN),
     .CLK40 (CLK40),
     .RESETn (RESETn),
     .TSn (TSn),
@@ -227,30 +227,6 @@ U409_CIA U409_CIA (
     .CIA_ENABLE (CIA_ENABLE)
 );
 
-/////////////////
-// AUTOCONFIG //
-///////////////
-
-/*U409_AUTOCONFIG U409_AUTOCONFIG (
-    //INPUT
-    .CLK40,
-    .RESETn,
-    .AUTOCONFIG_SPACE (AUTOCONFIG_SPACE),
-    .RnW (RnW),
-    .TSn (TSn),
-    .AUTOBOOT (AUTOBOOT),
-    .D_IN (D_IN),
-    .A (A[7:1]),
-
-    //OUTPUT
-    //.BRIDGE_BASE (BRIDGE_BASE),
-    .LIDE_BASE (LIDE_BASE),
-    //.PRO_BASE (PRO_BASE),
-    .D_OUT (D_OUT),
-    .CONFIGURED (CONFIGURED),
-    .AC_TACK (AC_TACK)
-);*/
-
 ////////////
 // FLASH //
 //////////
@@ -293,8 +269,8 @@ U409_RTC_SM U409_RTC_SM (
 //////////////
 
 //Pass through the ATA PIO jumper settings
-assign PPIO = PPIO_J;
-assign SPIO = SPIO_J;
+//assign PPIO = PPIO_J;
+//assign SPIO = SPIO_J;
 
 //////////
 // PLL //
@@ -302,7 +278,17 @@ assign SPIO = SPIO_J;
 
 wire CLK40_PAD = CLK40_IN;
 
-SB_PLL40_CORE #(
+U409_4040_pll U409_4040_pll_inst(.PACKAGEPIN(CLK40_PAD),
+                                 .PLLOUTCORE(),
+                                 .PLLOUTGLOBAL(CLK40),
+                                 .RESET(1'b1));
+
+/*APCI_U409_4040_pll APCI_U409_4040_pll_inst(.PACKAGEPIN(CLK40_PAD),
+                                           .PLLOUTCORE(),
+                                           .PLLOUTGLOBAL(CLK40),
+                                           .RESET(1'b1));*/
+
+/*SB_PLL40_CORE #(
     .DIVR (4'b0000),
     .DIVF (7'b0000000),
     .DIVQ (3'b100),
@@ -326,6 +312,6 @@ SB_PLL40_CORE #(
     .SDI               (1'b0),
     .SCLK              (1'b0),
     .LATCHINPUTVALUE   (1'b0)
-);
+);*/
 
 endmodule
