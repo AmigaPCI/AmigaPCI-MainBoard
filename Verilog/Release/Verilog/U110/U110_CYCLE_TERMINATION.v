@@ -39,7 +39,7 @@ module U110_CYCLE_TERMINATION (
     
     //Cycle Start/Terminate
     input RESETn, ATA_TACK, PCI_CYCLEn,
-    output TEAn, TCIn, TBIn,
+    output TCIn, TBIn, //TEAn, 
 
     inout TACKn
 
@@ -50,11 +50,12 @@ module U110_CYCLE_TERMINATION (
 ///////////////////////
 
 //Terminate cycles for PCI and ATA access. We don't allow caching in either PCI or ATA spaces.
-//Asserting _TEA alone causes the system to crash.
 
-//TCIn is enabled by watching for assertion of _PCICYCLE from U109. Once enabled,
+//_TCI is asserted with every cycle termination driven by U110, which is only ATA cycles.
+//_TCI is also asserted in response to a PCI cycle in progress. For that process,
+//_TCI is enabled by watching for assertion of _PCICYCLE from U109. Once _TCI is asserted,
 //assertion of _TACK disables it. During normal PCI cycle terminations, U109 drives _TACK and _TBI
-//while the signal here asserts TCIn.
+//while we assert TCIn here, in U110.
 
 wire TCI_EN  =  (TACK_OUT_EN ||  PCI_TCI_EN);
 wire TxI_OUT = !(!TACK_OUT   || !PCI_TCI_OUT);
@@ -62,7 +63,36 @@ wire TxI_OUT = !(!TACK_OUT   || !PCI_TCI_OUT);
 assign TACKn = TACK_OUT_EN ? TACK_OUT : 1'bz;
 assign TCIn  = TCI_EN ? TxI_OUT : 1'bz;
 assign TBIn = TACK_OUT_EN ? TACK_OUT : 1'bz;
-assign TEAn  = 1;
+//assign TEAn  = 1;
+
+//------ _TACK State Machine ------
+reg TACK_OUT_EN, TACK_OUT;
+reg [3:0] TACK_COUNT;
+always @(posedge CLK40) begin
+    if (!RESETn) begin
+        TACK_OUT_EN <= 0;
+        TACK_OUT <= 1;
+        TACK_COUNT <= 4'h0;
+    end else begin
+        case (TACK_COUNT)
+            4'h0 : begin
+                if (ATA_TACK) begin
+                    TACK_OUT_EN <= 1;
+                    TACK_OUT <= 0;
+                    TACK_COUNT <= 4'h1;
+                end
+            end
+            4'h1 : begin
+                TACK_OUT <= 1;
+                TACK_COUNT <= 4'h2;
+            end
+            4'h2 : begin
+                TACK_OUT_EN <= 0;
+                TACK_COUNT <= 4'h0;
+            end
+        endcase
+    end
+end
 
 //------ _TCI State Machine ------
 reg PCI_TCI_EN, PCI_TCI_OUT;
@@ -97,35 +127,6 @@ always @(posedge CLK40) begin
             end
         endcase
     end    
-end
-
-//------ _TACK State Machine ------
-reg TACK_OUT_EN, TACK_OUT;
-reg [3:0] TACK_COUNT;
-always @(posedge CLK40) begin
-    if (!RESETn) begin
-        TACK_OUT_EN <= 0;
-        TACK_OUT <= 1;
-        TACK_COUNT <= 4'h0;
-    end else begin
-        case (TACK_COUNT)
-            4'h0 : begin
-                if (ATA_TACK) begin
-                    TACK_OUT_EN <= 1;
-                    TACK_OUT <= 0;
-                    TACK_COUNT <= 4'h1;
-                end
-            end
-            4'h1 : begin
-                TACK_OUT <= 1;
-                TACK_COUNT <= 4'h2;
-            end
-            4'h2 : begin
-                TACK_OUT_EN <= 0;
-                TACK_COUNT <= 4'h0;
-            end
-        endcase
-    end
 end
 
 endmodule

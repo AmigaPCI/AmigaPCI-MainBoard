@@ -1,75 +1,78 @@
+#There are two extra signals between U109 and U110.
+#PCI0 and PCI1. They are undefined and for future use.
+
 #CLOCKS
-#set_io CLK40_IN 49 #52
-#set_io RESETn   20 #49
-
-#set_io CLK33_IN 129 #93
-#set_io CBE[0]    139 -pullup yes #129
-
-set_io CLK33_IN 93
-set_io CLK40_IN 52
-set_io CLK66_IN 81
-set_io RESETn   49
+set_io CLK33_IN 129
+set_io CLK40_IN 49
 
 #ADDRESS
 set_io A_LOW[1] 74
 set_io A_LOW[0] 73
 
 #ATA SIGNALS
-set_io PPIO        16
-set_io SPIO        15
 set_io PCS1        24
 set_io PCS0        25
 set_io SCS1        22
 set_io SCS0        23
-set_io ATA_ENn     12 
+set_io ATA_ENn     12
+set_io DIOR_SECn  101
+set_io DIOW_SECn   99
+set_io DIOR_PRIn   97
 set_io DIOW_PRIn   94
-#set_io IORDY     110
+set_io CS1_PRIn    96
+set_io CS0_PRIn    95
+set_io IDELENn     88
+set_io IDEHRENn    90
+set_io IDEHWENn    98
+set_io ATA_LATCH   87
+set_io CS0_SECn    85
+set_io CS1_SECn   102
+set_io IDEDIR      84 
+set_io ATA_J901     2 -pullup yes
+set_io ATA_J902     3 -pullup yes
+set_io ATA_J903     4 -pullup yes
+#set_io IORDY     116
 #set_io INTRS     107
 #set_io INTRP     106
-set_io DIOR_SECn   99
-set_io DIOW_SECn   98
-set_io DIOR_PRIn   96
-set_io CS1_PRIn    95
-set_io CS0_PRIn    91
-set_io IDELENn     87
-set_io IDEHRENn    88
-set_io IDEHWENn    97
-set_io ATA_LATCH   85
-set_io CS0_SECn    84
-set_io CS1_SECn   101
-set_io IDEDIR      83
 
 #DATA TRANSFER SIGNALS
-set_io SIZ[1]   18
-set_io SIZ[0]   17
-set_io TEAn     10
-set_io TCIn     33
-set_io TBIn     34
-set_io TSn      47
-set_io RnW      79
-set_io TACKn    75
-set_io BURSTn   80
-set_io DATA_DIR  9
+set_io RESETn    42
+set_io SIZ[1]    18
+set_io SIZ[0]    17
+set_io TCIn      33
+set_io TBIn      34
+set_io TSn       21
+set_io RnW       80
+set_io TACKn     76
+set_io BURSTn    81
+set_io DATA_DIR   9
+set_io PCIINTENn 62
+#set_io TT[0]      31
+#set_io TT[1]      32
+#set_io TEAn      10
+#set_io TACKn_OUT 76
+#set_io TACKn_IN  93
 
 #BUS ARBRITRATION
 set_io LOCKn      43
 set_io BRn        56
 set_io BBn        48 -pullup yes
-set_io BGn        76
+set_io BGn        78
 set_io BUSDIR     55
-set_io BUSREQ[0] 112
-set_io BUSREQ[1] 114
-set_io BUSREQ[2] 113
-set_io BUSREQ[3] 116
-set_io BUSREQ[4] 115
+set_io BUSREQ[0] 110
+set_io BUSREQ[1] 113
+set_io BUSREQ[2] 112
+set_io BUSREQ[3] 115
+set_io BUSREQ[4] 114
 set_io BUSGNT[0] 119
 set_io BUSGNT[1] 120
 set_io BUSGNT[2] 118
-set_io BUSGNT[3] 125
-set_io BUSGNT[4] 124
+set_io BUSGNT[3] 124
+set_io BUSGNT[4] 122
+set_io CPUBUSn    60
 
 #PCI SIGNALS
-set_io WLATCH_FRAMEn 11
+set_io W_LATCH_ENn   11
 set_io BRIDGE_ENn    63
 set_io PCI_TIPn     138
 set_io PCIAT[2]      61
@@ -78,24 +81,23 @@ set_io PCIAT[0]      44
 set_io PARITY       144 -pullup yes
 set_io FRAMEn       137 -pullup yes
 set_io DEVSELn      134
-set_io DEVSEL_OUTn   60
-set_io CBE[0]       128 -pullup yes
+set_io CBE[0]       125 -pullup yes
 set_io CBE[1]       130 -pullup yes
 set_io CBE[2]       135 -pullup yes
 set_io CBE[3]       136 -pullup yes
 set_io INT2n        121
-set_io PARITY_DA     82
-set_io PCI_CYCLEn    78
-set_io AD31          90
+set_io PARITY_DA     83
+set_io PCI_CYCLEn    79
+set_io AD31          91
 set_io PCIINTn      117
-
-#set_io RESET_PCIn  122
+set_io LATCH_ADn     75 
+set_io PCI_BUFF_ENn   7
+set_io IRDYn        139
+set_io PPDMA          8
+set_io PCIENn        26
 #set_io SYSERRn       1
 #set_io PERRn       143
 #set_io PLOCKn      142
-#set_io PCIMODE0      2 -pullup yes
-#set_io PCIMODE1      3 -pullup yes
-#set_io PCIMODE2      4 -pullup yes
 #set_io AD[1] 105
 #set_io AD[0] 104
 
@@ -105,7 +107,7 @@ set_io UMBEn 38
 set_io LMBEn 39
 set_io LLBEn 41
 
-#Test (J100,101,102)
-set_io TP0    2 #J100
-set_io TP1    3
-set_io TP2    4
+#Test
+#set_io TP0    
+#set_io TP1    
+#set_io TP2    

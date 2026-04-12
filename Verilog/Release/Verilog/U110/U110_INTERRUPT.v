@@ -30,17 +30,18 @@ Date          Who  Description
 -----------------------------------
 29-NOV-2025   JN   Initial code.
 09-JAN-2026   JN   Connected all PCI interupts to _INT2.
+12-APR-2026   JN   Connected PCI INT Enable for Rev 7.0
 */
 
 module U110_INTERRUPT (
 
-    input PCIINTn,
+    input PCIINTn, PCIINTENn,
     output INT2n
 
 );
 
 //Pretty simple. Might want to sync this to the 7MHz clock?
 
-assign INT2n = PCIINTn;
+assign INT2n = ~(!PCIINTn && !PCIINTENn);
 
 endmodule

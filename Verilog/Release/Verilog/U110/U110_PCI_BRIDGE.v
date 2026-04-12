@@ -37,17 +37,17 @@ Date          Who  Description
 module U110_PCI_BRIDGE (
 
     input CLK66, CLK40, CLK33, RESETn, TSn, RnW,
-    input AD31, BGn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA,
+    input AD31, BGn, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, IRDYn,
     input CPU_BUS_OWN,
     
 
-    output PARITY, PCI_TIPn, BB_EN, DMA_START,
-    output reg DMA_WRITE_CYCLE, W_LATCH_EN,
+    output PARITY, PCI_TIPn, BB_EN, DMA_START, PPDMA,
+    output reg DMA_WRITE_CYCLE, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn,
     output [1:0] A_LOW,
     output reg [1:0] SIZ_OUT,
 
-    inout DEVSELn, FRAMEn,
     input [2:0] PCIAT,
+    inout DEVSELn, FRAMEn,
     inout [3:0] CBE
 
     //,output TP0,TP1,TP2
@@ -88,13 +88,25 @@ localparam [1:0] BURST_TOTAL = 2'b11;
  // WIRES //
 ///////////
 
-assign DMA_START = (RESETn && !FRAMEn && !AD31);
-assign PCI_TIPn = ~(PCI_CYCLE_ACTIVE || DMA_PCI_CYCLE);
-assign BB_EN = BB_EN_SYNC[1];
+assign BB_EN         =   BB_EN_SYNC[1];
+assign PCI_TIPn      = ~(PCI_CYCLE_ACTIVE || DMA_PCI_CYCLE);
+assign DMA_START     =  (RESETn && !FRAMEn && !AD31);
+assign PCI2PCI_START =  (RESETn && !FRAMEn &&  AD31);
 
-  /////////////////////
- // TRISTATABLE I/O //
-/////////////////////
+//PPDMA controls the direction of the _DEVSEL and _TRDY signals.
+//The direction is conditioned on the cycle type in progress.
+
+//Cycle Type   Data Direction  Value
+//----------------------------------
+// CPU to PCI  Bridge <- PCI     1
+// DMA to Ami  Bridge -> PCI     0
+// DMA to PCI  Bridge <- PCI     1
+
+assign PPDMA = (PCI_BUFF_ENn || PCI_CYCLE_ACTIVE);
+
+  //////////////////
+ // TRISTATE I/O //
+//////////////////
 
 assign PARITY = PARITY_EN ? PARITY_OUT : 1'bz;
 
@@ -143,13 +155,16 @@ end
  // CPU CYCLE START //
 /////////////////////
 
+//This currently DOES NOT support burst writes to PCI.
+//Future idea...drive _TACK from here instead of asserting W_LATCH_EN?
+
 reg PCI_CYCLE_START_HOLD, WRITE_CYCLE, BURST_CYCLE_EN; //W_LATCH_EN, 
 reg [1:0] PCI_CYCLE_ACTIVE_SYNC, PCI_CYCLE_STATE;;
 always @(posedge CLK40) begin
     if (!RESETn) begin
         PCI_CYCLE_START_HOLD <= 0;
         WRITE_CYCLE <= 0;
-        W_LATCH_EN <= 0;
+        W_LATCH_ENn <= 1;
         BURST_CYCLE_EN <= 0;
         PCI_CYCLE_STATE <= 2'b0;
         PCI_CYCLE_ACTIVE_SYNC <= 2'b0;
@@ -163,7 +178,7 @@ always @(posedge CLK40) begin
                     PCI_CYCLE_START_HOLD <= 1;
                     BURST_CYCLE_EN <= PCIAT[2];           
                     if (!RnW) begin
-                        W_LATCH_EN <= 1;
+                        W_LATCH_ENn <= 0;
                         WRITE_CYCLE <= 1;
                     end else begin
                         WRITE_CYCLE <= 0;
@@ -172,7 +187,7 @@ always @(posedge CLK40) begin
                 end
             end
             2'b01: begin
-                W_LATCH_EN <= 0;
+                W_LATCH_ENn <= 1;
                 PCI_CYCLE_STATE <= 2'b10;
             end
             2'b10 : begin
@@ -235,21 +250,6 @@ always @* begin
     endcase
 end
 
-  /////////////////
- // RETRY CYCLE //
-/////////////////
-
-//Latch the the assertion of a retry cycle here.
-/*reg RETRY_CYCLE;
-always @(posedge CLK33, posedge RETRY_EN) begin
-    if (RETRY_EN) begin
-        RETRY_CYCLE <= 1;
-    end else begin
-        RETRY_CYCLE <= ~RETRY_RESET;
-    end
-end*/
-
-
   //////////////////////////
  // CPU DRIVEN PCI CYCLE //
 //////////////////////////
@@ -258,7 +258,6 @@ end*/
 //Driven signals are asserted on the falling clock edge.
 //The signals come out about 2-3ns early, which is probably fine.
 //A pll can be used in the next hardware revision to get it exact.
-
 
 //------ RISING SIGNAL LATCH ------
 reg DEVSELn_DELAY, PCI_CYCLEn_DELAY;
@@ -359,31 +358,33 @@ reg [2:0] DMA_STATE;
 always @(posedge CLK33) begin
     if (!RESETn) begin
         //DEVSEL_EN <= 0;
+        LATCH_ADn        <= 0;
+        PCI_BB_EN        <= 0;
         DMA_CYCLE_ACTIVE <= 0;
-        DMA_BURST_CYCLE <= 0;
-        DMA_WRITE_CYCLE <= 0;
-        PCI_BB_EN <= 0;
-        SIZ_OUT <= 2'b0;
+        DMA_BURST_CYCLE  <= 0;
+        DMA_WRITE_CYCLE  <= 0;
+        SIZ_OUT   <= 2'b0;
         A_LOW_OUT <= 2'b0;
         DMA_STATE <= 3'd0;
     end else begin
         case (DMA_STATE)
             3'd0 : begin
-                //if (!FRAMEn && BGn_SYNC[1] && !AD31) begin
                 if (DMA_START && BGn_SYNC[1]) begin
                     //DMA cycle has started
                     //NEED TO DRIVE TT BUS FROM HERE!
-                    PCI_BB_EN <= 1;
+                    PCI_BB_EN        <= 1;
+                    LATCH_ADn        <= 1;
                     DMA_CYCLE_ACTIVE <= 1;                    
-                    DMA_WRITE_CYCLE <= CBE[0]; //1=Write
-                    DMA_BURST_CYCLE <= CBE[3]; //1=Burst
-                    DMA_STATE <= 2'd1;
+                    DMA_WRITE_CYCLE  <= CBE[0]; //1=Write
+                    DMA_BURST_CYCLE  <= CBE[3]; //1=Burst
+                    DMA_STATE        <= 2'd1;
                 end
             end
             3'd1 : begin
                 //DEVSEL_EN <= 1;
+                LATCH_ADn        <= 0;
                 DMA_CYCLE_ACTIVE <= 0;
-                DMA_STATE <= 2'd2;
+                DMA_STATE        <= 2'd2;
                 case (CBE)
                     //Byte Lanes
                     4'b0000 : begin
@@ -428,6 +429,7 @@ end
 //WE NEED ANOTHER SIGNAL TO DRIVE NEGATION OF _DEVSEL.
 //WE NEED TO DROP DEVSEL ON THE SAME EDGE THE LAST
 //_TRDY IS NEGATED.
+//This is in REV 7.0, _PCIEN is the signal name.
 
 //------ Drive PCI DMA signals on falling edge ------
 reg DMA_PCI_CYCLE, DEVSEL_EN;
@@ -465,6 +467,28 @@ always @(negedge CLK33) begin
     end
 end
 
+  //////////////////////////
+ // PCI DRIVEN PCI CYCLE //
+//////////////////////////
+
+//In the event of a PCI to PCI DMA cycle, we basically sit it out by
+//disabling the AD buffers. We need to monitor the bus to know when 
+//this cycle type starts and ends.
+
+always @(posedge CLK33) begin
+    if (!RESETn) begin
+        PCI_BUFF_ENn <= 0;
+    end else begin
+        if (!PCI_BUFF_ENn) begin
+            if (PCI2PCI_START) begin
+                PCI_BUFF_ENn <= 1;
+            end
+        end else if (DEVSELn && IRDYn) begin
+            PCI_BUFF_ENn <= 0;
+        end
+    end
+end
+    
   ////////////
  // PARITY //
 ////////////
@@ -496,35 +520,12 @@ always @(posedge CLK33) begin
 end
 
 //------ Assert Parity ------
-/*reg PARITY_EN;
-always @(negedge CLK33) begin
-    if (!RESETn) begin
-        PARITY_EN <= 0;
-        PARITY_OUT <= 1;
-    end else begin
-        if (CPU_BUS_OWN && (PHASEA_D || PCI_WRITE_CYCLE)) begin
-            PARITY_OUT <= ^{PARITY_CBE, PARITY_DA};
-            PARITY_EN <= 1;
-        end else begin
-            PARITY_EN <= 0;
-        end
-    end    
-end*/
-
-//------ Assert Parity ------
-//reg PARITY_EN;
 reg PARITY_OUT;
 always @(negedge CLK33) begin
     if (!RESETn) begin
-        //PARITY_EN <= 0;
         PARITY_OUT <= 1;
     end else begin
-        //if (CPU_BUS_OWN && (PHASEA_D || PCI_WRITE_CYCLE)) begin
-            PARITY_OUT <= ^{PARITY_CBE, PARITY_DA};
-        //    PARITY_EN <= 1;
-        //end else begin
-        //    PARITY_EN <= 0;
-        //end
+        PARITY_OUT <= ^{PARITY_CBE, PARITY_DA};
     end    
 end
 

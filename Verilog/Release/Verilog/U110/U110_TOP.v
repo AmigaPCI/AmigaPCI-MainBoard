@@ -33,55 +33,56 @@ iceprog D:\AmigaPCI\U110\APCI_U110\APCI_U110_Implmnt\sbt\outputs\bitmap\U110_TOP
 module U110_TOP (
 
     //Clocks
-    input CLK66_IN, CLK40_IN, CLK33_IN,
+    input CLK40_IN, CLK33_IN,
     
     //Cycle Signals
     input  RESETn, TSn,
     inout  RnW,
     inout  [1:0] SIZ,
-    output TEAn, TCIn, TBIn, DATA_DIR,
+    output TCIn, TBIn, DATA_DIR, //TEAn, 
     output [1:0] A_LOW,
     inout  TACKn,   
     
     //ATA Chip Selects
-    input  ATA_ENn, PPIO, SPIO, PCS1 , PCS0, SCS1, SCS0,
+    input  ATA_ENn, PCS1, PCS0, SCS1, SCS0, ATA_J901, ATA_J902, ATA_J903,
     output CS0_PRIn, CS1_PRIn, CS0_SECn, CS1_SECn, DIOR_PRIn, DIOW_PRIn, DIOR_SECn, DIOW_SECn,
 
     //ATA Buffers
     output IDELENn, IDEDIR, IDEHRENn, IDEHWENn, ATA_LATCH,
 
     //PCI 
-    input  AD31, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, PCIINTn,
+    input  AD31, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, IRDYn,
     input  [2:0] PCIAT,    
-    output DEVSEL_OUTn, PCI_TIPn, PARITY, WLATCH_FRAMEn,
-    inout DEVSELn, FRAMEn,
-    inout [3:0] CBE,
+    output DEVSEL_OUTn, PCI_TIPn, PARITY, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn, PPDMA,
+    inout  DEVSELn, FRAMEn,
+    inout  [3:0] CBE,
     
-    //Arbitor and Interrupts
-    input BRn, LOCKn,
+    //Arbiter and Interrupts
+    input  BRn, LOCKn, PCIINTENn, PCIINTn,
     input  [4:0] BUSREQ,
-    output INT2n, BUSDIR, BGn, BURSTn,
+    output INT2n, BUSDIR, BGn, BURSTn, CPUBUSn,
     output [4:0] BUSGNT,
-    inout BBn
+    inout  BBn
 
-    ,output TP0,TP1//,TP2
+    //,output TP0,TP1//,TP2
 
 );
 
-assign TP1 = BRIDGE_ENn;
-assign TP0 = PCI_TIPn;
+//assign TP1 = BRIDGE_ENn;
+//assign TP0 = PCI_TIPn;
 //assign TP2 = CPU_BUS_OWN;
 
 ////////////////////////////
 // INTERNAL SIGNAL WIRES //
 //////////////////////////
 
-wire CLK66 = CLK66_IN;
+//wire CLK66 = CLK66_IN;
+wire CLK33_PAD = CLK33_IN;
 wire CLK40_PAD = CLK40_IN;
 wire CLK40;
-wire CLK33 = !CLK33_IN;
+//wire CLK33 = !CLK33_IN;
 wire ATA_TACK;
-wire W_LATCH_EN;
+//wire W_LATCH_EN;
 wire DMA_START;
 wire DMA_WRITE_CYCLE;
 wire BB_EN;
@@ -92,14 +93,15 @@ wire [1:0] SIZ_OUT;
 // EXTERNAL SIGNAL WIRES //
 //////////////////////////
 
+assign BUSDIR  = ~CPU_BUS_OWN; //BUSDIR = 1 = PCI HAS BUS
+assign CPUBUSn = ~CPU_BUS_OWN;
 assign DEVSEL_OUTn = DEVSELn; //Communicates DEVSELn to U109.
-assign BUSDIR = ~CPU_BUS_OWN; //BUSDIR = 1 = PCI HAS BUS
 
 //assign TT = BUSDIR ? xxxx : 2'bz;
 assign BBn = !CPU_BUS_OWN ? ~BB_EN : 1'bz;
 assign SIZ = !CPU_BUS_OWN ?  SIZ_OUT : 2'bz;
 assign RnW = !CPU_BUS_OWN ? ~DMA_WRITE_CYCLE : 1'bz;
-assign WLATCH_FRAMEn = ~(W_LATCH_EN || (!CPU_BUS_OWN && DMA_START));
+//assign WLATCH_FRAMEn = ~(W_LATCH_EN || (!CPU_BUS_OWN && DMA_START));
 
   ///////////////
  // INTERRUPT //
@@ -108,6 +110,7 @@ assign WLATCH_FRAMEn = ~(W_LATCH_EN || (!CPU_BUS_OWN && DMA_START));
 U110_INTERRUPT U110_INTERRUPT (
     //input
     .PCIINTn (PCIINTn),
+    .PCIINTENn (PCIINTENn),
 
     //output
     .INT2n (INT2n)
@@ -125,7 +128,7 @@ U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
     .PCI_CYCLEn (PCI_CYCLEn),
 
     //output
-    .TEAn (TEAn),
+    //.TEAn (TEAn),
     .TACKn (TACKn),
     .TCIn (TCIn),
     .TBIn (TBIn)
@@ -161,8 +164,9 @@ U110_ATA U110_ATA (
     .CLK40 (CLK40),
     .RESETn (RESETn),
     .ATA_ENn (ATA_ENn),
-    .PPIO (PPIO),
-    .SPIO (SPIO),
+    .ATA_J901 (ATA_J901), 
+    .ATA_J902 (ATA_J902), 
+    .ATA_J903 (ATA_J903),
     .PCS1 (PCS1),
     .PCS0 (PCS0),
     .SCS1 (SCS1),
@@ -223,27 +227,32 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .AD31 (AD31),
     .BGn (BGn),
     .PCI_CYCLEn (PCI_CYCLEn),
-    .DEVSELn (DEVSELn),
     .UUBEn (UUBEn),
     .UMBEn (UMBEn),
     .LMBEn (LMBEn),
     .LLBEn (LLBEn),
     .BRIDGE_ENn (BRIDGE_ENn), 
     .PARITY_DA (PARITY_DA),
-    //.CPU_BUS (CPU_BUS),
+    .IRDYn (IRDYn),
     .CPU_BUS_OWN (CPU_BUS_OWN),
     .PCIAT (PCIAT),
 
     //output
-    .FRAMEn (FRAMEn),
     .A_LOW (A_LOW),
     .SIZ_OUT (SIZ_OUT),
     .PCI_TIPn (PCI_TIPn),
     .DMA_WRITE_CYCLE (DMA_WRITE_CYCLE),
     .BB_EN (BB_EN),
     .DMA_START (DMA_START),
-    .W_LATCH_EN (W_LATCH_EN),
+    .PPDMA (PPDMA),
+    .W_LATCH_ENn (W_LATCH_ENn),
+    .LATCH_ADn (LATCH_ADn),
+    .PCI_BUFF_ENn (PCI_BUFF_ENn),
     .PARITY (PARITY),
+
+    //inout
+    .FRAMEn (FRAMEn),
+    .DEVSELn (DEVSELn),
     .CBE (CBE)
 
     //,.TP0(TP0)
@@ -255,7 +264,7 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
  // PLL //
 /////////
 
-SB_PLL40_CORE #(
+/*SB_PLL40_CORE #(
     .DIVR (4'b0000),
     .DIVF (7'b0000000),
     .DIVQ (3'b100),
@@ -280,7 +289,19 @@ SB_PLL40_CORE #(
     .SDI             (1'b0),
     .SCLK            (1'b0),
     .LATCHINPUTVALUE (1'b0)
-);
+);*/
+
+U110_4040_pll U110_4040_pll_inst(.PACKAGEPIN(CLK40_PAD),
+                                 .PLLOUTCORE(),
+                                 .PLLOUTGLOBAL(CLK40),
+                                 .RESET(1'b1));
+
+U110_3366_pll U110_3366_pll_inst(.PACKAGEPIN(CLK33_PAD),
+                                 .PLLOUTCOREA(),
+                                 .PLLOUTCOREB(),
+                                 .PLLOUTGLOBALA(CLK66),
+                                 .PLLOUTGLOBALB(CLK33),
+                                 .RESET(1'b1));
 
 /*SB_PLL40_PAD #(
     .DIVR (4'b0000),
