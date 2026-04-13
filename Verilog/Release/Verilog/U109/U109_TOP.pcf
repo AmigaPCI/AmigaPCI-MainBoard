@@ -1,8 +1,11 @@
+#Pin 41 is an extra signal to U110 that is currently not defined.
+#Pin 24 is an extra signal to U409 that is currently not defined.
+#Pin 10 (DEVSELn) is not used.
+
 #CLOCKS
 set_io CLK40_IN   49
 set_io CLK33_IN  129
-set_io CLK66_OUT  16
-set_io RESETn     26
+set_io RESETn     25
 
 #AD BUS
 set_io AD[0]    2 #AD0
@@ -73,26 +76,27 @@ set_io D[30] 106 #D30
 set_io D[31] 107 #D31
 
 #DATA TRANSFER SIGNALS
-set_io TACKn  23
-set_io TSn    29
-set_io BGn    28
-set_io BBn    32
-set_io TBIn   47
-set_io RnW    18
-set_io BURSTn 17
+set_io TACKn    23
+set_io TSn      33
+set_io CPU_BUSn 32
+set_io TBIn     19
+set_io RnW      17
+set_io BURSTn   16
+#set_io TACKn_OUT 23
+#set_io TACKn_IN  21
+#set_io TSn_OUT   33
+#set_io TSn_IN    20
 
 #PCI CYCLE SIGNALS
-set_io STOPn              10
+set_io STOPn              38
 set_io PCI_RSTn          128
-set_io CLK_ADDRESS_LATCH  41
-set_io W_LATCH_FRAMEn     44
-set_io DEVSELn            20
-set_io PCI_TIPn           25
-set_io PCI_BUF_ENn        33
-set_io PCI_BUF_DIR        31
+set_io W_LATCH_ENn        44
+
+set_io PCI_TIPn           26
+set_io PCI_BUF_DIR        28
 set_io PARITY_DIR         34
-set_io PCI_CYCLEn         19
-set_io BRIDGE_ENn         45
+set_io PCI_CYCLEn         18
+set_io BRIDGE_ENn         47
 set_io PARITY_DA          15
 set_io TARGET_READYn      12
 set_io INIT_READYn        11
@@ -101,13 +105,18 @@ set_io IDSEL[1]           61
 set_io IDSEL[2]           55
 set_io IDSEL[3]           60
 set_io IDSEL[4]           56
-set_io ADDRESS_ENn        22
+set_io ADDRESS_ENn        52
 set_io ADDRESS_DIR        39
-set_io PCIAT[2]           21
+set_io PCIAT[2]           45
 set_io PCIAT[1]           43
 set_io PCIAT[0]           42
+#set_io DEVSELn            10
+#set_io PERRn              37 #Input from U110
+#set_io PCI_INT_ENn        22 #Output to U110
+#set_io DATARDYn           29 #Output for RAM handshaking
+#set_io PCI_ENn            31 #Output to U110 for turning on/off PCI signals
 
 #set_io CONFIG_ENn    24
 
-set_io TP0 38
-set_io TP1 37 -pullup yes
+#set_io TP0 38
+#set_io TP1 37 -pullup yes

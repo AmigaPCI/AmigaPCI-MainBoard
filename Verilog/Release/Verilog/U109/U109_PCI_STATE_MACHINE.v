@@ -39,7 +39,7 @@ module U109_PCI_STATE_MACHINE (
     input CLK80, CLK66, CLK40, CLK33, RESETn, RnW,
 
     //Cycle Start/Termination
-    input CPU_BUS, REG_DATA,
+    input CPU_BUSn, REG_DATA,
     input BURSTn, PCI_TIPn, BRIDGE_CONF_SPACE, A, TACKn_IN,
     output reg TACKn_OUT, TACK_EN,
     inout TSn, 
@@ -78,10 +78,10 @@ localparam [1:0] BURST_TOTAL = 2'd4;
 /////////////////////
 
 //assign CLK_ADDRESS_LATCH = 0;
-assign INIT_READYn   =  CPU_BUS ? ~INIT_EN   : 1'bz;
-assign TARGET_READYn = !CPU_BUS ? ~TRDY_EN   : 1'bz;
-assign STOPn         = !CPU_BUS ? ~STOP_EN   : 1'bz;
-assign TSn           = !CPU_BUS ? ~TS_OUT_EN : 1'bz;
+assign INIT_READYn   = !CPU_BUSn ? ~INIT_EN   : 1'bz;
+assign TARGET_READYn =  CPU_BUSn ? ~TRDY_EN   : 1'bz;
+assign STOPn         =  CPU_BUSn ? ~STOP_EN   : 1'bz;
+assign TSn           =  CPU_BUSn ? ~TS_OUT_EN : 1'bz;
 
 
 //Parity Direction
@@ -94,7 +94,7 @@ assign TSn           = !CPU_BUS ? ~TS_OUT_EN : 1'bz;
 // RD    1    0       0 (P2A) 1 (A2P)
 // WR    1    0       1 (A2P) 0 (P2A)
 
-assign PARITY_DIR = ((CPU_BUS && PCI_CYCLEn) || A2P_CYCLE_EN);
+assign PARITY_DIR = ((!CPU_BUSn && PCI_CYCLEn) || A2P_CYCLE_EN);
 
 ////////////////////////////
 // BRIDGE REGISTER CYCLE //
@@ -124,11 +124,11 @@ always @(posedge CLK40 or posedge REG_CYCLE_START) begin
 end
 
 ////////////////////
-// SYNCHORNIZERS //
+// SYNCHRONIZERS //
 //////////////////
 
 //A2P_EN can be driven by either domain, so we sync it in both.
-wire A2P_EN = CPU_BUS ? ~RnW : RnW;
+wire A2P_EN = !CPU_BUSn ? !RnW : RnW;
 
 //------ PCI Clock Domain ------
 reg PREV_CLK33;
@@ -170,7 +170,7 @@ end
 //PCI_CYCLEn conditions many important signals for the PCI cycle.
 //It also is the handshaking signal to U110 that indicates when
 //a PCI cycle is active. It tells U110 when to negate _FRAME and
-//_DEVSEL. In U109, it causes the address latch/conditin to be held
+//_DEVSEL. In U109, it causes the address latch/condition to be held
 //during the cycle so we don't drop buffers.
 
 //_STOP may asserted by the target device as a means to terminate the cycle.
@@ -219,7 +219,7 @@ end
 //This state machine also pushes data to the AD bus (A2P cycles).
 
 wire P2A_RST = (!RESETn || P2A_CYCLE_RST);
-wire BURST_CYCLE_EN = (CACHE_SPACE_EN || (!CPU_BUS && !BURSTn));
+wire BURST_CYCLE_EN = (CACHE_SPACE_EN || (CPU_BUSn && !BURSTn));
 reg INIT_EN, A2P_CYCLE_EN, P2A_CYCLE_EN, PCI_CYCLE_EN, A2P_TIMEOUT;
 reg A2P_BURST_CYCLE, RETRY_RESET;
 reg [3:0] PCI_CYCLE_STATE;
@@ -254,8 +254,8 @@ always @(negedge CLK33 or posedge P2A_RST) begin
             4'h1: begin
                 //TRDY_COMPLETE is a stop gap for lack of handshaking with SDRAM during P2A DMA cycles.
                 //Get rid of this when we have this handshaking.
-                //if (CPU_BUS || (A2P_PCI_SYNC[1] || TRDY_COMPLETE)) begin
-                //if (CPU_BUS || A2P_PCI_SYNC[1]) begin
+                //if (!CPU_BUSn || (A2P_PCI_SYNC[1] || TRDY_COMPLETE)) begin
+                //if (!CPU_BUSn || A2P_PCI_SYNC[1]) begin
                     A2P_CYCLE_EN    <= ( A2P_PCI_SYNC[1]);
                     P2A_CYCLE_EN    <= (!A2P_PCI_SYNC[1]);
                     A2P_BURST_CYCLE <= ( A2P_PCI_SYNC[1] && BURST_CYCLE_EN);
@@ -395,12 +395,12 @@ always @(negedge CLK80) begin
             4'h8 : begin
                 TCI_ENn <= 1;
                 P2A_READ_NEXT <= (!P2A_TIMEOUT && !RETRY_CYCLE_SYNC[1]);
-                DMA_P2A_RST <= !CPU_BUS;
+                DMA_P2A_RST <= CPU_BUSn;
                 P2A_CYCLE_SYNC <= 2'b0;
                 P2A_CYCLE_STATE <= 4'h9;
             end
             4'h9 : begin                
-                if (CPU_BUS || PCI_TIPn_SYNC[1]) begin
+                if (!CPU_BUSn || PCI_TIPn_SYNC[1]) begin
                     P2A_TIMEOUT <= 0;
                     P2A_CYCLE_RST <= 1;
                     DMA_P2A_RST <= 0;
@@ -427,7 +427,7 @@ always @(posedge CLK80) begin
     end else begin
         case (TS_STATE)
             4'h0 : begin
-                if (!CPU_BUS && (!PCI_TIPn_SYNC[1] || !PCI_TIPn_SYNC[0])) begin
+                if (CPU_BUSn && (!PCI_TIPn_SYNC[1] || !PCI_TIPn_SYNC[0])) begin
                     TS_STATE <= 4'h1;
                 end
             end
@@ -475,17 +475,17 @@ reg [3:0] TACK_COUNT;
 always @(posedge CLK40, posedge DMA_TACK_RST) begin
     if (DMA_TACK_RST) begin
         TACK_COUNT <= 4'h0;
-    end else if (!CPU_BUS && !TACKn_IN) begin
+    end else if (CPU_BUSn && !TACKn_IN) begin
         TACK_COUNT <= {TACK_COUNT[2:0], 1'b1};
     end
 end
 
 //------ Assert _TRDY in response to _TACK assertions------
 /*wire [3:0] DMA_TRDY = {
-    TACK_COUNT_SYNC[3] || TACK_COUNT_SYNC[7] || (!CPU_BUS && P2A_CYCLE_EN),
-    TACK_COUNT_SYNC[2] || TACK_COUNT_SYNC[6] || (!CPU_BUS && P2A_CYCLE_EN),
-    TACK_COUNT_SYNC[1] || TACK_COUNT_SYNC[5] || (!CPU_BUS && P2A_CYCLE_EN),
-    TACK_COUNT_SYNC[0] || TACK_COUNT_SYNC[4] || (!CPU_BUS && P2A_CYCLE_EN)
+    TACK_COUNT_SYNC[3] || TACK_COUNT_SYNC[7] || (CPU_BUSn && P2A_CYCLE_EN),
+    TACK_COUNT_SYNC[2] || TACK_COUNT_SYNC[6] || (CPU_BUSn && P2A_CYCLE_EN),
+    TACK_COUNT_SYNC[1] || TACK_COUNT_SYNC[5] || (CPU_BUSn && P2A_CYCLE_EN),
+    TACK_COUNT_SYNC[0] || TACK_COUNT_SYNC[4] || (CPU_BUSn && P2A_CYCLE_EN)
 };*/
 
 wire [3:0] DMA_TRDY = {
@@ -520,7 +520,7 @@ always @(posedge CLK66) begin
             2'd0 : begin
                 if (TRDY_RST) begin
                     TRDY_RST <= 0;
-                end else if (PREV_CLK33 && INIT_READY_DELAY && (DMA_TRDY[ASSERT_COUNT] || (!CPU_BUS && P2A_CYCLE_EN))) begin
+                end else if (PREV_CLK33 && INIT_READY_DELAY && (DMA_TRDY[ASSERT_COUNT] || (CPU_BUSn && P2A_CYCLE_EN))) begin
                     TRDY_EN <= 1;
                     STOP_EN <= (BURSTn || ASSERT_COUNT == 2'd3) ? 1'b1 : 1'b0;
                     DMA_A2P_RST <= (BURSTn && A2P_CYCLE_EN);
@@ -571,7 +571,7 @@ end
 //33MHz domain. It should never exceed 4.
 
 //For CPU read cycles, This value is then 
-//synchrnonized into the 80MHz domain for assertion of _TACK.
+//synchronized into the 80MHz domain for assertion of _TACK.
 //The target ready count is asynchronously reset from the 80MHz
 //domain once each data transfer has been terminated.
 
@@ -588,7 +588,7 @@ always @(posedge CLK33 or posedge CPU_TRDY_RST) begin
         if (A2P_TIMEOUT) begin
             CPU_TRDY_COUNT <= 4'b1111;
         end else begin
-            if (CPU_BUS && !TARGET_READYn) begin
+            if (!CPU_BUSn && !TARGET_READYn) begin
                 TRDY_POINTER <= TRDY_POINTER + 1;
                 case (TRDY_POINTER)
                     2'h0 : CPU_TRDY_COUNT[0] <= 1;
@@ -603,37 +603,8 @@ always @(posedge CLK33 or posedge CPU_TRDY_RST) begin
     end
 end
 
-//------ Transfer Burst Inhibit (_TBI) ------
-//We have very little time to recognize assertion of _STOP
-//and pass it to the CPU. We are being fast and loose
-//with clock domain crossing, but we have little choice. The
-//risk of metastability should be low due to _STOP asserting
-//BEFORE we assert _TACK. We can just get in under the wire.
-
-/*wire TBI_SET = (!STOPn && !BURSTn);
-assign TBIn = TBI_EN ? TBI_OUT : 1'bz;
-
-reg TBI_EN, TBI_OUT, STOP_CYCLE;
-always @(posedge CLK80 or posedge TBI_SET) begin
-    if (TBI_SET) begin
-        TBI_EN <= 1;
-        TBI_OUT <= 0;
-        STOP_CYCLE <= 1;
-    end else if (!RESETn) begin
-        TBI_EN <= 0;
-        TBI_OUT <= 1;
-        STOP_CYCLE <= 0;
-    end else begin
-        if (!TBI_OUT) begin
-            STOP_CYCLE <= 0;
-            TBI_OUT <= 1;
-        end else begin
-            TBI_EN <= 0;
-        end
-    end
-end*/
-
 //------ CPU cycle termination (_TACK) ------
+//Now, assert _TACK to signal the CPU to latch data and end the cycle.
 //CPU cycles can be terminated either by normal assertion of _TRDY by
 //the PCI device or by timeout where no PCI device claims the bus.
 
@@ -721,5 +692,35 @@ always @(posedge CLK80) begin
         endcase
     end
 end
+
+//------ Transfer Burst Inhibit (_TBI) ------
+//We have very little time to recognize assertion of _STOP
+//and pass it to the CPU. We are being fast and loose
+//with clock domain crossing, but we have little choice. The
+//risk of metastability should be low due to _STOP asserting
+//BEFORE we assert _TACK. We can just get in under the wire.
+
+/*wire TBI_SET = (!STOPn && !BURSTn);
+assign TBIn = TBI_EN ? TBI_OUT : 1'bz;
+
+reg TBI_EN, TBI_OUT, STOP_CYCLE;
+always @(posedge CLK80 or posedge TBI_SET) begin
+    if (TBI_SET) begin
+        TBI_EN <= 1;
+        TBI_OUT <= 0;
+        STOP_CYCLE <= 1;
+    end else if (!RESETn) begin
+        TBI_EN <= 0;
+        TBI_OUT <= 1;
+        STOP_CYCLE <= 0;
+    end else begin
+        if (!TBI_OUT) begin
+            STOP_CYCLE <= 0;
+            TBI_OUT <= 1;
+        end else begin
+            TBI_EN <= 0;
+        end
+    end
+end*/
 
 endmodule

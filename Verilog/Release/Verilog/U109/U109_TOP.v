@@ -36,14 +36,14 @@ module U109_TOP (
     output CLK66_OUT,
 
     //Cycle Start/Terminate
-    input  RESETn, RnW, BURSTn, BGn, BBn,
+    input  RESETn, RnW, BURSTn, CPU_BUSn,
     output TBIn,
     inout  TSn, 
 
     //PCI
-    input  DEVSELn, PCI_TIPn, W_LATCH_FRAMEn, //W_LATCH_ENn,
-    output PCI_CYCLEn, CLK_ADDRESS_LATCH, ADDRESS_DIR, ADDRESS_ENn, PCI_RSTn,
-    output BRIDGE_ENn, PCI_BUF_ENn, PCI_BUF_DIR, PARITY_DIR, PARITY_DA,
+    input  PCI_TIPn, W_LATCH_ENn,
+    output PCI_CYCLEn, ADDRESS_DIR, ADDRESS_ENn, PCI_RSTn,
+    output BRIDGE_ENn, PCI_BUF_DIR, PARITY_DIR, PARITY_DA,
     output [2:0] PCIAT,
     output [4:0] IDSEL,
     inout  INIT_READYn, TARGET_READYn, TACKn, STOPn,
@@ -113,7 +113,7 @@ assign TBIn   = (TACK_EN && !P2A_BURST_CYCLE) ? TACKn_OUT : 1'bz;
 //////////////
 
  //Identfiy when the CPU is actively using the bus.
-reg CPU_BUS;
+/*reg CPU_BUS;
 always @(posedge CLK40) begin
     if (!RESETn) begin
         CPU_BUS <= 1;
@@ -124,7 +124,7 @@ always @(posedge CLK40) begin
             CPU_BUS <= 0;
         end
     end
-end
+end*/
 
 //////////////////////////////
 // PCI CYCLE STATE MACHINE //
@@ -138,7 +138,7 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .RESETn (RESETn),
     .TSn (TSn),
     .RnW (RnW),
-    .CPU_BUS (CPU_BUS),
+    .CPU_BUSn (CPU_BUSn),
     .REG_DATA (D[31]),
     .BURSTn (BURSTn),
     .PCI_TIPn (PCI_TIPn),
@@ -178,14 +178,14 @@ U109_BUFFERS U109_BUFFERS(
     .RnW (RnW),
     .TSn (TSn),
     .BURSTn (BURSTn),
-    .CPU_BUS (CPU_BUS),
+    .CPU_BUSn (CPU_BUSn),
     //.DEVSELn (DEVSELn),
     .PCI_TIPn (PCI_TIPn),
     .BRIDGE_SPACE (BRIDGE_SPACE),
     .CACHE_SPACE (CACHE_SPACE),
     .BUFFER_EN (BUFFER_EN),
     .P2A_TIMEOUT (P2A_TIMEOUT),
-    .W_LATCH_FRAMEn (W_LATCH_FRAMEn),
+    //.W_LATCH_ENn (W_LATCH_ENn),
     .RETRY_CYCLE (RETRY_CYCLE),
     .P2A_DATA (P2A_DATA),
     .A2P_DATA (A2P_DATA),
@@ -193,11 +193,11 @@ U109_BUFFERS U109_BUFFERS(
     //output
     .ADDRESS_ENn (ADDRESS_ENn),
     .ADDRESS_DIR (ADDRESS_DIR),
-    .PCI_BUF_ENn (PCI_BUF_ENn),
+    //.PCI_BUF_ENn (PCI_BUF_ENn),
     .PCI_BUF_DIR (PCI_BUF_DIR),
     .PCI_WRITE_EN (PCI_WRITE_EN),
     .CACHE_SPACE_EN (CACHE_SPACE_EN),
-    .CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
+    //.CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
     .PARITY_DA (PARITY_DA),
     .IDSEL (IDSEL),
     .PCIAT (PCIAT),
@@ -237,7 +237,7 @@ U109_ADDRESS_DECODE U109_ADDRESS_DECODE
 //DATA_ DIRECTION
 //PCI_TO_AMIGA  = 1
 //AMIGA_TO_PCI  = 0;
-wire DATA_DIRECTION = ((CPU_BUS && !PCI_WRITE_EN) || (!CPU_BUS && !RnW));
+wire DATA_DIRECTION = ((!CPU_BUSn && !PCI_WRITE_EN) || (CPU_BUSn && !RnW));
 wire P2A_WR_EN = (BUFFER_EN && DATA_DIRECTION && !TARGET_READYn);
 
 U109_FIFO P2A_FIFO
@@ -259,18 +259,18 @@ U109_FIFO P2A_FIFO
 // AMIGA TO PCI (A2P) FIFO //
 ////////////////////////////
 
-wire A2P_WR_EN = (!DATA_DIRECTION && ((CPU_BUS && !W_LATCH_FRAMEn) || (!CPU_BUS && !TACKn_IN)));
+wire A2P_WR_EN = (!DATA_DIRECTION && ((!CPU_BUSn && !W_LATCH_ENn) || (CPU_BUSn && !TACKn_IN)));
 
 //Hackmasters unite!
 //There is a whopping 16ns latency between the external _TACK assertion and 
-//A2P_WR_EN goeing high, missing the desired clock edge.
-//Only DMA cycles are effected, so we invert the clock during DMA cycles.
-//This means we latch the data 1/2 clock late.
+//A2P_WR_EN going high, missing the desired clock edge. This is some issue with
+//internal routing and only DMA cycles are effected, so we invert the clock during DMA cycles.
+//This means we latch the data 1/2 clock late, which is also when the data becomes invalid. PROBLEM!
 //This delay is certainly due to the i/o nature of this pin. The real fix may be
 //to implement a second _TACK pin that is input only. These types of delays seem to
 //be common with the the ice40 FPGA and can be observed on other i/o pins. This delay
-//is an extreme example.
-wire A2P_CLK40 = CPU_BUS ? CLK40_PLL : !CLK40_PLL;
+//is an extreme example. In this case, we are driving _TACK and listening for _TACK simultaneously in U109.
+wire A2P_CLK40 = !CPU_BUSn ? CLK40_PLL : !CLK40_PLL;
 
 U109_FIFO A2P_FIFO
 (
