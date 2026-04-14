@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +62,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -850,7 +853,7 @@
 		(remove_unused_layers no)
 		(uuid "bbba8cb4-2129-4069-ac33-094da7969e94")
 	)
-	(model "/home/jason/Documents/GitHub/AmigaPCI/KiCAD/AmigaPCI Mainboard-KiCAD REV 30/AmigaPCI-Footprints/asub-277-25tp24.stp"
+	(model "${KIPRJMOD}/AmigaPCI-Footprints/asub-277-25tp24.stp"
 		(offset
 			(xyz 0 2.5 16)
 		)

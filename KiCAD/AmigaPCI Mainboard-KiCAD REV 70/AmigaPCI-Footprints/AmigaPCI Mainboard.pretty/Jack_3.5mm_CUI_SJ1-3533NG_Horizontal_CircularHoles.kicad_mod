@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +62,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -71,6 +74,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -290,7 +294,11 @@
 		(at 2 7.9)
 		(size 2.8 2.8)
 		(drill 2)
-		(layers "*.Cu" "*.Mask")
+		(layers "*.Cu" "*.Mask" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu"
+			"In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu" "In17.Cu"
+			"In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu" "In24.Cu"
+			"In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
 		(remove_unused_layers no)
 		(uuid "729dd4f6-b5de-493e-be2f-129446f4a0de")
 	)
@@ -298,7 +306,11 @@
 		(at 0 0)
 		(size 2.8 2.8)
 		(drill 2)
-		(layers "*.Cu" "*.Mask")
+		(layers "*.Cu" "*.Mask" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu"
+			"In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu" "In17.Cu"
+			"In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu" "In24.Cu"
+			"In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
 		(remove_unused_layers no)
 		(uuid "fc3fe59f-5036-418b-9a4b-a5719eafe235")
 	)
@@ -306,13 +318,17 @@
 		(at 2 2.4)
 		(size 2.8 2.8)
 		(drill 2)
-		(layers "*.Cu" "*.Mask")
+		(layers "*.Cu" "*.Mask" "In5.Cu" "In6.Cu" "In7.Cu" "In8.Cu" "In9.Cu" "In10.Cu"
+			"In11.Cu" "In12.Cu" "In13.Cu" "In14.Cu" "In15.Cu" "In16.Cu" "In17.Cu"
+			"In18.Cu" "In19.Cu" "In20.Cu" "In21.Cu" "In22.Cu" "In23.Cu" "In24.Cu"
+			"In25.Cu" "In26.Cu" "In27.Cu" "In28.Cu" "In29.Cu" "In30.Cu"
+		)
 		(remove_unused_layers no)
 		(uuid "6e6e9306-6ebd-4208-9ba5-fec53cbb3c25")
 	)
-	(model "/home/jason/Documents/GitHub/AmigaPCI/KiCAD/AmigaPCI Mainboard-KiCAD REV 30/AmigaPCI-Footprints/CUI_DEVICES_SJ1-3533N.step"
+	(model "${KIPRJMOD}/AmigaPCI-Footprints/AUDIO_JACK.STEP"
 		(offset
-			(xyz 0.85 5 7)
+			(xyz 1 5 7)
 		)
 		(scale
 			(xyz 1 1 1)

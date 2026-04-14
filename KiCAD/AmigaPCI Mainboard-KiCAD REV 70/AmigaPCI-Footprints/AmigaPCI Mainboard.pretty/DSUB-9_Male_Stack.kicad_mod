@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +62,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -562,9 +565,9 @@
 		(remove_unused_layers no)
 		(uuid "e4220e1a-1937-442e-b2d1-7e2811bc45ae")
 	)
-	(model "/home/jason/Documents/GitHub/AmigaPCI/KiCAD/AmigaPCI Mainboard-KiCAD REV 30/AmigaPCI-Footprints/L17H2110130.step"
+	(model "${KIPRJMOD}/AmigaPCI-Footprints/DB9.stp"
 		(offset
-			(xyz 0 10 0)
+			(xyz 0 0.5 25.5)
 		)
 		(scale
 			(xyz 1 1 1)

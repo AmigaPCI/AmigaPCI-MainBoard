@@ -6,8 +6,8 @@
 	(paper "USLedger")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2025-07-11")
-		(rev "6.0")
+		(date "2026-04-13")
+		(rev "7.0")
 	)
 	(lib_symbols)
 	(text "100 = PCI BUS\n200 = CHIPSET\n300 = VIDEO\n500 = AUDIO\n600 = POWER\n700 = CHIPSET RAM\n800 = VOLTAGE SHIFTER\n900 = ATA"
@@ -47,6 +47,44 @@
 		(uuid "82c564f8-ce35-4e3e-8545-a15c252dc228")
 	)
 	(sheet
+		(at 76.708 185.166)
+		(size 32.258 11.176)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "10b6104c-0a7e-4860-aaff-28e08b9ff253")
+		(property "Sheetname" "PCI Bus Logic"
+			(at 76.708 184.4544 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "pci_bus_logic.kicad_sch"
+			(at 76.708 196.9266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "16")
+				)
+			)
+		)
+	)
+	(sheet
 		(at 40.64 100.33)
 		(size 31.75 16.51)
 		(fields_autoplaced yes)
@@ -79,7 +117,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "13")
+					(page "2")
 				)
 			)
 		)
@@ -116,7 +154,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "6")
+					(page "5")
 				)
 			)
 		)
@@ -154,7 +192,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "8")
+					(page "7")
 				)
 			)
 		)
@@ -171,7 +209,7 @@
 			(color 0 0 0 0.0000)
 		)
 		(uuid "3746f476-970c-4acb-b19d-33c43fff35fb")
-		(property "Sheetname" "MC68040 Level Shift"
+		(property "Sheetname" "Motorola Bus Logic"
 			(at 40.64 145.3384 0)
 			(effects
 				(font
@@ -180,7 +218,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "mc68040_level_shift.kicad_sch"
+		(property "Sheetfile" "motorola_bus_logic.kicad_sch"
 			(at 40.64 161.7476 0)
 			(effects
 				(font
@@ -192,13 +230,13 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "17")
+					(page "15")
 				)
 			)
 		)
 	)
 	(sheet
-		(at 40.64 53.34)
+		(at 39.878 29.21)
 		(size 31.75 16.51)
 		(fields_autoplaced yes)
 		(stroke
@@ -210,7 +248,7 @@
 		)
 		(uuid "4cb777ef-2899-49f4-b38f-a0c07d84fa7d")
 		(property "Sheetname" "Power and Spares"
-			(at 40.64 52.6284 0)
+			(at 39.878 28.4984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -219,7 +257,7 @@
 			)
 		)
 		(property "Sheetfile" "power.kicad_sch"
-			(at 40.64 70.4296 0)
+			(at 39.878 46.2996 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -230,7 +268,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "3")
+					(page "17")
 				)
 			)
 		)
@@ -268,7 +306,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "15")
+					(page "12")
 				)
 			)
 		)
@@ -306,7 +344,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "5")
+					(page "4")
 				)
 			)
 		)
@@ -344,7 +382,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "10")
+					(page "9")
 				)
 			)
 		)
@@ -382,7 +420,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "11")
+					(page "10")
 				)
 			)
 		)
@@ -420,7 +458,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "9")
+					(page "8")
 				)
 			)
 		)
@@ -458,13 +496,13 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "12")
+					(page "11")
 				)
 			)
 		)
 	)
 	(sheet
-		(at 40.64 29.21)
+		(at 40.132 53.086)
 		(size 31.75 16.51)
 		(fields_autoplaced yes)
 		(stroke
@@ -476,7 +514,7 @@
 		)
 		(uuid "c23015fc-f40a-4f75-aa79-1dfe37c2fc2e")
 		(property "Sheetname" "PCI Bus"
-			(at 40.64 28.4984 0)
+			(at 40.132 52.3744 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -485,7 +523,7 @@
 			)
 		)
 		(property "Sheetfile" "pcibus.kicad_sch"
-			(at 40.64 46.9396 0)
+			(at 40.132 70.8156 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -496,7 +534,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "2")
+					(page "13")
 				)
 			)
 		)
@@ -534,7 +572,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "16")
+					(page "14")
 				)
 			)
 		)
@@ -551,7 +589,7 @@
 			(color 0 0 0 0.0000)
 		)
 		(uuid "d671396a-959f-409b-8612-87cb620c51cb")
-		(property "Sheetname" "Clocks and PCI Buffers"
+		(property "Sheetname" "Clocks, ROM, USB"
 			(at 76.2 165.6584 0)
 			(effects
 				(font
@@ -572,7 +610,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "7")
+					(page "6")
 				)
 			)
 		)
@@ -609,7 +647,7 @@
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
-					(page "14")
+					(page "3")
 				)
 			)
 		)

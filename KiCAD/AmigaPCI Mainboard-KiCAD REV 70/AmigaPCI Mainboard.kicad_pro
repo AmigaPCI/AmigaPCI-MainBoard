@@ -478,7 +478,7 @@
     "classes": [
       {
         "bus_width": 12,
-        "clearance": 0.2,
+        "clearance": 0.15,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,
@@ -488,7 +488,7 @@
         "name": "Default",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.25,
+        "track_width": 0.15,
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
@@ -546,6 +546,23 @@
       },
       {
         "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Power",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.3,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
         "clearance": 0.1,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
@@ -557,6 +574,23 @@
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.11,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Standard",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.2,
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
@@ -837,7 +871,7 @@
         "pattern": "/HID and User Ports/L0"
       },
       {
-        "netclass": "Default",
+        "netclass": "Power",
         "pattern": "+5V"
       },
       {
@@ -949,7 +983,7 @@
         "pattern": "/HID and User Ports/TDI"
       },
       {
-        "netclass": "Default",
+        "netclass": "Power",
         "pattern": "GND"
       },
       {
@@ -2249,7 +2283,7 @@
         "pattern": "CR_W"
       },
       {
-        "netclass": "Default",
+        "netclass": "Power",
         "pattern": "+3V3"
       },
       {
@@ -2417,7 +2451,7 @@
         "pattern": "/PCI Bridge/U109_CRESET"
       },
       {
-        "netclass": "Narrow",
+        "netclass": "Standard",
         "pattern": "CLKPCI2"
       },
       {
@@ -3291,6 +3325,74 @@
       {
         "netclass": "Narrow",
         "pattern": "/HID and User Ports/CLKCAL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "RESET_BTN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CDONE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PARITYDIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCIRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCIBUFDIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INTEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BRIDGEEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCIEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_WLATCHFRAME"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/TP1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/TP0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CPUBUS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_ADDRESSEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DATARDY"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "+VID"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/HID and User Ports/VBAT_STM"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "+3V3SB"
       }
     ]
   },
@@ -3490,7 +3592,7 @@
       "workbook_filename": ""
     },
     "page_layout_descr_file": "",
-    "plot_directory": "/home/jason/Documents/GitHub/AmigaPCI/Schematic/",
+    "plot_directory": "/home/jason/Documents/",
     "spice_adjust_passive_values": false,
     "spice_current_sheet_as_root": false,
     "spice_external_command": "spice \"%I\"",
@@ -3507,12 +3609,12 @@
       "Root"
     ],
     [
-      "c23015fc-f40a-4f75-aa79-1dfe37c2fc2e",
-      "PCI Bus"
+      "14024e2c-eaac-4547-8875-4a8ac58b1720",
+      "Chip RAM Controller"
     ],
     [
-      "4cb777ef-2899-49f4-b38f-a0c07d84fa7d",
-      "Power and Spares"
+      "f63de3eb-8614-4bac-88f2-650f5bad2338",
+      "Chip Memory"
     ],
     [
       "62a07d55-3759-49a3-8a3f-631cb4902a24",
@@ -3524,7 +3626,7 @@
     ],
     [
       "d671396a-959f-409b-8612-87cb620c51cb",
-      "Clocks and PCI Buffers"
+      "Clocks, ROM, USB"
     ],
     [
       "34f2eda3-97b6-4f91-ad2d-01637d6f5405",
@@ -3547,16 +3649,12 @@
       "ATA Interface"
     ],
     [
-      "14024e2c-eaac-4547-8875-4a8ac58b1720",
-      "Chip RAM Controller"
-    ],
-    [
-      "f63de3eb-8614-4bac-88f2-650f5bad2338",
-      "Chip Memory"
-    ],
-    [
       "60b2ee65-4978-4bd8-934d-67b9c15d34cc",
       "HID and User Ports"
+    ],
+    [
+      "c23015fc-f40a-4f75-aa79-1dfe37c2fc2e",
+      "PCI Bus"
     ],
     [
       "c71cba2c-aa10-44ea-a37d-abe4b67b6d89",
@@ -3564,7 +3662,15 @@
     ],
     [
       "3746f476-970c-4acb-b19d-33c43fff35fb",
-      "MC68040 Level Shift"
+      "Motorola Bus Logic"
+    ],
+    [
+      "10b6104c-0a7e-4860-aaff-28e08b9ff253",
+      "PCI Bus Logic"
+    ],
+    [
+      "4cb777ef-2899-49f4-b38f-a0c07d84fa7d",
+      "Power and Spares"
     ]
   ],
   "text_variables": {}

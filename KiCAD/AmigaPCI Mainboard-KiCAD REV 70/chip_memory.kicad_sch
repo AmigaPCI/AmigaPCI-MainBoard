@@ -6,8 +6,8 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2025-08-14")
-		(rev "6.0")
+		(date "2026-04-13")
+		(rev "7.0")
 	)
 	(lib_symbols
 		(symbol "74xx:74HC245"
@@ -9086,6 +9086,28 @@
 			(type default)
 		)
 		(uuid "fbc5b5d7-4362-41f0-befc-2a3ed76d0478")
+	)
+	(rectangle
+		(start 258.318 194.818)
+		(end 274.828 228.346)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(fill
+			(type none)
+		)
+		(uuid 867f1187-0ef6-46fc-b72d-a3fedd159613)
+	)
+	(text "TEST POINTS"
+		(exclude_from_sim no)
+		(at 266.7 198.12 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "0bc3cbef-9b88-46d7-8bb0-e3ac38f40983")
 	)
 	(text "LEAST SIGNIFICANT\nAGNUS ADDRESSES \n10, 11"
 		(exclude_from_sim no)

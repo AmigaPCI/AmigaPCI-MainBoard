@@ -1,4 +1,4 @@
-24789167831891332
+24796892367815520
 AmigaPCI
 2x18_P2.54mm_Horizontal
 Samtec HLE .100" Tiger Beam Cost-effective Single Beam Socket Strip, HLE-150-02-xx-DV-TE, 50 Pins per row (http://suddendocs.samtec.com/prints/hle-1xx-02-xx-dv-xe-xx-mkt.pdf, http://suddendocs.samtec.com/prints/hle-thru.pdf), generated with kicad-footprint-generator
@@ -42,6 +42,20 @@ Through hole pin header THT 2x20 2.54mm double row
 39
 39
 AmigaPCI
+Agnus_Jumper1
+
+
+0
+0
+0
+AmigaPCI
+Agnus_Jumper2
+
+
+0
+0
+0
+AmigaPCI
 AmigaPCILogo
 
 
@@ -76,6 +90,13 @@ DIN 41612 IEC 60603 R
 0
 120
 120
+AmigaPCI
+DIN41612_C_3x50_Female_Vertical_THT
+DIN41612 connector, type R, Vertical, 3 rows 32 pins wide, https://www.erni-x-press.com/de/downloads/kataloge/englische_kataloge/erni-din41612-iec60603-2-e.pdf
+DIN 41612 IEC 60603 R
+0
+150
+150
 AmigaPCI
 DIN41612_R_3x40_Male_Vertical_THT
 DIN41612 connector, type R, Vertical, 3 rows 32 pins wide, https://www.erni-x-press.com/de/downloads/kataloge/englische_kataloge/erni-din41612-iec60603-2-e.pdf
@@ -125,6 +146,13 @@ TRS audio jack stereo horizontal circular
 0
 3
 3
+AmigaPCI
+Molex_Mini-Fit_Jr_5566-24A_2x12_P4.20mm_Vertical
+Molex Mini-Fit Jr. Power Connectors, old mpn/engineering number: 5566-24A, example for new mpn: 39-28-x24x, 12 Pins per row, Mounting:  (http://www.molex.com/pdm_docs/sd/039281043_sd.pdf), generated with kicad-footprint-generator
+connector Molex Mini-Fit_Jr side entry
+0
+24
+24
 AmigaPCI
 MountingHole_Pad
 Mounting Hole 4.3mm, M4, DIN965

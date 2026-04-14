@@ -36,6 +36,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -48,6 +49,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -60,6 +62,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -701,7 +704,7 @@
 		(remove_unused_layers no)
 		(uuid "48564f19-492e-46b6-aa7e-667f2628d3f9")
 	)
-	(model "/home/jason/Documents/GitHub/AmigaPCI/KiCAD/AmigaPCI Mainboard-KiCAD REV 30/AmigaPCI-Footprints/61400826021--3DModel-STEP-898076.STEP"
+	(model "${KIPRJMOD}/AmigaPCI-Footprints/USB.stp"
 		(offset
 			(xyz 3.5 -7 8)
 		)

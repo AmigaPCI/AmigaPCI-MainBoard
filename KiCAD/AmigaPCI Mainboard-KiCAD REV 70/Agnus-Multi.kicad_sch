@@ -6,8 +6,8 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2025-07-11")
-		(rev "6.0")
+		(date "2026-04-13")
+		(rev "7.0")
 	)
 	(lib_symbols
 		(symbol "AmigaPCI-Symbols:74CBT16233"
@@ -5497,6 +5497,12 @@
 		(uuid "a3cab69f-ba06-4f6d-800a-caede8ae4c51")
 	)
 	(junction
+		(at 363.22 31.75)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ab7914ca-2a4b-4fb6-b4da-b1ebca21c83a")
+	)
+	(junction
 		(at 63.5 232.41)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6356,6 +6362,16 @@
 		)
 		(uuid "1c7cb33f-6e8c-486c-bdc8-aaca82cbfca4")
 	)
+	(wire
+		(pts
+			(xy 363.22 36.83) (xy 363.22 31.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1cb4f677-3971-4fc9-b618-501bb4daa4d0")
+	)
 	(bus
 		(pts
 			(xy 199.39 106.68) (xy 199.39 109.22)
@@ -6468,7 +6484,7 @@
 	)
 	(wire
 		(pts
-			(xy 294.64 31.75) (xy 372.11 31.75)
+			(xy 294.64 31.75) (xy 363.22 31.75)
 		)
 		(stroke
 			(width 0)
@@ -8306,6 +8322,16 @@
 		)
 		(uuid "c838c176-1b8e-44c5-8f8d-d94d9b486e07")
 	)
+	(wire
+		(pts
+			(xy 363.22 31.75) (xy 372.11 31.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c8afcb9b-8d40-4679-8c1c-c244bb28f140")
+	)
 	(bus
 		(pts
 			(xy 199.39 146.05) (xy 199.39 148.59)
@@ -8718,6 +8744,16 @@
 	)
 	(wire
 		(pts
+			(xy 372.11 36.83) (xy 363.22 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f58e9eff-10e4-410c-9dd5-238b98aed827")
+	)
+	(wire
+		(pts
 			(xy 387.35 59.69) (xy 387.35 49.53)
 		)
 		(stroke
@@ -8868,6 +8904,16 @@
 	)
 	(wire
 		(pts
+			(xy 379.73 36.83) (xy 391.16 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fc8e7da5-6340-41aa-928d-81dc61d8a9ce")
+	)
+	(wire
+		(pts
 			(xy 248.92 118.11) (xy 337.82 118.11)
 		)
 		(stroke
@@ -8885,6 +8931,16 @@
 			(type default)
 		)
 		(uuid "fe5eb3f4-a34b-4c2b-b8a7-6b295bd436cb")
+	)
+	(text "FUTURE DO NOT POPULATE"
+		(exclude_from_sim no)
+		(at 227.584 47.244 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "03bce994-9abb-4631-be21-9021aed44ebe")
 	)
 	(text "SHORT J204 FOR 8372A"
 		(exclude_from_sim no)
@@ -9903,6 +9959,27 @@
 					(size 1.27 1.27)
 				)
 				(justify right)
+			)
+		)
+	)
+	(global_label "ICLK7"
+		(shape output)
+		(at 391.16 36.83 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "36275b8d-5982-46de-81d7-fe640f1545fa")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 399.5276 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
 			)
 		)
 	)
@@ -12391,7 +12468,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
+		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm"
 			(at 76.2 60.96 0)
 			(effects
 				(font
@@ -14258,6 +14335,73 @@
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/2b6a6f7b-f16f-448f-a082-ded618631c29"
 					(reference "U229")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 375.92 36.83 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c3a58179-0083-48f1-b885-b7baa082693d")
+		(property "Reference" "R238"
+			(at 375.92 34.798 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "47R"
+			(at 375.92 37.084 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 375.92 35.052 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 375.92 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 375.92 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9f18c53d-1b6e-4a82-9498-278f7310c612")
+		)
+		(pin "2"
+			(uuid "6521c62d-c597-433f-9646-2d6c4b321d32")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/2b6a6f7b-f16f-448f-a082-ded618631c29"
+					(reference "R238")
 					(unit 1)
 				)
 			)

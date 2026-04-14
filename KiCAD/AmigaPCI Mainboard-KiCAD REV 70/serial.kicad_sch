@@ -6,8 +6,8 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2025-07-11")
-		(rev "6.0")
+		(date "2026-04-13")
+		(rev "7.0")
 	)
 	(lib_symbols
 		(symbol "+12V_1"
@@ -110,126 +110,6 @@
 				)
 			)
 			(symbol "+12V_1_1_1"
-				(pin power_in line
-					(at 0 0 90)
-					(length 0)
-					(name "~"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-			)
-		)
-		(symbol "+5V_1"
-			(power)
-			(pin_numbers hide)
-			(pin_names
-				(offset 0) hide)
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "#PWR"
-				(at 0 -3.81 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Value" "+5V"
-				(at 0 3.556 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" "Power symbol creates a global label with name \"+5V\""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "ki_keywords" "global power"
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "+5V_1_0_1"
-				(polyline
-					(pts
-						(xy -0.762 1.27) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 0) (xy 0 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.54) (xy 0.762 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "+5V_1_1_1"
 				(pin power_in line
 					(at 0 0 90)
 					(length 0)
@@ -6220,6 +6100,126 @@
 				)
 			)
 		)
+		(symbol "power:+3V3"
+			(power)
+			(pin_numbers hide)
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#PWR"
+				(at 0 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "+3V3"
+				(at 0 3.556 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Power symbol creates a global label with name \"+3V3\""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "global power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "+3V3_0_1"
+				(polyline
+					(pts
+						(xy -0.762 1.27) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "+3V3_1_1"
+				(pin power_in line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "power:+5V"
 			(power)
 			(pin_names
@@ -6657,7 +6657,7 @@
 		(at 33.02 142.24)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "a0cd2acf-00a6-43c0-b0f9-f9fcec7f2814")
+		(uuid "9008d979-680f-46e1-a7b9-c02a3ba61757")
 	)
 	(junction
 		(at 255.27 41.91)
@@ -6939,7 +6939,7 @@
 	)
 	(wire
 		(pts
-			(xy 33.02 142.24) (xy 29.21 142.24)
+			(xy 27.94 142.24) (xy 33.02 142.24)
 		)
 		(stroke
 			(width 0)
@@ -7249,6 +7249,16 @@
 	)
 	(wire
 		(pts
+			(xy 33.02 130.81) (xy 33.02 132.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1dc7b8a2-1678-4d59-941f-65608f3e0916")
+	)
+	(wire
+		(pts
 			(xy 119.38 33.02) (xy 54.61 33.02)
 		)
 		(stroke
@@ -7316,16 +7326,6 @@
 			(type default)
 		)
 		(uuid "221d8455-8de5-466d-bfe4-5444f2913c0e")
-	)
-	(wire
-		(pts
-			(xy 77.47 142.24) (xy 33.02 142.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2342f4ab-7eea-494f-8816-f631cce7b2c2")
 	)
 	(wire
 		(pts
@@ -7436,6 +7436,16 @@
 			(type default)
 		)
 		(uuid "2d0b6aab-ce26-41fc-ba73-6ce8d4171c4e")
+	)
+	(wire
+		(pts
+			(xy 33.02 142.24) (xy 77.47 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2ff2fc04-7c0b-4bda-96f2-16da96ec34ba")
 	)
 	(wire
 		(pts
@@ -7976,6 +7986,16 @@
 			(type default)
 		)
 		(uuid "7231f2ce-3a8e-447d-8844-d0b7ae34dd2c")
+	)
+	(wire
+		(pts
+			(xy 33.02 139.7) (xy 33.02 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "731748ab-462b-4ce4-8dc5-3760edc54143")
 	)
 	(bus
 		(pts
@@ -9774,7 +9794,7 @@
 			)
 		)
 	)
-	(global_label "R_WA"
+	(global_label "R_W"
 		(shape input)
 		(at 54.61 127 180)
 		(fields_autoplaced yes)
@@ -9786,7 +9806,7 @@
 		)
 		(uuid "9cd94970-d7fb-4bee-b499-b6549264bb48")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 46.8472 127 0)
+			(at 47.9358 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9879,7 +9899,7 @@
 			)
 		)
 	)
-	(global_label "_BRST"
+	(global_label "_RESETB"
 		(shape input)
 		(at 54.61 162.56 180)
 		(fields_autoplaced yes)
@@ -9891,7 +9911,7 @@
 		)
 		(uuid "c312435b-d95a-4059-80e6-18cf21d9c556")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 46.0195 162.56 0)
+			(at 43.6421 162.56 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10028,7 +10048,7 @@
 	)
 	(global_label "_INT6"
 		(shape output)
-		(at 29.21 142.24 180)
+		(at 27.94 142.24 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10038,7 +10058,7 @@
 		)
 		(uuid "f7f5db9f-426d-4ff1-a28b-6302f6769225")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 21.1448 142.24 0)
+			(at 19.8748 142.24 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11467,75 +11487,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 33.02 138.43 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "53cae08a-34d1-4697-8a0e-dfb9e9e48229")
-		(property "Reference" "R248"
-			(at 34.798 137.2616 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1k"
-			(at 33.02 139.7 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 31.242 138.43 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 33.02 138.43 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 33.02 138.43 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b1599b30-ba3d-4e9c-816d-841ae02a085f")
-		)
-		(pin "2"
-			(uuid "584c9fc1-b547-494f-b861-bf209e00ab39")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/70231775-58c2-469a-996a-fc3c3a4a8de1"
-					(reference "R248")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "AmigaPCI-Symbols:MOS 8520")
 		(at 90.17 243.84 0)
 		(unit 2)
@@ -11941,72 +11892,6 @@
 		)
 	)
 	(symbol
-		(lib_name "+5V_1")
-		(lib_id "power:+5V")
-		(at 33.02 134.62 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "68e51b2a-4471-492d-9817-3ae2e7a5d06a")
-		(property "Reference" "#PWR0132"
-			(at 33.02 138.43 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 33.02 130.556 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 33.02 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 33.02 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 33.02 134.62 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "60c057ac-2475-4f04-9c0f-b28287b197e7")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/70231775-58c2-469a-996a-fc3c3a4a8de1"
-					(reference "#PWR0132")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 158.75 125.73 0)
 		(unit 1)
@@ -12072,6 +11957,72 @@
 			(project "2000ATX"
 				(path "/bb595301-1c72-49dc-ac6f-007419f3a7fd/00000000-0000-0000-0000-00006065650a"
 					(reference "#PWR0315")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 33.02 130.81 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6f387d47-7086-4985-9a14-9c2267e85178")
+		(property "Reference" "#PWR282"
+			(at 33.02 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 33.02 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 33.02 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 33.02 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 33.02 130.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "60e2c5a1-b39b-47fa-b44d-68a26502579b")
+		)
+		(instances
+			(project ""
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/70231775-58c2-469a-996a-fc3c3a4a8de1"
+					(reference "#PWR282")
 					(unit 1)
 				)
 			)
@@ -12279,6 +12230,76 @@
 			(project "2000ATX"
 				(path "/bb595301-1c72-49dc-ac6f-007419f3a7fd/00000000-0000-0000-0000-00006065650a"
 					(reference "C303")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 33.02 135.89 0)
+		(mirror y)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8af7c16a-ae7b-4561-b1e6-31d7fd024348")
+		(property "Reference" "R213"
+			(at 30.734 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "2k7"
+			(at 33.02 137.922 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 34.798 135.89 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 33.02 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 33.02 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d4c927a2-3248-4d57-858b-a88511b35e99")
+		)
+		(pin "2"
+			(uuid "7a007d82-9300-424d-863d-e5697de87f9d")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/70231775-58c2-469a-996a-fc3c3a4a8de1"
+					(reference "R213")
 					(unit 1)
 				)
 			)
@@ -13479,7 +13500,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" " ~"
+		(property "Datasheet" "~"
 			(at 351.79 180.34 0)
 			(effects
 				(font

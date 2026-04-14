@@ -6,8 +6,8 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2025-07-11")
-		(rev "6.0")
+		(date "2026-04-13")
+		(rev "7.0")
 	)
 	(lib_symbols
 		(symbol "+3V3_1"
@@ -3522,6 +3522,239 @@
 				)
 			)
 		)
+		(symbol "Device:R_Pack04_Split"
+			(pin_names
+				(offset 0) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "RN"
+				(at 2.032 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R_Pack04_Split"
+				(at 0 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -2.032 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "4 resistor network, parallel topology, split"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R network parallel topology isolated"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "DIP* SOIC* R*Array*Concave* R*Array*Convex* MSOP*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_Pack04_Split_0_1"
+				(rectangle
+					(start 1.016 2.54)
+					(end -1.016 -2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_Pack04_Split_1_1"
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R1.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R1.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "R_Pack04_Split_2_1"
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R2.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R2.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "R_Pack04_Split_3_1"
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R3.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R3.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "R_Pack04_Split_4_1"
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "R4.1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "R4.2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "Transistor_BJT:MMBT3906"
 			(pin_names
 				(offset 0) hide)
@@ -4080,7 +4313,7 @@
 		(uuid "0be21bf8-8c90-4efd-9300-cdd20da74260")
 	)
 	(junction
-		(at 194.31 214.63)
+		(at 203.2 214.63)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "0d3f81a0-baa6-459e-8e41-4f404833ad2d")
@@ -4158,7 +4391,7 @@
 		(uuid "4e17b94d-d1b6-4a91-b844-79a382759ab4")
 	)
 	(junction
-		(at 194.31 212.09)
+		(at 203.2 212.09)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "5b1b1d51-848a-4942-8a71-56f6efb0fd40")
@@ -4206,7 +4439,7 @@
 		(uuid "6c5394cf-83db-4395-8894-3b816c8b5ad8")
 	)
 	(junction
-		(at 194.31 207.01)
+		(at 203.2 207.01)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "7075b1af-0915-4742-9fc0-263c3d0e8e9a")
@@ -4218,7 +4451,7 @@
 		(uuid "73a22fd2-128f-43b0-a978-b44b96dcd310")
 	)
 	(junction
-		(at 147.32 217.17)
+		(at 156.21 217.17)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "78152b37-5273-4fe3-93bc-2d7b6ecf2904")
@@ -4272,7 +4505,7 @@
 		(uuid "a4e51853-6d23-4ad9-b6cb-325b1e7691ff")
 	)
 	(junction
-		(at 194.31 209.55)
+		(at 203.2 209.55)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b085fc9e-5bef-4aff-b65a-698cc461a3bd")
@@ -4302,7 +4535,7 @@
 		(uuid "bd5d6cb0-2cb9-4b7b-97df-4a951cdf6d90")
 	)
 	(junction
-		(at 194.31 227.33)
+		(at 203.2 227.33)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c5dd21f0-bf24-493c-86b6-0be760007f5c")
@@ -4350,7 +4583,7 @@
 		(uuid "e91c44e5-0eac-4899-a0cd-7f23dde50f4f")
 	)
 	(junction
-		(at 194.31 204.47)
+		(at 203.2 204.47)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "edcac991-1dba-42db-b10f-47343a469081")
@@ -4388,23 +4621,31 @@
 		(uuid "4fcb224b-9bf8-4013-854d-6033b868f1e6")
 	)
 	(no_connect
-		(at 176.53 204.47)
+		(at 276.86 69.85)
+		(uuid "5235afa3-7d31-4138-a4d4-82882c985a37")
+	)
+	(no_connect
+		(at 185.42 204.47)
 		(uuid "5a3f0523-36e9-48fd-b4ca-3e86d060b991")
 	)
 	(no_connect
-		(at 189.23 219.71)
+		(at 198.12 219.71)
 		(uuid "c1d9f257-bdf0-4723-b3e8-f284e30bea78")
 	)
 	(no_connect
-		(at 189.23 217.17)
+		(at 198.12 217.17)
 		(uuid "dc1c181d-f4d2-4a21-8b99-971fa245bbe4")
+	)
+	(no_connect
+		(at 284.48 69.85)
+		(uuid "ee56a7b7-0b9a-45d9-ac7f-a443148002f2")
 	)
 	(no_connect
 		(at 96.52 204.47)
 		(uuid "ee8677e0-3d69-4dfb-9462-019e68ec4696")
 	)
 	(no_connect
-		(at 176.53 214.63)
+		(at 185.42 214.63)
 		(uuid "f132407a-8a5f-457e-83b8-660cf9d55b1e")
 	)
 	(no_connect
@@ -4845,7 +5086,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 181.61) (xy 142.24 181.61)
+			(xy 130.81 181.61) (xy 147.32 181.61)
 		)
 		(stroke
 			(width 0)
@@ -4945,7 +5186,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 196.85) (xy 203.2 196.85)
+			(xy 198.12 196.85) (xy 212.09 196.85)
 		)
 		(stroke
 			(width 0)
@@ -5045,7 +5286,7 @@
 	)
 	(wire
 		(pts
-			(xy 151.13 201.93) (xy 176.53 201.93)
+			(xy 160.02 201.93) (xy 185.42 201.93)
 		)
 		(stroke
 			(width 0)
@@ -5115,7 +5356,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 184.15) (xy 142.24 184.15)
+			(xy 130.81 184.15) (xy 147.32 184.15)
 		)
 		(stroke
 			(width 0)
@@ -5355,7 +5596,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 184.15) (xy 147.32 184.15)
+			(xy 167.64 184.15) (xy 149.86 184.15)
 		)
 		(stroke
 			(width 0)
@@ -5365,7 +5606,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 181.61) (xy 203.2 181.61)
+			(xy 198.12 181.61) (xy 212.09 181.61)
 		)
 		(stroke
 			(width 0)
@@ -5445,7 +5686,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 189.23) (xy 176.53 189.23)
+			(xy 175.26 189.23) (xy 185.42 189.23)
 		)
 		(stroke
 			(width 0)
@@ -5725,7 +5966,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 189.23) (xy 147.32 189.23)
+			(xy 167.64 189.23) (xy 149.86 189.23)
 		)
 		(stroke
 			(width 0)
@@ -5755,7 +5996,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 199.39) (xy 176.53 199.39)
+			(xy 175.26 199.39) (xy 185.42 199.39)
 		)
 		(stroke
 			(width 0)
@@ -5765,7 +6006,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 207.01) (xy 194.31 207.01)
+			(xy 198.12 207.01) (xy 203.2 207.01)
 		)
 		(stroke
 			(width 0)
@@ -5795,7 +6036,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 184.15) (xy 203.2 184.15)
+			(xy 198.12 184.15) (xy 212.09 184.15)
 		)
 		(stroke
 			(width 0)
@@ -5985,7 +6226,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 194.31) (xy 203.2 194.31)
+			(xy 198.12 194.31) (xy 212.09 194.31)
 		)
 		(stroke
 			(width 0)
@@ -6045,7 +6286,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 191.77) (xy 176.53 191.77)
+			(xy 175.26 191.77) (xy 185.42 191.77)
 		)
 		(stroke
 			(width 0)
@@ -6085,7 +6326,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 194.31) (xy 176.53 194.31)
+			(xy 175.26 194.31) (xy 185.42 194.31)
 		)
 		(stroke
 			(width 0)
@@ -6105,7 +6346,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 212.09) (xy 194.31 214.63)
+			(xy 203.2 212.09) (xy 203.2 214.63)
 		)
 		(stroke
 			(width 0)
@@ -6155,7 +6396,7 @@
 	)
 	(wire
 		(pts
-			(xy 162.56 227.33) (xy 176.53 227.33)
+			(xy 171.45 227.33) (xy 185.42 227.33)
 		)
 		(stroke
 			(width 0)
@@ -6165,7 +6406,7 @@
 	)
 	(wire
 		(pts
-			(xy 138.43 245.11) (xy 162.56 245.11)
+			(xy 138.43 245.11) (xy 171.45 245.11)
 		)
 		(stroke
 			(width 0)
@@ -6175,7 +6416,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 186.69) (xy 176.53 186.69)
+			(xy 175.26 186.69) (xy 185.42 186.69)
 		)
 		(stroke
 			(width 0)
@@ -6265,7 +6506,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 227.33) (xy 194.31 231.14)
+			(xy 203.2 227.33) (xy 203.2 231.14)
 		)
 		(stroke
 			(width 0)
@@ -6325,7 +6566,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 199.39) (xy 142.24 199.39)
+			(xy 130.81 199.39) (xy 147.32 199.39)
 		)
 		(stroke
 			(width 0)
@@ -6455,7 +6696,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 186.69) (xy 142.24 186.69)
+			(xy 130.81 186.69) (xy 147.32 186.69)
 		)
 		(stroke
 			(width 0)
@@ -6525,7 +6766,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 207.01) (xy 176.53 207.01)
+			(xy 163.83 207.01) (xy 185.42 207.01)
 		)
 		(stroke
 			(width 0)
@@ -6545,7 +6786,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 184.15) (xy 176.53 184.15)
+			(xy 175.26 184.15) (xy 185.42 184.15)
 		)
 		(stroke
 			(width 0)
@@ -6615,7 +6856,7 @@
 	)
 	(wire
 		(pts
-			(xy 147.32 179.07) (xy 176.53 179.07)
+			(xy 149.86 179.07) (xy 185.42 179.07)
 		)
 		(stroke
 			(width 0)
@@ -6685,7 +6926,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 189.23) (xy 203.2 189.23)
+			(xy 198.12 189.23) (xy 212.09 189.23)
 		)
 		(stroke
 			(width 0)
@@ -6715,7 +6956,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 191.77) (xy 147.32 191.77)
+			(xy 167.64 191.77) (xy 149.86 191.77)
 		)
 		(stroke
 			(width 0)
@@ -6775,7 +7016,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 212.09) (xy 194.31 212.09)
+			(xy 198.12 212.09) (xy 203.2 212.09)
 		)
 		(stroke
 			(width 0)
@@ -6825,7 +7066,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 191.77) (xy 203.2 191.77)
+			(xy 198.12 191.77) (xy 212.09 191.77)
 		)
 		(stroke
 			(width 0)
@@ -6835,7 +7076,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 224.79) (xy 176.53 224.79)
+			(xy 163.83 224.79) (xy 185.42 224.79)
 		)
 		(stroke
 			(width 0)
@@ -6875,7 +7116,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 204.47) (xy 194.31 204.47)
+			(xy 198.12 204.47) (xy 203.2 204.47)
 		)
 		(stroke
 			(width 0)
@@ -6965,7 +7206,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 191.77) (xy 142.24 191.77)
+			(xy 130.81 191.77) (xy 147.32 191.77)
 		)
 		(stroke
 			(width 0)
@@ -6995,7 +7236,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 219.71) (xy 176.53 219.71)
+			(xy 163.83 219.71) (xy 185.42 219.71)
 		)
 		(stroke
 			(width 0)
@@ -7055,7 +7296,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 214.63) (xy 194.31 214.63)
+			(xy 198.12 214.63) (xy 203.2 214.63)
 		)
 		(stroke
 			(width 0)
@@ -7145,7 +7386,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 199.39) (xy 147.32 199.39)
+			(xy 167.64 199.39) (xy 149.86 199.39)
 		)
 		(stroke
 			(width 0)
@@ -7155,7 +7396,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 204.47) (xy 194.31 207.01)
+			(xy 203.2 204.47) (xy 203.2 207.01)
 		)
 		(stroke
 			(width 0)
@@ -7175,7 +7416,7 @@
 	)
 	(wire
 		(pts
-			(xy 139.7 217.17) (xy 147.32 217.17)
+			(xy 148.59 217.17) (xy 156.21 217.17)
 		)
 		(stroke
 			(width 0)
@@ -7195,7 +7436,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 181.61) (xy 147.32 181.61)
+			(xy 167.64 181.61) (xy 149.86 181.61)
 		)
 		(stroke
 			(width 0)
@@ -7335,7 +7576,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 196.85) (xy 142.24 196.85)
+			(xy 130.81 196.85) (xy 147.32 196.85)
 		)
 		(stroke
 			(width 0)
@@ -7375,7 +7616,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 194.31) (xy 142.24 194.31)
+			(xy 130.81 194.31) (xy 147.32 194.31)
 		)
 		(stroke
 			(width 0)
@@ -7685,7 +7926,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 209.55) (xy 194.31 209.55)
+			(xy 198.12 209.55) (xy 203.2 209.55)
 		)
 		(stroke
 			(width 0)
@@ -7695,7 +7936,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 222.25) (xy 176.53 222.25)
+			(xy 163.83 222.25) (xy 185.42 222.25)
 		)
 		(stroke
 			(width 0)
@@ -7705,7 +7946,7 @@
 	)
 	(wire
 		(pts
-			(xy 162.56 245.11) (xy 162.56 227.33)
+			(xy 171.45 245.11) (xy 171.45 227.33)
 		)
 		(stroke
 			(width 0)
@@ -7725,7 +7966,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 179.07) (xy 194.31 179.07)
+			(xy 198.12 179.07) (xy 203.2 179.07)
 		)
 		(stroke
 			(width 0)
@@ -7765,7 +8006,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 186.69) (xy 203.2 186.69)
+			(xy 198.12 186.69) (xy 212.09 186.69)
 		)
 		(stroke
 			(width 0)
@@ -7805,7 +8046,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 186.69) (xy 147.32 186.69)
+			(xy 167.64 186.69) (xy 149.86 186.69)
 		)
 		(stroke
 			(width 0)
@@ -7815,7 +8056,7 @@
 	)
 	(wire
 		(pts
-			(xy 147.32 217.17) (xy 176.53 217.17)
+			(xy 156.21 217.17) (xy 185.42 217.17)
 		)
 		(stroke
 			(width 0)
@@ -7835,7 +8076,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 209.55) (xy 194.31 212.09)
+			(xy 203.2 209.55) (xy 203.2 212.09)
 		)
 		(stroke
 			(width 0)
@@ -7875,7 +8116,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 194.31) (xy 147.32 194.31)
+			(xy 167.64 194.31) (xy 149.86 194.31)
 		)
 		(stroke
 			(width 0)
@@ -7925,7 +8166,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 181.61) (xy 176.53 181.61)
+			(xy 175.26 181.61) (xy 185.42 181.61)
 		)
 		(stroke
 			(width 0)
@@ -7935,7 +8176,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 179.07) (xy 194.31 204.47)
+			(xy 203.2 179.07) (xy 203.2 204.47)
 		)
 		(stroke
 			(width 0)
@@ -7985,7 +8226,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 227.33) (xy 194.31 227.33)
+			(xy 198.12 227.33) (xy 203.2 227.33)
 		)
 		(stroke
 			(width 0)
@@ -8005,7 +8246,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 222.25) (xy 214.63 222.25)
+			(xy 198.12 222.25) (xy 223.52 222.25)
 		)
 		(stroke
 			(width 0)
@@ -8065,7 +8306,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 214.63) (xy 194.31 227.33)
+			(xy 203.2 214.63) (xy 203.2 227.33)
 		)
 		(stroke
 			(width 0)
@@ -8075,7 +8316,7 @@
 	)
 	(wire
 		(pts
-			(xy 166.37 196.85) (xy 176.53 196.85)
+			(xy 175.26 196.85) (xy 185.42 196.85)
 		)
 		(stroke
 			(width 0)
@@ -8095,7 +8336,7 @@
 	)
 	(wire
 		(pts
-			(xy 194.31 207.01) (xy 194.31 209.55)
+			(xy 203.2 207.01) (xy 203.2 209.55)
 		)
 		(stroke
 			(width 0)
@@ -8145,7 +8386,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 189.23) (xy 142.24 189.23)
+			(xy 130.81 189.23) (xy 147.32 189.23)
 		)
 		(stroke
 			(width 0)
@@ -8215,7 +8456,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 199.39) (xy 203.2 199.39)
+			(xy 198.12 199.39) (xy 212.09 199.39)
 		)
 		(stroke
 			(width 0)
@@ -8235,7 +8476,7 @@
 	)
 	(wire
 		(pts
-			(xy 189.23 224.79) (xy 214.63 224.79)
+			(xy 198.12 224.79) (xy 223.52 224.79)
 		)
 		(stroke
 			(width 0)
@@ -8285,7 +8526,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 209.55) (xy 176.53 209.55)
+			(xy 163.83 209.55) (xy 185.42 209.55)
 		)
 		(stroke
 			(width 0)
@@ -8325,7 +8566,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 196.85) (xy 147.32 196.85)
+			(xy 167.64 196.85) (xy 149.86 196.85)
 		)
 		(stroke
 			(width 0)
@@ -8425,7 +8666,7 @@
 	)
 	(wire
 		(pts
-			(xy 154.94 212.09) (xy 176.53 212.09)
+			(xy 163.83 212.09) (xy 185.42 212.09)
 		)
 		(stroke
 			(width 0)
@@ -8810,7 +9051,7 @@
 	)
 	(text "PORTS\nBYTE SWAPPED!"
 		(exclude_from_sim no)
-		(at 57.404 196.088 0)
+		(at 57.15 195.58 0)
 		(effects
 			(font
 				(size 3 3)
@@ -8833,7 +9074,7 @@
 		(uuid "cda7c64d-e47f-4239-b4c2-450ed5599eaf")
 	)
 	(label "DD12A"
-		(at 203.2 191.77 180)
+		(at 212.09 191.77 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8853,7 +9094,7 @@
 		(uuid "01881eda-bd02-4edb-a4cf-e609b11cb2a3")
 	)
 	(label "_CS0S"
-		(at 154.94 224.79 0)
+		(at 163.83 224.79 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8933,7 +9174,7 @@
 		(uuid "0ab1bb86-fd9e-4bac-93b4-ef897b04bb52")
 	)
 	(label "DD1A"
-		(at 166.37 196.85 0)
+		(at 175.26 196.85 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8963,7 +9204,7 @@
 		(uuid "0e4f02ce-e810-472c-9403-857e91c6c1ae")
 	)
 	(label "DD13A"
-		(at 203.2 194.31 180)
+		(at 212.09 194.31 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -8973,7 +9214,7 @@
 		(uuid "0e7dbe39-ee6a-418c-bcd6-c6ce8446f1d1")
 	)
 	(label "DD6A"
-		(at 166.37 184.15 0)
+		(at 175.26 184.15 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9023,7 +9264,7 @@
 		(uuid "14f54db8-2129-4f87-9117-a0a03d2ef21f")
 	)
 	(label "DD3A"
-		(at 166.37 191.77 0)
+		(at 175.26 191.77 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9083,7 +9324,7 @@
 		(uuid "1a2342a5-083e-409d-8973-30ab9aca8a00")
 	)
 	(label "IDED13"
-		(at 147.32 186.69 0)
+		(at 149.86 186.69 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9113,7 +9354,7 @@
 		(uuid "207555b5-9652-4bb5-9788-5538037d0090")
 	)
 	(label "DD2A"
-		(at 166.37 194.31 0)
+		(at 175.26 194.31 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9163,7 +9404,7 @@
 		(uuid "28eda001-80a0-4f36-b8d0-6c9769f39ca3")
 	)
 	(label "DD15A"
-		(at 203.2 199.39 180)
+		(at 212.09 199.39 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9213,7 +9454,7 @@
 		(uuid "31a9f01b-3ae9-40cf-9263-77023ac16668")
 	)
 	(label "IDED12"
-		(at 147.32 189.23 0)
+		(at 149.86 189.23 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9223,7 +9464,7 @@
 		(uuid "32f91f80-8c8b-41e1-bb5e-71441563864c")
 	)
 	(label "IDED4"
-		(at 142.24 191.77 180)
+		(at 147.32 191.77 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9233,7 +9474,7 @@
 		(uuid "350bf9c4-49cc-4bd9-ae2a-521b443758ae")
 	)
 	(label "DD9A"
-		(at 203.2 184.15 180)
+		(at 212.09 184.15 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9253,7 +9494,7 @@
 		(uuid "387a89a0-3bed-4f65-a1ef-7d7d3f0aa071")
 	)
 	(label "IDED8"
-		(at 147.32 199.39 0)
+		(at 149.86 199.39 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9443,7 +9684,7 @@
 		(uuid "4ee9fd92-8dfd-42e9-acf8-83dbef6f8ac0")
 	)
 	(label "DD5A"
-		(at 166.37 186.69 0)
+		(at 175.26 186.69 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9463,7 +9704,7 @@
 		(uuid "4fb59062-cc9f-49de-bb41-f267640eeade")
 	)
 	(label "DA1B"
-		(at 154.94 219.71 0)
+		(at 163.83 219.71 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9493,7 +9734,7 @@
 		(uuid "5e67f533-6638-4fa6-85e6-bc09510eb05c")
 	)
 	(label "_DIOWS"
-		(at 154.94 207.01 0)
+		(at 163.83 207.01 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9503,7 +9744,7 @@
 		(uuid "672b4399-d229-40c0-bdd6-90e706510b8e")
 	)
 	(label "IDED7"
-		(at 142.24 199.39 180)
+		(at 147.32 199.39 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9573,7 +9814,7 @@
 		(uuid "7068add8-4cf4-4445-b8f6-22e27ae9a225")
 	)
 	(label "_CS1P"
-		(at 207.01 97.79 0)
+		(at 207.01 100.33 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9593,7 +9834,7 @@
 		(uuid "72662eae-7726-4be5-9e98-0684c36d1b22")
 	)
 	(label "IDED15"
-		(at 147.32 181.61 0)
+		(at 149.86 181.61 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9613,7 +9854,7 @@
 		(uuid "74c59927-3397-44ab-a04a-c1b08b850b4c")
 	)
 	(label "IDED1"
-		(at 142.24 184.15 180)
+		(at 147.32 184.15 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9623,7 +9864,7 @@
 		(uuid "751e30b4-b9b3-4a07-959b-3569c480c55a")
 	)
 	(label "IDED6"
-		(at 142.24 196.85 180)
+		(at 147.32 196.85 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9663,7 +9904,7 @@
 		(uuid "7d0cb82d-0a4c-406a-9fba-652a5c426689")
 	)
 	(label "IDED0"
-		(at 142.24 181.61 180)
+		(at 147.32 181.61 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9703,7 +9944,7 @@
 		(uuid "811664c7-cd12-45fa-9ed8-7a6bbc7a3567")
 	)
 	(label "IDED5"
-		(at 142.24 194.31 180)
+		(at 147.32 194.31 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9713,7 +9954,7 @@
 		(uuid "81bbed1d-b197-4e71-b724-c2b39a40dbb7")
 	)
 	(label "DD0A"
-		(at 166.37 199.39 0)
+		(at 175.26 199.39 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9793,7 +10034,7 @@
 		(uuid "8b146390-db16-44c0-846c-91ecb59b2d0a")
 	)
 	(label "DD8A"
-		(at 203.2 181.61 180)
+		(at 212.09 181.61 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9883,7 +10124,7 @@
 		(uuid "97d289d4-9d25-4df9-874e-6593e2757753")
 	)
 	(label "DA2B"
-		(at 214.63 222.25 180)
+		(at 223.52 222.25 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9953,7 +10194,7 @@
 		(uuid "a1c5d05e-37e9-4a4f-a016-d60bd6f8a9ea")
 	)
 	(label "IDED10"
-		(at 147.32 194.31 0)
+		(at 149.86 194.31 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -9993,7 +10234,7 @@
 		(uuid "a728328b-a7de-4e91-950e-01ea52e05540")
 	)
 	(label "IDED14"
-		(at 147.32 184.15 0)
+		(at 149.86 184.15 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10013,7 +10254,7 @@
 		(uuid "ab176c53-7242-4e2d-ba86-eb02e447507f")
 	)
 	(label "_CS1S"
-		(at 214.63 224.79 180)
+		(at 223.52 224.79 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10043,7 +10284,7 @@
 		(uuid "b16c73a0-e797-4bd5-9bec-df739ed5f9be")
 	)
 	(label "_DIORS"
-		(at 154.94 209.55 0)
+		(at 163.83 209.55 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10093,7 +10334,7 @@
 		(uuid "b966574e-64b1-46ca-90d4-da79f80d4136")
 	)
 	(label "IDED3"
-		(at 142.24 189.23 180)
+		(at 147.32 189.23 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10133,7 +10374,7 @@
 		(uuid "bea618d7-f6f0-4d4c-9ebb-848a622744a9")
 	)
 	(label "CSELS"
-		(at 189.23 212.09 0)
+		(at 198.12 212.09 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10143,7 +10384,7 @@
 		(uuid "c00dfc6c-75dc-46dd-bb41-da7fa9c730be")
 	)
 	(label "IDED9"
-		(at 147.32 196.85 0)
+		(at 149.86 196.85 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10153,7 +10394,7 @@
 		(uuid "c046ede8-627e-4d79-a897-08d654530ddc")
 	)
 	(label "DD11A"
-		(at 203.2 189.23 180)
+		(at 212.09 189.23 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10163,7 +10404,7 @@
 		(uuid "c207c170-4256-4131-b102-6fe79caf77fe")
 	)
 	(label "DD4A"
-		(at 166.37 189.23 0)
+		(at 175.26 189.23 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10203,7 +10444,7 @@
 		(uuid "c68dbb97-e9fb-4045-9e55-ce49384f88af")
 	)
 	(label "IRDY"
-		(at 154.94 212.09 0)
+		(at 163.83 212.09 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10213,7 +10454,7 @@
 		(uuid "c8c10e5c-bd0a-439a-8536-92ed08338b9d")
 	)
 	(label "IDED11"
-		(at 147.32 191.77 0)
+		(at 149.86 191.77 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10223,7 +10464,7 @@
 		(uuid "c9d20d04-2a92-464a-bd2f-8e534adbd4ed")
 	)
 	(label "DA0B"
-		(at 154.94 222.25 0)
+		(at 163.83 222.25 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10233,7 +10474,7 @@
 		(uuid "ca38227d-05e5-4703-9351-b2e7f70372ef")
 	)
 	(label "DD7A"
-		(at 166.37 181.61 0)
+		(at 175.26 181.61 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10293,7 +10534,7 @@
 		(uuid "d9acb75e-18db-41b2-a378-371befc66de4")
 	)
 	(label "IDED2"
-		(at 142.24 186.69 180)
+		(at 147.32 186.69 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10333,7 +10574,7 @@
 		(uuid "dd489922-4d2a-4400-b7f9-5b19c87f8dd8")
 	)
 	(label "_RSTIDE"
-		(at 147.32 179.07 0)
+		(at 149.86 179.07 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10343,7 +10584,7 @@
 		(uuid "de938dd1-3b2d-4387-8c21-4d63a967eb6c")
 	)
 	(label "_CS0P"
-		(at 207.01 100.33 0)
+		(at 207.01 97.79 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10413,7 +10654,7 @@
 		(uuid "e3fe6bb6-4305-4082-b848-51b8ed242a33")
 	)
 	(label "INTRQS"
-		(at 139.7 217.17 0)
+		(at 148.59 217.17 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10473,7 +10714,7 @@
 		(uuid "f05815d1-ce47-4adc-b17b-2b21a8abe4e8")
 	)
 	(label "DD10A"
-		(at 203.2 186.69 180)
+		(at 212.09 186.69 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10483,7 +10724,7 @@
 		(uuid "f1a52d7d-fd60-4d62-addc-086f823504dc")
 	)
 	(label "DD14A"
-		(at 203.2 196.85 180)
+		(at 212.09 196.85 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -10775,7 +11016,7 @@
 	)
 	(global_label "_CS0A"
 		(shape input)
-		(at 270.51 100.33 0)
+		(at 270.51 97.79 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10785,7 +11026,7 @@
 		)
 		(uuid "9e84a5ee-8790-4d7b-a572-e9cc419a2835")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 279.161 100.33 0)
+			(at 279.161 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10899,7 +11140,7 @@
 	)
 	(global_label "_CS1A"
 		(shape input)
-		(at 270.51 97.79 0)
+		(at 270.51 100.33 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -10909,7 +11150,7 @@
 		)
 		(uuid "c9a6f301-d4e7-4407-b4d1-b09534f1fe6f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 279.161 97.79 0)
+			(at 279.161 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11023,7 +11264,7 @@
 			)
 		)
 	)
-	(global_label "CLK7"
+	(global_label "ICLK7"
 		(shape input)
 		(at 273.05 57.15 0)
 		(fields_autoplaced yes)
@@ -11035,7 +11276,7 @@
 		)
 		(uuid "e72686c8-a990-4d78-b647-82eee566757e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 280.8128 57.15 0)
+			(at 281.4176 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11083,75 +11324,6 @@
 					(size 1.27 1.27)
 				)
 				(justify left)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 218.44 44.45 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "0713b758-8197-44bd-9093-8d492e45ec6b")
-		(property "Reference" "R909"
-			(at 221.234 43.18 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 216.408 44.45 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 42.672 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 218.44 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 218.44 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3511db01-6814-4066-b409-146a4da8086e")
-		)
-		(pin "2"
-			(uuid "181458d5-d1d0-4417-9e0e-b928198c72b4")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R909")
-					(unit 1)
-				)
 			)
 		)
 	)
@@ -11524,35 +11696,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 162.56 181.61 90)
-		(mirror x)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 87.63 90)
+		(unit 3)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "0d00f030-467b-444b-aed7-d0e73f60ed7f")
-		(property "Reference" "R921"
-			(at 159.766 180.34 90)
+		(uuid "0fd8a05a-9a53-40c2-84a2-6ecfef4d41e6")
+		(property "Reference" "RN905"
+			(at 226.568 86.36 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 164.592 181.61 90)
+			(at 218.44 87.63 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 179.832 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 89.662 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11561,7 +11730,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 181.61 0)
+			(at 218.44 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11569,26 +11738,53 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 162.56 181.61 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4d7")
 		)
 		(pin "1"
-			(uuid "3c431d46-c9c4-4901-b10c-14b9ec4044da")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4713c")
 		)
 		(pin "2"
-			(uuid "a0218e9e-ff77-422b-ac9c-9c31ce2d3575")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c1")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194b3")
+		)
+		(pin "3"
+			(uuid "50857c89-e6c7-4c20-947c-96d3d19909e3")
+		)
+		(pin "6"
+			(uuid "eaa5a437-24f2-4b47-bacb-aaebe5776076")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affe4")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd134")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R921")
-					(unit 1)
+					(reference "RN905")
+					(unit 3)
 				)
 			)
 		)
@@ -11716,7 +11912,7 @@
 	)
 	(symbol
 		(lib_id "AmigaPCI-Symbols:Conn_02x20_IDE")
-		(at 181.61 201.93 0)
+		(at 190.5 201.93 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11724,7 +11920,7 @@
 		(dnp no)
 		(uuid "12d7822a-a6d7-4ef6-9999-ce3da90d8a7e")
 		(property "Reference" "CN901"
-			(at 182.88 173.99 0)
+			(at 191.77 173.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11732,7 +11928,7 @@
 			)
 		)
 		(property "Value" "SECONDARY IDE"
-			(at 182.88 175.911 0)
+			(at 191.77 175.911 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11740,7 +11936,7 @@
 			)
 		)
 		(property "Footprint" "AmigaPCI:ATA_Header_2x20_P2.54mm"
-			(at 181.61 201.93 0)
+			(at 190.5 201.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11749,7 +11945,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 181.61 201.93 0)
+			(at 190.5 201.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11758,7 +11954,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 181.61 201.93 0)
+			(at 190.5 201.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11958,34 +12154,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 82.55 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 194.31 270)
+		(mirror x)
+		(unit 3)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "149d4005-2664-4fba-80a6-4e02742a2e06")
-		(property "Reference" "R910"
-			(at 221.234 81.28 90)
+		(uuid "1411dc35-bbd3-4255-bf85-a77de86bd636")
+		(property "Reference" "RN902"
+			(at 163.068 193.04 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 216.408 82.55 90)
+			(at 171.45 194.31 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 80.772 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 196.342 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11994,7 +12189,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 82.55 0)
+			(at 171.45 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12002,26 +12197,53 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 218.44 82.55 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4d8")
 		)
 		(pin "1"
-			(uuid "6c1e98ce-491a-4af6-87e3-6faff31ed5e7")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4713d")
 		)
 		(pin "2"
-			(uuid "e035cd29-3f49-42af-a245-4c5724eedd74")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c2")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194b4")
+		)
+		(pin "3"
+			(uuid "612970c7-8dca-40e6-874d-e0692a4f3f4c")
+		)
+		(pin "6"
+			(uuid "257779b5-eb2f-44b0-b28a-7da546ecc63b")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affe5")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd135")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R910")
-					(unit 1)
+					(reference "RN902")
+					(unit 3)
 				)
 			)
 		)
@@ -12171,173 +12393,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 127 199.39 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "1dd840c6-b95c-4092-a1b7-c0a73f8f740a")
-		(property "Reference" "R936"
-			(at 129.794 198.12 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 124.968 199.39 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 197.612 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 127 199.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 127 199.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "18356a72-ae2d-4154-8c14-3ca2e80aa4d6")
-		)
-		(pin "2"
-			(uuid "75a1497f-91ee-4be3-bcb5-4182ead15909")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R936")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 127 186.69 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "1e556100-1d61-4b1e-9b97-f56de3d1e86c")
-		(property "Reference" "R924"
-			(at 129.794 185.42 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 124.968 186.69 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 184.912 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 127 186.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 127 186.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e08dee9e-44e2-4899-b9b5-2b15fa0e8436")
-		)
-		(pin "2"
-			(uuid "ddb50b1d-acd2-4d8f-bfea-4cad876ca6c7")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R924")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 162.56 184.15 90)
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 196.85 270)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "27ba736c-b1eb-43ab-8384-71d598f45d89")
-		(property "Reference" "R923"
-			(at 159.766 182.88 90)
+		(uuid "27878b53-3828-4d48-9e79-bceba501cebd")
+		(property "Reference" "RN903"
+			(at 163.068 195.834 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 164.592 184.15 90)
+			(at 171.196 196.85 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 182.372 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 198.882 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12346,7 +12428,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 184.15 0)
+			(at 171.45 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12354,94 +12436,52 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 162.56 184.15 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "36011fab-d8df-4dde-b105-96922a1a35ea")
 		)
 		(pin "1"
-			(uuid "a8f6aad8-7383-4e49-8556-78ca0315710c")
+			(uuid "63ca77e2-1641-44a2-bec0-c5f3fee44f76")
 		)
 		(pin "2"
-			(uuid "518d082a-6e9c-4b67-a1ed-c4756eca2a95")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c3")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194b5")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e5349a")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf421")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affe6")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd136")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R923")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 218.44 39.37 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "2cb998f0-0d82-404a-9fe1-4f8ab17388ea")
-		(property "Reference" "R907"
-			(at 221.234 38.1 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 216.408 39.37 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 37.592 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 218.44 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 218.44 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b8b252bf-f47d-48d4-a46f-da75134767dc")
-		)
-		(pin "2"
-			(uuid "c993a835-6356-474b-be2d-265c492a2289")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R907")
+					(reference "RN903")
 					(unit 1)
 				)
 			)
@@ -12508,76 +12548,6 @@
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "#PWR0294")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 162.56 191.77 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "310e6b7e-001c-466b-b9f0-f365dfc14fdd")
-		(property "Reference" "R928"
-			(at 159.766 190.5 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 164.592 191.77 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 189.992 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 162.56 191.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 162.56 191.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "792d26dc-dff8-4492-9b13-8d5e22fc5c28")
-		)
-		(pin "2"
-			(uuid "cd9a50bc-11a3-429d-b86b-d69a6579d02f")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R928")
 					(unit 1)
 				)
 			)
@@ -12943,34 +12913,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 87.63 270)
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 186.69 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "41a198d7-2a1f-40e6-af4a-14b2d5fea780")
-		(property "Reference" "R914"
-			(at 221.234 86.36 90)
+		(uuid "42f50a0b-47d3-4cfb-b731-bf4110a4d511")
+		(property "Reference" "RN901"
+			(at 135.128 185.674 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 216.408 87.63 90)
+			(at 127.254 186.69 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 85.852 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 188.722 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12979,7 +12947,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 87.63 0)
+			(at 127 186.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12987,25 +12955,52 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 218.44 87.63 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 186.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "1e2d235d-7082-41d1-83d2-50c1cc6a0cd0")
 		)
 		(pin "1"
-			(uuid "3cd1d9bb-4979-4d90-9780-8062e5a95fac")
+			(uuid "baf6f458-9550-470e-ace8-21c926f09fc0")
 		)
 		(pin "2"
-			(uuid "044cfe05-638a-43b1-9e10-73b843a0a002")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c4")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194b6")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e5349b")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf422")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affe7")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd137")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R914")
+					(reference "RN901")
 					(unit 1)
 				)
 			)
@@ -13071,75 +13066,6 @@
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "#PWR142")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 127 184.15 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "436e1b94-2712-4bd6-ac06-fe9b61610179")
-		(property "Reference" "R922"
-			(at 129.794 182.88 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 124.968 184.15 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 182.372 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 127 184.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 127 184.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1d9636fe-1e83-4c72-92fd-fbc7226380a5")
-		)
-		(pin "2"
-			(uuid "34f326aa-89da-4f51-9bd3-79db0655f665")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R922")
 					(unit 1)
 				)
 			)
@@ -13278,6 +13204,100 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 199.39 90)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "4623dff4-7c4f-4d20-99bd-8ea566c67ede")
+		(property "Reference" "RN903"
+			(at 135.128 198.12 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 127 199.39 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 201.422 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 127 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4d9")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4713e")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c5")
+		)
+		(pin "5"
+			(uuid "a3b66106-705e-41f3-a9f5-74e5c017bf8f")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e53498")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf41f")
+		)
+		(pin "4"
+			(uuid "047d5703-17c9-4bbf-9a31-fb2c5463d600")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd138")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN903")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "AmigaPCI-Symbols:74LVC245")
 		(at 346.71 170.18 270)
 		(unit 2)
@@ -13399,34 +13419,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 85.09 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 85.09 90)
+		(unit 2)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "4e1f0102-7d96-4fc8-91e2-db9cdaebb7e1")
-		(property "Reference" "R913"
-			(at 221.234 83.82 90)
+		(uuid "4bec9065-276b-402d-8ce3-4afd43852c01")
+		(property "Reference" "RN905"
+			(at 226.822 83.82 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 216.408 85.09 90)
+			(at 218.44 85.09 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 83.312 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 87.122 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13443,7 +13461,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "4 resistor network, parallel topology, split"
 			(at 218.44 85.09 0)
 			(effects
 				(font
@@ -13452,17 +13470,44 @@
 				(hide yes)
 			)
 		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4da")
+		)
 		(pin "1"
-			(uuid "a596fe55-33d3-458d-96cb-724123bd8c3c")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4713f")
 		)
 		(pin "2"
-			(uuid "49b3d2a2-2fec-4a5a-b7ea-1144c2ed45c8")
+			(uuid "04311879-70db-4958-9a74-14f5126a5dfc")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194b7")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e5349c")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf423")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affe8")
+		)
+		(pin "7"
+			(uuid "abe4f6b2-104c-4a62-87a3-cabdf73d2304")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R913")
-					(unit 1)
+					(reference "RN905")
+					(unit 2)
 				)
 			)
 		)
@@ -13537,34 +13582,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 127 191.77 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 100.33 90)
+		(unit 4)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "50f9f828-eb76-4b17-88b1-f29de95c44ef")
-		(property "Reference" "R929"
-			(at 129.794 190.5 90)
+		(uuid "54e3fedf-d0b6-42a7-9d65-2bd142fd6bab")
+		(property "Reference" "RN904"
+			(at 226.822 99.06 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 124.968 191.77 90)
+			(at 218.44 100.33 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 189.992 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 102.362 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13573,7 +13616,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 127 191.77 0)
+			(at 218.44 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13581,59 +13624,84 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 127 191.77 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 100.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4db")
 		)
 		(pin "1"
-			(uuid "f289bcd4-39d0-467b-a3e3-087df8548c42")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47140")
 		)
 		(pin "2"
-			(uuid "a5552070-9cd1-4465-88cb-6863960ef6cf")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c6")
+		)
+		(pin "5"
+			(uuid "1950b3ed-e26f-4a0e-a1c2-827d00da4a2a")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e53499")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf420")
+		)
+		(pin "4"
+			(uuid "1f585635-2f97-432e-a063-43fa277c8e12")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd139")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R929")
-					(unit 1)
+					(reference "RN904")
+					(unit 4)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 95.25 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 97.79 90)
+		(unit 3)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "58d5e3ab-e441-469a-a3c1-17cca39cf28d")
-		(property "Reference" "R917"
-			(at 221.234 93.98 90)
+		(uuid "568ccab9-c4ac-469a-aa8c-088713ae9aea")
+		(property "Reference" "RN904"
+			(at 226.568 96.52 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 216.408 95.25 90)
+			(at 218.44 97.79 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 93.472 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 99.822 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13642,7 +13710,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 95.25 0)
+			(at 218.44 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13650,26 +13718,53 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 218.44 95.25 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 97.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4dc")
 		)
 		(pin "1"
-			(uuid "ee714ac6-28a9-47cd-aedc-549a3087597f")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47141")
 		)
 		(pin "2"
-			(uuid "a4e02148-5b63-402e-9c86-fe6a38aee615")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c7")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194b8")
+		)
+		(pin "3"
+			(uuid "2f5dc334-b0f9-4066-83c7-e0220a4b2e2f")
+		)
+		(pin "6"
+			(uuid "7d973823-11a8-4638-a1d7-a77a77e48d61")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affe9")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd13a")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R917")
-					(unit 1)
+					(reference "RN904")
+					(unit 3)
 				)
 			)
 		)
@@ -13796,35 +13891,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 162.56 186.69 90)
-		(mirror x)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 44.45 90)
+		(unit 3)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5c1b06b2-5398-4e17-9501-409d9a919f5e")
-		(property "Reference" "R925"
-			(at 159.766 185.42 90)
+		(uuid "5d4f9d50-e4ff-43ea-9caa-a36faa817c75")
+		(property "Reference" "RN906"
+			(at 226.568 43.18 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 164.592 186.69 90)
+			(at 218.44 44.45 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 184.912 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 46.482 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13833,7 +13925,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 186.69 0)
+			(at 218.44 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13841,26 +13933,53 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 162.56 186.69 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 44.45 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4dd")
 		)
 		(pin "1"
-			(uuid "8a8ec6b6-fa29-45f0-bf85-d06b6751868d")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47142")
 		)
 		(pin "2"
-			(uuid "106019dc-4c03-4f03-8b6c-3e646350fb18")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c8")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194b9")
+		)
+		(pin "3"
+			(uuid "66b4ddf4-6c3d-4d08-85e5-6fd28bee5ac9")
+		)
+		(pin "6"
+			(uuid "f14c4a8f-e279-4e26-bafc-74b859920d6c")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affea")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd13b")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R925")
-					(unit 1)
+					(reference "RN906")
+					(unit 3)
 				)
 			)
 		)
@@ -14125,8 +14244,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "2k"
-			(at 46.99 255.27 90)
+		(property "Value" "220R"
+			(at 45.72 255.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14177,34 +14296,32 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 127 189.23 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 95.25 90)
+		(unit 2)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "624d1ebd-bbd0-4bcc-abe9-7144d87db3a1")
-		(property "Reference" "R926"
-			(at 129.794 187.96 90)
+		(uuid "61784e3b-6387-4789-a1bb-22b44217dd62")
+		(property "Reference" "RN904"
+			(at 226.822 93.98 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 124.968 189.23 90)
+			(at 218.44 95.25 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 187.452 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 97.282 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14213,7 +14330,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 127 189.23 0)
+			(at 218.44 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14221,60 +14338,180 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 127 189.23 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 95.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4de")
 		)
 		(pin "1"
-			(uuid "125cba24-646b-481e-9b75-efcc61988aa4")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47143")
 		)
 		(pin "2"
-			(uuid "88e34845-6ca3-4bb3-9a42-63db7b208c20")
+			(uuid "d9afc173-4c74-4b4f-b862-e1b933e4ed6b")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194ba")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e5349d")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf424")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affeb")
+		)
+		(pin "7"
+			(uuid "f250cc15-a3d9-45e9-b560-fcbba14ab3bc")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R926")
-					(unit 1)
+					(reference "RN904")
+					(unit 2)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 162.56 196.85 90)
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 181.61 270)
+		(mirror x)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "62838c82-c2f0-40d3-b154-6dbdcac277bd")
+		(property "Reference" "RN900"
+			(at 163.068 180.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 171.45 181.61 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 183.642 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 171.45 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4df")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47144")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4c9")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194bb")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e5349e")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf425")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affec")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd13c")
+		)
+		(instances
+			(project ""
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN900")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 191.77 270)
 		(mirror x)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "6267b427-bb91-4bdf-861d-39220450ee7f")
-		(property "Reference" "R933"
-			(at 159.766 195.58 90)
+		(uuid "63563232-5f11-4a50-9ee7-b9f1d21db7d5")
+		(property "Reference" "RN902"
+			(at 163.068 190.754 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 164.592 196.85 90)
+			(at 171.196 191.77 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 195.072 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 193.802 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14283,7 +14520,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 162.56 196.85 0)
+			(at 171.45 191.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14291,95 +14528,52 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 162.56 196.85 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 191.77 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 191.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "2d847cce-a0e5-4b9a-8e12-1bd31830fbd2")
 		)
 		(pin "1"
-			(uuid "3cdfb7b2-f19e-4362-ada3-ca2391abf09c")
+			(uuid "4f5cc660-92d5-4d2b-9369-c064bc3dd846")
 		)
 		(pin "2"
-			(uuid "492c3f1e-192e-4d23-8cd8-48b44bbfa6f2")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4ca")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194bc")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e5349f")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf426")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affed")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd13d")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R933")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 162.56 199.39 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "65666913-6809-4da2-bd75-16020422f3ec")
-		(property "Reference" "R935"
-			(at 159.766 198.12 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 164.592 199.39 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 197.612 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 162.56 199.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 162.56 199.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3bd780d0-d77e-49f9-8aae-6a8d1fa9782d")
-		)
-		(pin "2"
-			(uuid "11214cf4-d5b7-4a5d-9c87-371cd08d5b48")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R935")
+					(reference "RN902")
 					(unit 1)
 				)
 			)
@@ -14453,7 +14647,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 147.32 224.79 0)
+		(at 156.21 224.79 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14462,7 +14656,7 @@
 		(fields_autoplaced yes)
 		(uuid "671838fe-9497-4d81-b823-e85feef03548")
 		(property "Reference" "#PWR0186"
-			(at 147.32 231.14 0)
+			(at 156.21 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14471,7 +14665,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 147.32 229.2334 0)
+			(at 156.21 229.2334 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14479,7 +14673,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 147.32 224.79 0)
+			(at 156.21 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14488,7 +14682,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 147.32 224.79 0)
+			(at 156.21 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14497,7 +14691,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 147.32 224.79 0)
+			(at 156.21 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14925,34 +15119,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 92.71 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 184.15 270)
+		(mirror x)
+		(unit 4)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "7837a9c0-8523-40e7-a95b-99103c8c6dea")
-		(property "Reference" "R916"
-			(at 221.234 91.44 90)
+		(uuid "782ac221-26cb-4091-a6d7-50bc72a3d4fa")
+		(property "Reference" "RN900"
+			(at 163.068 182.88 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 216.408 92.71 90)
+			(at 171.45 184.15 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 90.932 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 186.182 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14961,7 +15154,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 92.71 0)
+			(at 171.45 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14969,26 +15162,147 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 218.44 92.71 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e0")
 		)
 		(pin "1"
-			(uuid "98e2b0d5-ac8c-40e6-9daf-bab7b138596c")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47145")
 		)
 		(pin "2"
-			(uuid "b83010b7-899e-4983-8085-fd6790acb371")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4cb")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194bd")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a0")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf427")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affee")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd13e")
+		)
+		(instances
+			(project ""
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN900")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 280.67 69.85 90)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "79929355-0957-44b3-9bae-fad271c04473")
+		(property "Reference" "RN906"
+			(at 289.052 68.58 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 280.67 69.85 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 280.67 71.882 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 280.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 280.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 280.67 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e1")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47146")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4cc")
+		)
+		(pin "5"
+			(uuid "da17a9ac-86b1-4ee3-b465-fad619d9a66c")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a1")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf428")
+		)
+		(pin "4"
+			(uuid "24049ad4-b634-4978-a903-c99b1ea4802d")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd13f")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R916")
-					(unit 1)
+					(reference "RN906")
+					(unit 4)
 				)
 			)
 		)
@@ -15055,6 +15369,288 @@
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "#PWR0302")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 184.15 90)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7d1ea537-1631-4a69-9f95-cae9ea588b2a")
+		(property "Reference" "RN900"
+			(at 135.128 182.88 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 127 184.15 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 186.182 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 127 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e2")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47147")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4cd")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194be")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a2")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf429")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2affef")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd140")
+		)
+		(instances
+			(project ""
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN900")
+					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 189.23 90)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "7f72e73e-81fe-4165-904e-ff0796691afd")
+		(property "Reference" "RN901"
+			(at 135.128 187.96 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 127 189.23 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 191.262 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 127 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e3")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47148")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4ce")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194bf")
+		)
+		(pin "3"
+			(uuid "4d91784f-60f6-4052-b4a2-66c8e5c21203")
+		)
+		(pin "6"
+			(uuid "62723b36-5e1b-43de-9ff6-8b14ad8c9bf6")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff0")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd141")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN901")
+					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 196.85 90)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "82c36db4-7e2c-4d05-9f1b-38ace62bdf11")
+		(property "Reference" "RN903"
+			(at 135.128 195.58 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 127 196.85 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 198.882 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 127 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 196.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e4")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47149")
+		)
+		(pin "2"
+			(uuid "ec7b58e0-6aae-4cb2-80f9-ed21a8c4bd7a")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c0")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a3")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf42a")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff1")
+		)
+		(pin "7"
+			(uuid "7e9bf177-0a69-422c-b0fe-f9294f8460ba")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN903")
+					(unit 2)
 				)
 			)
 		)
@@ -15182,34 +15778,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 97.79 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 186.69 270)
+		(mirror x)
+		(unit 2)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "882f588c-d917-47b3-8818-3e354a6c8bcb")
-		(property "Reference" "R918"
-			(at 221.234 96.52 90)
+		(uuid "94044219-6d78-4bd4-aff0-b8bcdd962350")
+		(property "Reference" "RN901"
+			(at 163.068 185.42 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 216.408 97.79 90)
+			(at 171.45 186.69 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 96.012 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 188.722 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15218,7 +15813,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 97.79 0)
+			(at 171.45 186.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15226,164 +15821,53 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 218.44 97.79 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 186.69 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 186.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e5")
 		)
 		(pin "1"
-			(uuid "136b4e1b-877c-4a3e-9d68-c52af54200f2")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4714a")
 		)
 		(pin "2"
-			(uuid "c4cd6d07-628a-46b0-8bfd-2f843640f783")
+			(uuid "a7efb449-801f-479b-80da-3a3eea3264a8")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c1")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a4")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf42b")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff2")
+		)
+		(pin "7"
+			(uuid "ee8b08a2-7713-45d7-96b2-6e87f1119032")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R918")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 218.44 100.33 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "923ae2fc-73f8-408b-a2f8-2ad10899559b")
-		(property "Reference" "R919"
-			(at 221.234 99.06 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 216.408 100.33 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 98.552 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 218.44 100.33 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 218.44 100.33 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e5619a62-7381-4993-bae3-9dbae11d41b8")
-		)
-		(pin "2"
-			(uuid "66293d21-49e7-40b8-983e-48f0fa43350a")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R919")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 127 181.61 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "9307f259-085d-420c-8a1d-fcca922a1c34")
-		(property "Reference" "R920"
-			(at 129.794 180.34 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 124.968 181.61 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 179.832 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 127 181.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 127 181.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b651b8ef-2ac9-4621-879b-72970a8d948a")
-		)
-		(pin "2"
-			(uuid "032ea235-32f5-437e-8a3b-7c20378745b3")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R920")
-					(unit 1)
+					(reference "RN901")
+					(unit 2)
 				)
 			)
 		)
@@ -15458,6 +15942,100 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 82.55 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "989f82f9-0fcd-49e2-9bb3-0da346785e9d")
+		(property "Reference" "RN905"
+			(at 226.568 81.534 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 218.694 82.55 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 84.582 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 218.44 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "b7b65139-8250-49f3-9437-83c859640d3f")
+		)
+		(pin "1"
+			(uuid "b2cfd859-2397-4e3a-9d63-f7089430c5fc")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4cf")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c2")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a5")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf42c")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff3")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd142")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN905")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C_Small")
 		(at 346.71 161.29 270)
 		(unit 1)
@@ -15521,76 +16099,6 @@
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "C905")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 162.56 189.23 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "9c179892-5ea3-45ca-892c-c23a59536949")
-		(property "Reference" "R927"
-			(at 159.766 187.96 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 164.592 189.23 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 187.452 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 162.56 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 162.56 189.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "53a31379-857f-4f4f-a4ca-cdfd051f4202")
-		)
-		(pin "2"
-			(uuid "dd6776d1-b962-4d66-bf40-3a5b00918a05")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R927")
 					(unit 1)
 				)
 			)
@@ -15718,8 +16226,102 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 41.91 90)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "9eef5608-578b-4162-a394-6bcff0e638c9")
+		(property "Reference" "RN906"
+			(at 226.822 40.64 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 218.44 41.91 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 43.942 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 218.44 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e6")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4714b")
+		)
+		(pin "2"
+			(uuid "46c0b07d-52e5-4cdb-9d1a-1852d016533c")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c3")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a6")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf42d")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff4")
+		)
+		(pin "7"
+			(uuid "11598e51-98ac-4958-b65c-f17f85254b9b")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN906")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
-		(at 194.31 231.14 0)
+		(at 203.2 231.14 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15728,7 +16330,7 @@
 		(fields_autoplaced yes)
 		(uuid "9fd9a140-566c-44ab-b8b8-01b7c168477f")
 		(property "Reference" "#PWR0308"
-			(at 194.31 237.49 0)
+			(at 203.2 237.49 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15737,7 +16339,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 194.31 235.5834 0)
+			(at 203.2 235.5834 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15745,7 +16347,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 194.31 231.14 0)
+			(at 203.2 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15754,7 +16356,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 194.31 231.14 0)
+			(at 203.2 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15763,7 +16365,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 194.31 231.14 0)
+			(at 203.2 231.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15785,7 +16387,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 147.32 220.98 0)
+		(at 156.21 220.98 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15793,7 +16395,7 @@
 		(dnp no)
 		(uuid "a08f0b03-526e-41dd-afab-5e6b422d68d7")
 		(property "Reference" "R902"
-			(at 149.606 223.52 90)
+			(at 158.496 223.52 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15802,7 +16404,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 147.32 222.758 90)
+			(at 156.21 222.758 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15811,7 +16413,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 145.542 220.98 90)
+			(at 154.432 220.98 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15820,7 +16422,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 147.32 220.98 0)
+			(at 156.21 220.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15829,7 +16431,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 147.32 220.98 0)
+			(at 156.21 220.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16044,7 +16646,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 151.13 201.93 0)
+		(at 160.02 201.93 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16053,7 +16655,7 @@
 		(fields_autoplaced yes)
 		(uuid "a888053a-3e8a-4614-98a6-261280deed5f")
 		(property "Reference" "#PWR0301"
-			(at 151.13 208.28 0)
+			(at 160.02 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16062,7 +16664,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 151.13 206.3734 0)
+			(at 160.02 206.3734 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16070,7 +16672,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 151.13 201.93 0)
+			(at 160.02 201.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16079,7 +16681,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 151.13 201.93 0)
+			(at 160.02 201.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16088,7 +16690,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 151.13 201.93 0)
+			(at 160.02 201.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16109,34 +16711,33 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 90.17 270)
-		(unit 1)
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 199.39 270)
+		(mirror x)
+		(unit 3)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a8d521c4-ad3d-4eac-a4bd-e1b801a48fe9")
-		(property "Reference" "R915"
-			(at 221.234 88.9 90)
+		(uuid "aa7d6e70-6bc9-4955-abdc-6c3e8b3dc14b")
+		(property "Reference" "RN903"
+			(at 163.068 198.12 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 216.408 90.17 90)
+			(at 171.45 199.39 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 88.392 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 201.422 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16145,7 +16746,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 218.44 90.17 0)
+			(at 171.45 199.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16153,59 +16754,84 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 218.44 90.17 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 199.39 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 199.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e7")
 		)
 		(pin "1"
-			(uuid "480fab3e-6c13-4408-9f7c-0a962651025a")
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4714c")
 		)
 		(pin "2"
-			(uuid "8fb80534-7316-47a6-8a61-6ae323bf977c")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4d0")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c4")
+		)
+		(pin "3"
+			(uuid "6d207192-ed1a-43b3-882b-e69c87feea72")
+		)
+		(pin "6"
+			(uuid "1e69f4c4-1e75-4099-963f-e0a2f15aa028")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff5")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd143")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R915")
-					(unit 1)
+					(reference "RN903")
+					(unit 3)
 				)
 			)
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 127 194.31 270)
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 39.37 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "b1c9b8eb-35d7-49a2-aa01-b8c5dd9da0e4")
-		(property "Reference" "R932"
-			(at 129.794 193.04 90)
+		(uuid "b0471fa8-68af-4694-9094-c3cd0a1c9663")
+		(property "Reference" "RN906"
+			(at 226.568 38.354 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
 		(property "Value" "22R"
-			(at 124.968 194.31 90)
+			(at 218.694 39.37 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 192.532 90)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 41.402 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16214,7 +16840,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 127 194.31 0)
+			(at 218.44 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16222,25 +16848,52 @@
 				(hide yes)
 			)
 		)
-		(property "Description" ""
-			(at 127 194.31 0)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "e2c87aad-7f80-4e1a-aaa7-2a02b21ce3e2")
 		)
 		(pin "1"
-			(uuid "b1b00bbe-cd19-435e-9ddb-890da4161b9d")
+			(uuid "434f56ff-d2b8-4d3f-a34a-b36c32bbe017")
 		)
 		(pin "2"
-			(uuid "6c3e6414-fdcf-4d94-8dfa-84127df62b57")
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4d1")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c5")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a7")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf42e")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff6")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd144")
 		)
 		(instances
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R932")
+					(reference "RN906")
 					(unit 1)
 				)
 			)
@@ -16306,75 +16959,6 @@
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "#PWR0295")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 127 196.85 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "c0759d13-134d-4618-b615-6700416f95b7")
-		(property "Reference" "R934"
-			(at 129.794 195.58 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 124.968 196.85 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 127 195.072 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 127 196.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 127 196.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b5f4f568-d1a8-4457-87c9-a0eb6fda6d64")
-		)
-		(pin "2"
-			(uuid "77f6b630-a0e5-4462-8418-f040bed89d0a")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R934")
 					(unit 1)
 				)
 			)
@@ -16882,6 +17466,100 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 181.61 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "cb347bab-c421-4b85-a93b-96ccdf72e857")
+		(property "Reference" "RN900"
+			(at 135.128 180.594 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 127.254 181.61 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 183.642 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 127 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e8")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4714d")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4d2")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c6")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a8")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf42f")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff7")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd145")
+		)
+		(instances
+			(project ""
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN900")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:C_Small")
 		(at 347.98 143.51 270)
 		(unit 1)
@@ -17011,76 +17689,6 @@
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "#PWR0141")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 162.56 194.31 90)
-		(mirror x)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d78a5d0f-42ef-49d1-901c-c8b8e7b37532")
-		(property "Reference" "R931"
-			(at 159.766 193.04 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 164.592 194.31 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 162.56 192.532 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 162.56 194.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 162.56 194.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "621a9c56-357c-4eab-a304-b1e4d6944c7d")
-		)
-		(pin "2"
-			(uuid "8fb0f0a0-68f6-4f14-9b59-205c32c033ba")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R931")
 					(unit 1)
 				)
 			)
@@ -17343,75 +17951,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 218.44 41.91 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "e0c9c8af-21cb-44a4-967e-88d52ee4aa23")
-		(property "Reference" "R908"
-			(at 221.234 40.64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 216.408 41.91 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 218.44 40.132 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 218.44 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 218.44 41.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "196a7a94-e289-49f8-9c3a-3432ff300a84")
-		)
-		(pin "2"
-			(uuid "198db7fa-ec84-4fa4-9ba8-09f6b437e923")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R908")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C_Small")
 		(at 347.98 104.14 270)
 		(unit 1)
@@ -17476,6 +18015,194 @@
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "C902")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 92.71 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e8bec02c-a8b6-46e3-b19c-7c259d76afa5")
+		(property "Reference" "RN904"
+			(at 226.568 91.694 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 218.694 92.71 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 94.742 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 218.44 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "8e34e68b-8625-44fd-95df-d06da87d786c")
+		)
+		(pin "1"
+			(uuid "51f04cff-4d58-4118-a49a-60fa94d2fb55")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4d3")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c7")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534a9")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf430")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff8")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd146")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN904")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 218.44 90.17 90)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ea5326ee-96e5-4bb6-aed5-8dfebdf08e33")
+		(property "Reference" "RN905"
+			(at 226.822 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 218.44 90.17 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 218.44 92.202 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 218.44 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 218.44 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 218.44 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4e9")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4714e")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4d4")
+		)
+		(pin "5"
+			(uuid "bb5683fe-82f1-4ea7-a1b7-5ae3949d46b4")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534aa")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf431")
+		)
+		(pin "4"
+			(uuid "62744957-685e-4e8b-bd05-3ef974486be5")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd147")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN905")
+					(unit 4)
 				)
 			)
 		)
@@ -17611,6 +18338,101 @@
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "#PWR0296")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 171.45 189.23 270)
+		(mirror x)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "f50ae096-db6a-41a3-95b8-f670b95c1b6a")
+		(property "Reference" "RN901"
+			(at 163.068 187.96 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 171.45 189.23 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 171.45 191.262 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 171.45 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 171.45 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 171.45 189.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4ea")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba4714f")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4d5")
+		)
+		(pin "5"
+			(uuid "7248147e-f431-4018-b1d2-06b546cbf2e4")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534ab")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf432")
+		)
+		(pin "4"
+			(uuid "cfd9455f-2601-4d02-964f-6c9c1f743479")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd148")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN901")
+					(unit 4)
 				)
 			)
 		)
@@ -17912,6 +18734,194 @@
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "U220")
 					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 194.31 90)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "faf33047-93ac-4c66-a9b3-eec84181f14e")
+		(property "Reference" "RN902"
+			(at 135.128 193.04 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 127 194.31 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 196.342 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 127 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 194.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4eb")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47150")
+		)
+		(pin "2"
+			(uuid "e976a324-06ea-40de-994d-b0d24582d4d6")
+		)
+		(pin "5"
+			(uuid "5d3bea38-4c32-4745-a669-7ce7e68710e9")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534ac")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf433")
+		)
+		(pin "4"
+			(uuid "26dc7085-452a-4936-9cb4-a7e9e66a0254")
+		)
+		(pin "7"
+			(uuid "f26ddd3f-144e-4621-8968-143f9c8dd149")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN902")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_Split")
+		(at 127 191.77 90)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fc6fe626-bf2c-4259-86f8-d46194038b05")
+		(property "Reference" "RN902"
+			(at 135.128 190.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "22R"
+			(at 127 191.77 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_Array_Convex_4x0603"
+			(at 127 193.802 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 127 191.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, split"
+			(at 127 191.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Part" "YC164-FR-0722RL"
+			(at 127 191.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "8"
+			(uuid "48878860-a1b4-46c8-a020-0ed72821d4ec")
+		)
+		(pin "1"
+			(uuid "e30eeafd-7cc8-4e20-92b3-8e5b1ba47151")
+		)
+		(pin "2"
+			(uuid "21fb9bb1-354f-467a-b0c0-c00d662d13c9")
+		)
+		(pin "5"
+			(uuid "b105b330-550d-4157-8255-7088191194c8")
+		)
+		(pin "3"
+			(uuid "3af15343-cf31-4914-871e-38efb2e534ad")
+		)
+		(pin "6"
+			(uuid "8e8e5930-ac50-4822-a9e8-1f9d5e4bf434")
+		)
+		(pin "4"
+			(uuid "9e8e7264-230d-4ea1-a2f2-4c0aff2afff9")
+		)
+		(pin "7"
+			(uuid "d4aa2db0-ae92-4034-8d49-2f7639170b6b")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
+					(reference "RN902")
+					(unit 2)
 				)
 			)
 		)

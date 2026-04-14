@@ -34,6 +34,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -46,6 +47,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -58,6 +60,7 @@
 		(effects
 			(font
 				(size 1.27 1.27)
+				(thickness 0.15)
 			)
 		)
 	)
@@ -1546,15 +1549,15 @@
 		(chamfer top_left top_right bottom_left bottom_right)
 		(uuid "4defe45c-956a-4b6c-b4ac-2094a68086b2")
 	)
-	(model "/home/jason/Documents/GitHub/AmigaPCI/KiCAD/AmigaPCI Mainboard-KiCAD REV 30/AmigaPCI-Footprints/5145154-4.step"
+	(model "${KIPRJMOD}/AmigaPCI-Footprints/pci_slot.STEP"
 		(offset
-			(xyz 0 0 14)
+			(xyz 0 -25 0)
 		)
 		(scale
-			(xyz 0.985 1 1)
+			(xyz 1 1 1)
 		)
 		(rotate
-			(xyz 0 0 -90)
+			(xyz -90 0 -90)
 		)
 	)
 )
