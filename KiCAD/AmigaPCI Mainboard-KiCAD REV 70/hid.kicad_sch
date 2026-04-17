@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-13")
+		(date "2026-04-16")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -17797,7 +17797,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "74AHCT245"
+		(property "Value" "74LVC245"
 			(at 59.69 241.808 90)
 			(effects
 				(font
@@ -20078,7 +20078,7 @@
 				)
 			)
 		)
-		(property "Value" "74AHCT245"
+		(property "Value" "74LVC245"
 			(at 146.05 223.52 0)
 			(effects
 				(font
