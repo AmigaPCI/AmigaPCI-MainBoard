@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-16")
+		(date "2026-04-23")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -10623,6 +10623,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C23182"
+			(at 375.92 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "5181d425-94ed-4da2-957b-0e117cb45eda")
 		)
@@ -10697,6 +10706,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 166.37 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 166.37 100.33 0)
 			(effects
 				(font
@@ -10935,6 +10953,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 281.94 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 281.94 50.8 0)
 			(effects
 				(font
@@ -11316,6 +11343,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C5445002"
+			(at 52.07 243.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "d8f996e4-0315-4b3b-870a-71d47c759c80")
 		)
@@ -11648,6 +11684,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C2674759"
+			(at 279.4 167.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "9413d00e-d9c7-418d-8027-318d39152710")
 		)
@@ -11878,6 +11923,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C49257"
+			(at 303.53 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "c8f7cc5c-5191-4bcc-bca7-bb953616fbed")
 		)
@@ -11942,6 +11996,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 226.06 43.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C25804"
 			(at 226.06 43.18 0)
 			(effects
 				(font
@@ -12019,6 +12082,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 281.94 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 281.94 92.71 0)
 			(effects
 				(font
@@ -12266,6 +12338,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C2674759"
+			(at 163.83 170.18 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "35dd6514-232e-4336-833b-cee04c5b7c97")
 		)
@@ -12495,6 +12576,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" ""
+			(at 76.2 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "328b6507-837b-4b16-a46c-5634b45f36ea")
 		)
@@ -12563,6 +12653,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 163.83 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 163.83 152.4 0)
 			(effects
 				(font
@@ -12810,6 +12909,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C2674759"
+			(at 269.24 251.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "9fb6cbce-9c72-481d-8424-1d0ec932c5c8")
 		)
@@ -13041,6 +13149,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C25804"
+			(at 232.41 228.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "868d33f8-d1b5-4679-bb0c-8937c8b89a93")
 		)
@@ -13179,6 +13296,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 63.5 243.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C14663"
 			(at 63.5 243.84 0)
 			(effects
 				(font
@@ -13686,6 +13812,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C2674759"
+			(at 356.87 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "24e7ef0b-582c-4372-868d-e3b1409056dd")
 		)
@@ -13917,6 +14052,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 330.2 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 330.2 62.23 0)
 			(effects
 				(font
@@ -14163,6 +14307,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C2674759"
+			(at 281.94 77.47 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "c5705309-0a8a-424d-a593-e2d72d971017")
 		)
@@ -14392,6 +14545,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C23182"
+			(at 375.92 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "9f18c53d-1b6e-4a82-9498-278f7310c612")
 		)
@@ -14460,6 +14622,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 279.4 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 279.4 181.61 0)
 			(effects
 				(font
@@ -14700,6 +14871,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C124384"
+			(at 209.55 246.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "ef443a8e-0bbc-4189-8f65-517bb4163f26")
 		)
@@ -14780,6 +14960,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 281.94 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 281.94 36.83 0)
 			(effects
 				(font
@@ -15009,6 +15198,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 231.14 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C5445002"
 			(at 231.14 125.73 0)
 			(effects
 				(font
@@ -15342,6 +15540,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C14663"
+			(at 179.07 233.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "720f1997-432a-4b6d-b86d-73a21c5cd233")
 		)
@@ -15489,6 +15696,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC" "C14663"
+			(at 297.18 64.77 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2bf6342b-0788-48a4-b3a2-3f681bbf787d")
 		)
@@ -15563,6 +15779,15 @@
 			)
 		)
 		(property "Part Number" "SN74CBT16233DL"
+			(at 163.83 245.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2674759"
 			(at 163.83 245.11 0)
 			(effects
 				(font
@@ -15794,6 +16019,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 144.78 234.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C25804"
 			(at 144.78 234.95 0)
 			(effects
 				(font
