@@ -6,7 +6,7 @@
 	(paper "USLedger")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-23")
+		(date "2026-04-27")
 		(rev "7.0")
 	)
 	(lib_symbols)

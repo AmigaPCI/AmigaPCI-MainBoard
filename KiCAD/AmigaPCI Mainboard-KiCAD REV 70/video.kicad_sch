@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-23")
+		(date "2026-04-27")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -18684,8 +18684,8 @@
 				)
 			)
 		)
-		(property "Value" "39R"
-			(at 258.826 237.49 90)
+		(property "Value" "36R"
+			(at 259.08 237.49 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18719,7 +18719,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C23154"
+		(property "LCSC" "C23148"
 			(at 259.08 237.49 0)
 			(effects
 				(font
