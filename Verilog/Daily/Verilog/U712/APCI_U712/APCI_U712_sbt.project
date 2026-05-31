@@ -1,31 +1,18 @@
-[Project]
-ProjectVersion=2.0
-Version=Lattice Semiconductor Corporation iCEcube - Release: 2020.12.27943 - Build Date: Dec 9 2020 18:31:09
-ProjectName=U409_icecube
-Vendor=SiliconBlue
-Synthesis=synplify
-ProjectVFiles=../U409_ADDRESS_DECODE.v=work,../U409_TICK.v=work,../U409_TRANSFER_ACK.v=work,../U409_FLASH.v=work,../U409_RTC_SM.v=work,../U409_ROM_CYCLE.v=work,../U409_CIA_CYCLE.v=work,../U409_TOP.v=work
-ProjectCFiles=../U409_TOP.sdc
-CurImplementation=U409_icecube_Implmnt
-Implementations=U409_icecube_Implmnt
-StartFromSynthesis=yes
-IPGeneration=false
-
-[U409_icecube_Implmnt]
+[APCI_U712_Implmnt]
 DeviceFamily=iCE40
 Device=HX4K
 DevicePackage=TQ144
 DevicePower=
-NetlistFile=U409_icecube_Implmnt/U409_icecube.edf
+NetlistFile=APCI_U712_Implmnt/APCI_U712.edf
 AdditionalEDIFFile=
 IPEDIFFile=
-DesignLib=U409_icecube_Implmnt/sbt/netlist/oadb-U409_TOP
+DesignLib=APCI_U712_Implmnt/sbt/netlist/oadb-U712_TOP
 DesignView=_rt
-DesignCell=U409_TOP
-SynthesisSDCFile=U409_icecube_Implmnt/U409_icecube.scf
+DesignCell=U712_TOP
+SynthesisSDCFile=APCI_U712_Implmnt/APCI_U712.scf
 UserPinConstraintFile=
 UserSDCFile=
-PhysicalConstraintFile=../U409.pcf
+PhysicalConstraintFile=../U712.pcf
 BackendImplPathName=
 Devicevoltage=1.14
 DevicevoltagePerformance=+/-5%(datasheet default)
@@ -38,6 +25,19 @@ BestCustomTemperature=0
 IOBankVoltages=topBank,3.3 bottomBank,3.3 leftBank,3.3 rightBank,3.3
 derValue=0.701346
 TimingPathNumberStick=0
+
+[Project]
+ProjectVersion=2.0
+Version=Lattice Semiconductor Corporation iCEcube - Release: 2020.12.27943 - Build Date: Dec 9 2020 18:31:09
+ProjectName=APCI_U712
+Vendor=SiliconBlue
+Synthesis=synplify
+ProjectVFiles=../U712_AGNUS_SM.v=work,../U712_BYTE_ENABLE.v=work,../U712_CHIP_RAM_SM.v=work,../U712_CYCLE_TERMINATION.v=work,../U712_TOP.v=work
+ProjectCFiles=../U712_TOP.sdc
+CurImplementation=APCI_U712_Implmnt
+Implementations=APCI_U712_Implmnt
+StartFromSynthesis=yes
+IPGeneration=false
 
 [lse options]
 CarryChain=True

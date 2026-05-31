@@ -8,7 +8,7 @@ set_io XCLK       93
 set_io CLK28_IN   94
 set_io AGNUS_CLK  97
 set_io CLK_CIA   122
-set_io CLK40_IN     129
+set_io CLK40_IN  129
 set_io XCLK_ENn  102
 
 #CPU DATA BUS
