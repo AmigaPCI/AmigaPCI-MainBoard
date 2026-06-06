@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-27")
+		(date "2026-06-06")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -14058,7 +14058,7 @@
 			)
 		)
 	)
-	(global_label "_CDAC"
+	(global_label "_CDACA"
 		(shape input)
 		(at 30.48 49.53 180)
 		(fields_autoplaced yes)
@@ -14070,7 +14070,7 @@
 		)
 		(uuid "53419959-8d2d-4d2d-8e29-46219fd1e0e6")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 21.708 49.53 0)
+			(at 20.54 49.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)

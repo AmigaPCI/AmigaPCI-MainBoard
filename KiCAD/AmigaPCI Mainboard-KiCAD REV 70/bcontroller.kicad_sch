@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-27")
+		(date "2026-06-06")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -4956,10 +4956,6 @@
 		(uuid "8a828f22-920e-4be3-9938-5ce34f50bb12")
 	)
 	(no_connect
-		(at 207.01 93.98)
-		(uuid "bf1f33ee-4a48-4726-9fd6-35f0f0c5e80c")
-	)
-	(no_connect
 		(at 207.01 86.36)
 		(uuid "d6d63d43-9ab4-49b1-b07b-dbaba2b82ab1")
 	)
@@ -5421,6 +5417,16 @@
 			(type default)
 		)
 		(uuid "08293728-b33f-4675-bf2b-7a414228587c")
+	)
+	(wire
+		(pts
+			(xy 217.17 93.98) (xy 218.44 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "083b1efd-d439-46c6-a9e8-6319fa7f5ef2")
 	)
 	(wire
 		(pts
@@ -8624,6 +8630,16 @@
 	)
 	(wire
 		(pts
+			(xy 207.01 93.98) (xy 209.55 93.98)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d9d89eac-25c3-4d1f-9e9c-542f3085cc0a")
+	)
+	(wire
+		(pts
 			(xy 147.32 160.02) (xy 156.21 160.02)
 		)
 		(stroke
@@ -10133,6 +10149,27 @@
 		(uuid "02898102-b060-43cc-b9a6-cb65ebda64b4")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 309.626 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
+	(global_label "CIAADL"
+		(shape output)
+		(at 218.44 93.98 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "02da1c08-6a93-41de-adfe-cb4928169219")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 227.7753 93.98 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12215,6 +12252,85 @@
 			(project "AmigaPCI Mainboard"
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/62a07d55-3759-49a3-8a3f-631cb4902a24"
 					(reference "C438")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 213.36 93.98 90)
+		(mirror x)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3380215a-e010-4930-8585-24fc7ecf8bca")
+		(property "Reference" "R293"
+			(at 205.486 92.964 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "22R"
+			(at 215.138 93.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 213.36 92.202 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 213.36 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" ""
+			(at 213.36 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C23345"
+			(at 213.36 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "85fb5232-922c-4d8e-9c41-e5b9a2a94fc8")
+		)
+		(pin "2"
+			(uuid "7c3c0d9e-1019-4f21-888b-708835e1d6f0")
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767/62a07d55-3759-49a3-8a3f-631cb4902a24"
+					(reference "R293")
 					(unit 1)
 				)
 			)

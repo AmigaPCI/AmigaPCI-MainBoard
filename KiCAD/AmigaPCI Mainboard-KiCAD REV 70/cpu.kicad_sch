@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-27")
+		(date "2026-06-06")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -10588,6 +10588,10 @@
 		(uuid "bf83dabd-3b63-4a67-aa43-7c17071f9731")
 	)
 	(no_connect
+		(at 77.47 83.82)
+		(uuid "c8878444-de9e-47bc-bd46-8f9ff4bd3d0b")
+	)
+	(no_connect
 		(at 128.27 83.82)
 		(uuid "ccde083e-2e1e-42a0-8d1c-4a3c85b6557f")
 	)
@@ -11616,16 +11620,6 @@
 			(type default)
 		)
 		(uuid "04013aa8-5e97-4027-8473-176a0d107898")
-	)
-	(wire
-		(pts
-			(xy 77.47 83.82) (xy 68.58 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "04217b68-93f6-4aec-97a5-83870444b7a8")
 	)
 	(wire
 		(pts
@@ -20884,48 +20878,6 @@
 			)
 		)
 	)
-	(global_label "LATCHCLK"
-		(shape output)
-		(at 137.16 213.36 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "2509c2cc-2862-4977-8f74-0e70eb0ac6e0")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 149.3981 213.36 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-	)
-	(global_label "DMALATCH"
-		(shape output)
-		(at 137.16 205.74 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "2737f76c-bbe3-4d43-b4fc-c5fd86de26cb")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 149.64 205.74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-	)
 	(global_label "_CPURST"
 		(shape input)
 		(at 207.01 191.77 180)
@@ -21073,24 +21025,24 @@
 			)
 		)
 	)
-	(global_label "LVCLK7"
+	(global_label "_CLK7"
 		(shape input)
-		(at 68.58 83.82 180)
+		(at 137.16 208.28 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "376b4896-cf12-4955-95ce-b4c4c19fccfc")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 58.7005 83.82 0)
+			(at 145.8904 208.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 			)
 		)
 	)
@@ -21638,7 +21590,7 @@
 	)
 	(global_label "_LVAWE"
 		(shape input)
-		(at 137.16 208.28 0)
+		(at 137.16 210.82 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -21648,7 +21600,7 @@
 		)
 		(uuid "6b7a30fa-8599-450c-8ea9-6ac1f3575691")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 147.1132 208.28 0)
+			(at 147.1132 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -22282,6 +22234,27 @@
 			)
 		)
 	)
+	(global_label "CDAC"
+		(shape input)
+		(at 137.16 205.74 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.2954 1.2954)
+			)
+			(justify left)
+		)
+		(uuid "a4fd37da-711a-42af-9bc7-b62018d4ce97")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 145.2009 205.74 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+	)
 	(global_label "CLK40A"
 		(shape output)
 		(at 266.7 125.73 0)
@@ -22804,7 +22777,7 @@
 	)
 	(global_label "_LVTS"
 		(shape input)
-		(at 137.16 210.82 0)
+		(at 137.16 213.36 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -22814,7 +22787,7 @@
 		)
 		(uuid "e18c10b3-0488-468d-a383-c6cffddf7629")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 145.5711 210.82 0)
+			(at 145.5711 213.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)

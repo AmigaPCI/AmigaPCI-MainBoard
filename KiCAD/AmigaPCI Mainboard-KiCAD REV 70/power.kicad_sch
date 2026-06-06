@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-27")
+		(date "2026-06-06")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -12108,16 +12108,8 @@
 		(uuid "3583128f-f967-404e-9888-f2d7c7ff5dc3")
 	)
 	(no_connect
-		(at 290.83 67.31)
-		(uuid "3793f359-9290-465e-95f9-93c35b8527ee")
-	)
-	(no_connect
 		(at 290.83 43.18)
 		(uuid "3b5f57d0-4894-4b9c-a1d0-97ad69f92d23")
-	)
-	(no_connect
-		(at 290.83 81.28)
-		(uuid "3d35f339-a624-4080-a839-98c91903c4ab")
 	)
 	(no_connect
 		(at 290.83 50.8)
@@ -12126,10 +12118,6 @@
 	(no_connect
 		(at 306.07 40.64)
 		(uuid "58b0f3cf-0be8-4b35-ac4a-94cdf3ad5b54")
-	)
-	(no_connect
-		(at 306.07 81.28)
-		(uuid "6b90a962-86f8-4b00-a13e-3ad48ccd8d74")
 	)
 	(no_connect
 		(at 76.2 185.42)
@@ -12170,10 +12158,6 @@
 	(no_connect
 		(at 306.07 27.94)
 		(uuid "bb0aa7d5-5923-486a-a13c-6001df60f121")
-	)
-	(no_connect
-		(at 306.07 67.31)
-		(uuid "bbb66b42-e10a-404f-ad5d-031117a02b28")
 	)
 	(no_connect
 		(at 265.43 38.1)
@@ -16217,118 +16201,6 @@
 		)
 	)
 	(symbol
-		(lib_id "74xx:74LS04")
-		(at 298.45 81.28 0)
-		(unit 6)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "0216769a-ba4c-41e8-ba36-889e36201b4e")
-		(property "Reference" "U219"
-			(at 298.196 73.025 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "74AHC04"
-			(at 298.704 75.438 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_SO:TSSOP-14_4.4x5mm_P0.65mm"
-			(at 298.45 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS04"
-			(at 298.45 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 298.45 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C8190"
-			(at 298.45 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3675f20a-30cd-44ce-b174-fd4342255537")
-		)
-		(pin "2"
-			(uuid "c1839d66-9055-45c4-944e-97f81af31a6d")
-		)
-		(pin "3"
-			(uuid "1cfeda22-b3fb-462b-9b9f-4f09417b940a")
-		)
-		(pin "4"
-			(uuid "d50365ec-ddb7-41a5-a340-ebca5ed59402")
-		)
-		(pin "5"
-			(uuid "b274e5ff-26d5-433a-944a-1a890a429a94")
-		)
-		(pin "6"
-			(uuid "00ef6f8a-53fe-45da-b5cc-4a45d5036466")
-		)
-		(pin "8"
-			(uuid "9dd572dc-2843-4f20-8079-6280a9c5dd8c")
-		)
-		(pin "9"
-			(uuid "6aa95fb1-5c03-4af2-b298-9cb7cf2ba1e6")
-		)
-		(pin "10"
-			(uuid "68a101a6-aeb0-41e9-aeb0-ca00b3829a9c")
-		)
-		(pin "11"
-			(uuid "6bfbf8ac-e6f1-45d4-a662-ddaa072cf88c")
-		)
-		(pin "12"
-			(uuid "c1cf2b8b-85aa-4bb5-8ba2-788162999ed8")
-		)
-		(pin "13"
-			(uuid "b5dd842c-e525-48aa-a949-131f95a746bb")
-		)
-		(pin "14"
-			(uuid "fd698ee8-072d-4309-b5b9-40e9b967ed92")
-		)
-		(pin "7"
-			(uuid "e4f4b588-0d08-46c3-989c-9f1d598eb4e5")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/4cb777ef-2899-49f4-b38f-a0c07d84fa7d"
-					(reference "U219")
-					(unit 6)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
 		(at 121.92 179.07 0)
@@ -17805,118 +17677,6 @@
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/4cb777ef-2899-49f4-b38f-a0c07d84fa7d"
 					(reference "CN601")
 					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "74xx:74LS04")
-		(at 298.45 67.31 0)
-		(unit 4)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "23d9d6da-1aa9-40e4-ba2c-ea9831512220")
-		(property "Reference" "U219"
-			(at 298.45 59.2582 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "74AHC04"
-			(at 298.45 61.5696 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Package_SO:TSSOP-14_4.4x5mm_P0.65mm"
-			(at 298.45 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "http://www.ti.com/lit/gpn/sn74LS04"
-			(at 298.45 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 298.45 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C8190"
-			(at 298.45 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c3abb5b9-c668-4b39-b5f1-32176d44d319")
-		)
-		(pin "2"
-			(uuid "cdff9149-73c0-42e0-bc2b-49266d1b2cf8")
-		)
-		(pin "3"
-			(uuid "3677479b-111f-4375-9fa9-8014b3309447")
-		)
-		(pin "4"
-			(uuid "0e9e51cb-ba11-4731-9ee0-edbad3cc796f")
-		)
-		(pin "5"
-			(uuid "1ef58bea-2e0a-4996-b637-005c55193d92")
-		)
-		(pin "6"
-			(uuid "6cd57c4d-34e4-4f07-83a9-ee3ee3835577")
-		)
-		(pin "8"
-			(uuid "83255244-be2d-4b26-a8d8-b4de1ebc47fe")
-		)
-		(pin "9"
-			(uuid "a2d74f36-38d0-4089-a6b8-21c2c296d485")
-		)
-		(pin "10"
-			(uuid "11fdacc4-6050-43a5-abde-4547f411b33d")
-		)
-		(pin "11"
-			(uuid "ad0f5f8f-5efc-40ba-8b9a-2661422d05fc")
-		)
-		(pin "12"
-			(uuid "2963c803-ffdf-467e-9925-f9ed97ebcffc")
-		)
-		(pin "13"
-			(uuid "c2b0da5e-ed61-4811-85eb-ce438db1fbae")
-		)
-		(pin "14"
-			(uuid "12782663-eded-48dd-9c07-40490d1292df")
-		)
-		(pin "7"
-			(uuid "645277d1-17ef-4951-a7c4-82d35c275d97")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/4cb777ef-2899-49f4-b38f-a0c07d84fa7d"
-					(reference "U219")
-					(unit 4)
 				)
 			)
 		)
@@ -21623,7 +21383,7 @@
 				)
 			)
 		)
-		(property "Value" "74AHC04"
+		(property "Value" "74LVC04"
 			(at 301.752 24.638 0)
 			(effects
 				(font
@@ -21658,7 +21418,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C8190"
+		(property "LCSC" " C352968"
 			(at 298.45 27.94 0)
 			(effects
 				(font

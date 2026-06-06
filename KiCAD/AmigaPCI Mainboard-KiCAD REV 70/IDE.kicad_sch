@@ -6,7 +6,7 @@
 	(paper "B")
 	(title_block
 		(title "AMIGA PCI")
-		(date "2026-04-27")
+		(date "2026-06-06")
 		(rev "7.0")
 	)
 	(lib_symbols
@@ -4629,6 +4629,10 @@
 		(uuid "5a3f0523-36e9-48fd-b4ca-3e86d060b991")
 	)
 	(no_connect
+		(at 240.03 57.15)
+		(uuid "7bd32672-2eec-45a8-b3ca-5a5bb68fdc94")
+	)
+	(no_connect
 		(at 198.12 219.71)
 		(uuid "c1d9f257-bdf0-4723-b3e8-f284e30bea78")
 	)
@@ -4651,6 +4655,10 @@
 	(no_connect
 		(at 96.52 214.63)
 		(uuid "f396a8c8-c941-4166-bcb1-971c25c7b7a3")
+	)
+	(no_connect
+		(at 265.43 57.15)
+		(uuid "f3af2ab4-beb9-4513-848f-a4b49392624c")
 	)
 	(bus_entry
 		(at 194.31 121.92)
@@ -6594,16 +6602,6 @@
 		)
 		(uuid "680cea42-788a-4e70-a646-36122de9ca76")
 	)
-	(wire
-		(pts
-			(xy 220.98 57.15) (xy 224.79 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6817648d-df7c-417b-a347-78436f43dd59")
-	)
 	(bus
 		(pts
 			(xy 52.07 114.3) (xy 52.07 116.84)
@@ -7333,16 +7331,6 @@
 			(type default)
 		)
 		(uuid "9b3a5cee-b37b-4f96-b122-b89b7635f4d9")
-	)
-	(wire
-		(pts
-			(xy 265.43 57.15) (xy 273.05 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9bd83b17-0bb2-4525-ac25-0299be86487e")
 	)
 	(wire
 		(pts
@@ -8573,16 +8561,6 @@
 			(type default)
 		)
 		(uuid "ea5a28a4-5be2-46da-bc8d-629ab9a6bc48")
-	)
-	(wire
-		(pts
-			(xy 232.41 57.15) (xy 240.03 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ea77f1a4-f6c3-46e4-8124-75a0bbf4968a")
 	)
 	(wire
 		(pts
@@ -10804,27 +10782,6 @@
 			)
 		)
 	)
-	(global_label "LVCLK7"
-		(shape output)
-		(at 220.98 57.15 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "27f9c7f2-5c2b-477c-a019-42b3759a5a54")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 211.1005 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
 	(global_label "_DIOWB"
 		(shape input)
 		(at 270.51 82.55 0)
@@ -11256,27 +11213,6 @@
 		(uuid "e1d75e0a-36d9-42c5-bfe6-23d83aa881f5")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 284.0179 46.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-	)
-	(global_label "ICLK7"
-		(shape input)
-		(at 273.05 57.15 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "e72686c8-a990-4d78-b647-82eee566757e")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 281.4176 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13652,84 +13588,6 @@
 				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
 					(reference "RN905")
 					(unit 2)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 228.6 57.15 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "4ff67961-77bc-4ff4-8ad7-ef27188cf3cd")
-		(property "Reference" "R215"
-			(at 231.394 55.88 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22R"
-			(at 226.568 57.15 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 228.6 55.372 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 228.6 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 228.6 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C23345"
-			(at 228.6 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "057c8fde-7249-47e9-8e43-84a121faee9b")
-		)
-		(pin "2"
-			(uuid "a2c61414-1e35-4d4c-bd10-8a58d2e79acb")
-		)
-		(instances
-			(project "AmigaPCI Mainboard"
-				(path "/72453515-27fe-4336-91f3-e3c8054f7767/7a35a97e-5686-44dd-976e-0306b0eb5ef2"
-					(reference "R215")
-					(unit 1)
 				)
 			)
 		)
