@@ -3412,7 +3412,7 @@
   },
   "schematic": {
     "annotate_start_num": 0,
-    "bom_export_filename": "/home/jason/Documents/AmigaPCI Mainboard LCSC.csv",
+    "bom_export_filename": "/home/jason/Documents/GitHub/AmigaPCI-MainBoard/Gerber/Pick Place/AmigaPCI Mainboard.csv",
     "bom_fmt_presets": [],
     "bom_fmt_settings": {
       "field_delimiter": ",",
@@ -3558,7 +3558,7 @@
       "group_symbols": true,
       "name": "",
       "sort_asc": true,
-      "sort_field": "Reference"
+      "sort_field": "LCSC"
     },
     "connection_grid_size": 50.0,
     "drawing": {
