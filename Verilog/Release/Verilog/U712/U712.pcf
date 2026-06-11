@@ -1,5 +1,6 @@
 #CLOCKS
-set_io CLK7        93
+set_io CLK7       135
+set_io CDAC       134
 set_io RESETn      94
 set_io CLK40B_OUT 112
 set_io CLK40C_OUT  21
@@ -82,33 +83,30 @@ set_io DRD_DIR    107
 set_io DRD_ENn    110
 
 #AGNUS
-set_io RAS1n         88 #INPUT -  AGNUS RAS1
-set_io RAS0n         87 #INPUT -  AGNUS RAS0
-set_io CASUn        104 #INPUT -  AGNUS CASU
-set_io CASLn        105 #INPUT -  AGNUS CASL
-set_io BLSn         113 #OUTPUT - BLITTER SLOWDOWN
-set_io ASn          116 #OUTPUT - AGNUS ADDRESS STROBE
-set_io LDSn         117 #OUTPUT - AGNUS LOWER DATA STROBE
-set_io UDSn         118 #OUTPUT - AGNUS UPPER DATA STROBE
-set_io PRWn         119 #OUTPUT - PROCESSOR R/W SIGNAL
-set_io AWEn         135 #INPUT -  AGNUS WRITE ENABLE FOR DMA CYCLES
-set_io DBRn         138 #INPUT -  AGNUS DATA BUS REQUEST
-set_io RAMENn       139 #OUTPUT - AGNUS CHIP RAM ENABLE (UNUSED, USEFUL FOR TESTING)
-set_io REGENn       141 #OUTPUT - AGNUS REGISTER ENABLE
-set_io REGSPACEn     41 #INPUT -  CHIPSET REGISTER ADDRESS SPACE
-set_io AGNUS_REV    114 #INPUT -  2MB or 1MB Agnus
-set_io SAB_LATCH_EN  134 #OUTPUT - ENABLE LATCHING ON U810
-set_io SAB_LATCH_CLK 137 #OUTPUT - LATCH CLOCK FOR U810
-
+set_io RAS1n          88 #INPUT -  AGNUS RAS1
+set_io RAS0n          87 #INPUT -  AGNUS RAS0
+set_io CASUn         104 #INPUT -  AGNUS CASU
+set_io CASLn         105 #INPUT -  AGNUS CASL
+set_io BLSn          113 #OUTPUT - BLITTER SLOWDOWN
+set_io ASn           116 #OUTPUT - AGNUS ADDRESS STROBE
+set_io LDSn          117 #OUTPUT - AGNUS LOWER DATA STROBE
+set_io UDSn          118 #OUTPUT - AGNUS UPPER DATA STROBE
+set_io PRnW          119 #OUTPUT - PROCESSOR R/W SIGNAL
+set_io AWEn          136 #INPUT -  AGNUS WRITE ENABLE FOR DMA CYCLES
+set_io DBRn          138 #INPUT -  AGNUS DATA BUS REQUEST
+set_io RAMENn        139 #OUTPUT - AGNUS CHIP RAM ENABLE (UNUSED, USEFUL FOR TESTING)
+set_io REGENn        141 #OUTPUT - AGNUS REGISTER ENABLE
+set_io REGSPACEn      41 #INPUT -  CHIPSET REGISTER ADDRESS SPACE
+set_io AGNUS_REV     114 #INPUT -  2MB or 1MB Agnus
 
 #DATA TRANSFER SIGNALS
 set_io SIZ[1]    1
 set_io SIZ[0]    2
 #set_io DATARDYn  3
 set_io TACKn     7
-set_io TBIn     39
-set_io TCIn     64
-set_io TSn     136
+#set_io TBIn     39
+#set_io TCIn     64
+set_io TSn     137
 set_io RnW     144
 
 #BYTE ENABLES FOR PCI BUS CONTROLLER

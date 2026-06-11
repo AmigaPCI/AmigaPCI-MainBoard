@@ -2,12 +2,11 @@
 #-- Project file D:\AmigaPCI\U712\APCI_U712\APCI_U712_syn.prj
 #project files
 
-add_file -verilog -lib work "../U712_AGNUS_SM.v" 
 add_file -verilog -lib work "../U712_BYTE_ENABLE.v" 
 add_file -verilog -lib work "../U712_CHIP_RAM_SM.v" 
-add_file -verilog -lib work "../U712_CYCLE_TERMINATION.v" 
 add_file -verilog -lib work "../U712_TOP.v" 
 add_file -verilog -lib work "../APCI_U712_4040_pll.v" 
+add_file -verilog -lib work "../U712_AGNUS_CYCLE.v" 
 add_file -constraint -lib work "../U712_TOP.sdc"
 #implementation: "APCI_U712_Implmnt"
 impl -add APCI_U712_Implmnt -type fpga
