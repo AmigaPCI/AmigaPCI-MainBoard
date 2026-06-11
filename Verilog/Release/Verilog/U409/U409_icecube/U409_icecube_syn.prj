@@ -3,13 +3,14 @@
 #project files
 
 add_file -verilog -lib work "../U409_ADDRESS_DECODE.v" 
-add_file -verilog -lib work "../U409_CIA.v" 
 add_file -verilog -lib work "../U409_TICK.v" 
-add_file -verilog -lib work "../U409_TOP.v" 
 add_file -verilog -lib work "../U409_TRANSFER_ACK.v" 
 add_file -verilog -lib work "../U409_FLASH.v" 
 add_file -verilog -lib work "../U409_RTC_SM.v" 
 add_file -verilog -lib work "../U409_4040_pll.v" 
+add_file -verilog -lib work "../U409_CIA_CYCLE.v" 
+add_file -verilog -lib work "../U409_ROM_CYCLE.v" 
+add_file -verilog -lib work "../U409_TOP.v" 
 add_file -constraint -lib work "../U409_TOP.sdc"
 #implementation: "U409_icecube_Implmnt"
 impl -add U409_icecube_Implmnt -type fpga

@@ -54,23 +54,25 @@ set_io A[30]   9
 set_io A[31]  10
 
 #DATA TRANSFER SIGNALS
+set_io TCIn           117
+set_io TBIn           118
+set_io PORTSIZE       135
+set_io TACKn          119
+set_io TSn            134
+set_io TT[0]          138
+set_io TT[1]          139
+set_io ROM_DELAY[1]   107 -pullup yes
+set_io ROM_DELAY[0]   106 -pullup yes
+set_io RnW            142
+set_io CIA_ADDR_LATCH  73
+set_io AUTOVECTORn    115
+
 #set_io TEAn         116
-set_io TCIn         117
-set_io TBIn         118
-set_io PORTSIZE     135
-set_io TACKn        119
-set_io TSn          134
-set_io TT[0]        138
-set_io TT[1]        139
-set_io ROM_DELAY[1] 107 -pullup yes
-set_io ROM_DELAY[0] 106 -pullup yes
-set_io RnW          142
-#set_io AUTOVECTORn  115
 #set_io TM[0]        136
 #set_io TM[1]        137
 #set_io TM[2]        141
 
-#ADDRESS SPACE SIGNALS
+#ADDRESS/CHIP SELECT SIGNALS
 set_io OVL         83
 set_io RAMSPACEn   48
 set_io CIACS0n     80
@@ -79,8 +81,8 @@ set_io REGSPACEn  120
 set_io BUF_ENn    121
 set_io ROM_ENn    124
 set_io RTC_ENn     82
-#set_io LBCENn     112
-#set_io LBC        130
+#set_io LBCENn     112 #LBENn
+#set_io LBC        130 #This is an extra signal for future use.
 
 #PCI BRIDGE
 set_io CONFIGENn   56
@@ -106,8 +108,8 @@ set_io FLASH_BANK[1]  84
 set_io FLASH_BANK[0]  85
 
 #STM
-#set_io ST0 104
-#set_io ST1 105
+#set_io ST0 104 #This is an extra signal for future use.
+#set_io ST1 105 #This is an extra signal for future use.
 
 #TEST POINTS
 #set_io TP0 113

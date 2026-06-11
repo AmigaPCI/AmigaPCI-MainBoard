@@ -26,21 +26,15 @@ Description: ADDRESS DECODE
 
 Date          Who  Description
 -----------------------------------
-01-JUL-2025   JN   INITIAL REV 6.0 CODE
-15-OCT-2025   JN   Assert _ROMEN directly from address.
-01-NOV-2025   JN   Roll back _ROMEN change above.
-06-NOV-2025   JN   Fixed RTC address space.
-11-NOV-2025   JN   Bridge base address fixed to $80000000
-13-NOV-2025   JN   ATA address fixed to $DB0000
+10-JUN-2026   JN   INITIAL REV 7.0 CODE
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
 
 module U409_ADDRESS_DECODE
 (
-
     //Clocks
-    input CLK40, OVL, CIA_ENABLE, //CONFIGURED,
+    input CLK40, OVL,
     
     //Cycle Start/Terminate
     input RESETn, RnW,
@@ -49,20 +43,14 @@ module U409_ADDRESS_DECODE
 
     //Chip Selects
     input AUTOBOOT,
-    output ROM_SPACE, CIA_SPACE, CIACS0n, CIACS1n, RAMSPACEn, REGSPACEn, AGNUS_SPACE,
-    output AUTOVECTOR, RTC_SPACE, ATA_SPACE, ATA_ENn, // AUTOCONFIG_SPACE,
-    output PCS0, PCS1, SCS0, SCS1, //BRIDGE_ENn,
-    //output [1:0] PCIAT,
-
-    //Base Addresses
-    //input [7:1] LIDE_BASE,
-    //input [3:0] PRO_BASE,    
+    output ROM_SPACE, RAMSPACEn, REGSPACEn, AGNUS_SPACE, CIA0_SPACE, CIA1_SPACE,
+    output AUTOVECTOR_SPACE, RTC_SPACE, ATA_SPACE, ATA_ENn,
+    output PCS0, PCS1, SCS0, SCS1,
     
     //FLASH
     input FLASH_DISJn,
     output FLASH_SPACE,
     output [1:0] FLASH_BANK
-
 );
 
   ///////////////////////////
@@ -79,18 +67,17 @@ wire Z2_SPACE = RESETn && A[31:24] == 8'h00;
 
 //ROM IS ENABLED AT THE RESET VECTOR $0000 0000 WHEN OVL IS ASSERTED (HIGH) AND AT $00F8 0000 - $00FF FFFF.
 //KICKSTART JUMPS TO THE HIROM ADDRESS SPACE BEFORE OVL IS NEGATED, SO WE DON'T CHECK FOR IT AT THE HIROM ADDRESS.
-
-assign ROM_SPACE  = Z2_SPACE && (LOWROM || HIROM);
-wire   LOWROM  = A[23:19] == 5'b00000 && OVL;
-wire   HIROM   = A[23:19] == 5'b11111;
+assign ROM_SPACE = Z2_SPACE && (LOWROM || HIROM);
+wire   LOWROM    = A[23:19] == 5'b00000 && OVL;
+wire   HIROM     = A[23:19] == 5'b11111;
 
   ///////////////////////
  // CIA ADDRESS SPACE //
 ///////////////////////
 
 assign CIA_SPACE = Z2_SPACE && A[23:16] == 8'hBF;
-assign CIACS0n = !(CIA_ENABLE && !A[12]);
-assign CIACS1n = !(CIA_ENABLE && !A[13]);
+assign CIA0_SPACE = (CIA_SPACE && !A[12]);
+assign CIA1_SPACE = (CIA_SPACE && !A[13]);
 
   //////////////////
  // AGNUS SPACES //
@@ -109,7 +96,7 @@ assign AGNUS_SPACE =  (!RAMSPACEn || !REGSPACEn);
 
 //ALL INTERRUPT REQUESTS ARE SERVICED BY AUTOVECTORING.
 
-assign AUTOVECTOR = RESETn && TT[1] && TT[0] && A[31:16] == 16'hFFFF;
+assign AUTOVECTOR_SPACE = RESETn && TT[1] && TT[0] && A[31:16] == 16'hFFFF;
 
   //////////////////////
  // AUTOCONFIG SPACE //
@@ -183,4 +170,11 @@ wire ROM_SPACE_F = A[23:19] == 5'b11110; //F0-F7
 assign FLASH_BANK[1] = A[22];
 assign FLASH_BANK[0] = A[20];
 assign FLASH_SPACE = Z2_SPACE && !FLASH_DISABLE && (ROM_SPACE_F || ROM_SPACE_E || ROM_SPACE_B || ROM_SPACE_A);
+
+  ////////////////////////
+ // CPU CARD RAM SPACE //
+////////////////////////
+
+//assign LBENn = ~(RESETn && A == 5'b00001); //Coprocessor slot RAM. LBCENn 
+
 endmodule
