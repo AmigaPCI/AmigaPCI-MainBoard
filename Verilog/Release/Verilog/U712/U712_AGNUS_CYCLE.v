@@ -43,7 +43,7 @@ module U712_AGNUS_CYCLE
 );
 
 //The 14MHz clock has a rising edge on every 7MHz edge.
-wire CLK14 = (CLK7 ^ CDAC); //Both clock inputs are inverted, so XOR works.
+wire CLK14 = ~(CLK7 ^ CDAC); //XNOR
 
 //--- Detect Cycle Start ---
 wire AGNUS_SPACE = (!REGSPACEn || !RAMSPACEn);
@@ -163,9 +163,10 @@ localparam [1:0] TACK_IDLE  = 2'b00;
 localparam [1:0] TACK_ASST  = 2'b01;
 localparam [1:0] TACK_NEG   = 2'b10;
 localparam [1:0] TACK_RARM  = 2'b11;
-localparam [3:0] RD_RAM_DELAY = 4'h4;
-localparam [3:0] RD_REG_DELAY = 4'h2;
-localparam [3:0] WR_TACK_DELAY = 4'h6;
+localparam [3:0] RD_RAM_DELAY = 4'h4; //This can be made lesser if the CLKE signal is released sooner in the RAM FSM.
+localparam [3:0] RD_REG_DELAY = 4'h3; //2 also works here, but I'm concerned the timing might be marginal and break on some machines.
+localparam [3:0] WR_RAM_DELAY = 4'h2;
+localparam [3:0] WR_REG_DELAY = 4'h6;
 
 assign TACKn = TACK_EN ? TACK_OUT : 1'bz;
 
@@ -191,7 +192,11 @@ always @(negedge CLK40) begin
             TACK_IDLE : begin
                 if (TACK_SYNC[1]) begin
                     TACK_EN <= 1'b1;
-                    TACK_DELAY <= RnW ? (REG_CYCLE ? RD_REG_DELAY : RD_RAM_DELAY) : WR_TACK_DELAY;
+                    if (RnW) begin
+                        TACK_DELAY <= REG_CYCLE ? RD_REG_DELAY : RD_RAM_DELAY;
+                    end else begin
+                        TACK_DELAY <= REG_CYCLE ? WR_REG_DELAY : WR_RAM_DELAY;
+                    end
                     TACK_STATE <= TACK_ASST;
                 end
             end

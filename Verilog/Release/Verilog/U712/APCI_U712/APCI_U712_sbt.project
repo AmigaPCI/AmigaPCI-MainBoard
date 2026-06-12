@@ -32,7 +32,7 @@ Version=Lattice Semiconductor Corporation iCEcube - Release: 2020.12.27943 - Bui
 ProjectName=APCI_U712
 Vendor=SiliconBlue
 Synthesis=synplify
-ProjectVFiles=../U712_BYTE_ENABLE.v=work,../U712_CHIP_RAM_SM.v=work,../U712_TOP.v=work,../APCI_U712_4040_pll.v=work,../U712_AGNUS_CYCLE.v
+ProjectVFiles=../U712_BYTE_ENABLE.v=work,../U712_CHIP_RAM_SM.v=work,../U712_TOP.v=work,../APCI_U712_4040_pll.v=work,../U712_AGNUS_CYCLE.v=work
 ProjectCFiles=../U712_TOP.sdc
 CurImplementation=APCI_U712_Implmnt
 Implementations=APCI_U712_Implmnt
