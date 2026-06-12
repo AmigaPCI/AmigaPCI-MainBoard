@@ -164,7 +164,7 @@ localparam [1:0] TACK_ASST  = 2'b01;
 localparam [1:0] TACK_NEG   = 2'b10;
 localparam [1:0] TACK_RARM  = 2'b11;
 localparam [3:0] RD_RAM_DELAY = 4'h4; //This can be made lesser if the CLKE signal is released sooner in the RAM FSM.
-localparam [3:0] RD_REG_DELAY = 4'h3; //2 also works here, but I'm concerned the timing might be marginal and break on some machines.
+localparam [3:0] RD_REG_DELAY = 4'h2; //3 causes some instability. This timing has a very narrow tolerance.
 localparam [3:0] WR_RAM_DELAY = 4'h2;
 localparam [3:0] WR_REG_DELAY = 4'h6;
 
