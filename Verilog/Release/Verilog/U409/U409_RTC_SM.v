@@ -40,7 +40,7 @@ module U409_RTC_SM (
     input RESETn, TSn, RTC_SPACE, 
 
     //Chip Enable
-    output reg RTC_ENn, RTC_TACK
+    output reg RTC_ENn, RTC_TACK_EN
 );
 
 
@@ -56,7 +56,7 @@ reg [3:0] RTC_STATE;
 always @(posedge CLK40) begin
     if (!RESETn) begin
         RTC_ENn <= 1;
-        RTC_TACK <= 0;
+        RTC_TACK_EN <= 0;
         RTC_STATE <= 4'h0;
         RTC_COUNTER <= 7'b0;
     end else begin
@@ -69,14 +69,14 @@ always @(posedge CLK40) begin
             end
             4'h1 : begin
                 if (RTC_COUNTER == RTC_CYCLE_COUNTER) begin
-                    RTC_TACK <= 1;
+                    RTC_TACK_EN <= 1;
                     RTC_STATE <= 4'h2;
                 end else begin
                     RTC_COUNTER ++;
                 end
             end
             4'h2 : begin
-                RTC_TACK <= 0;
+                RTC_TACK_EN <= 0;
                 RTC_STATE <= 4'h3;
             end
             4'h3 : begin

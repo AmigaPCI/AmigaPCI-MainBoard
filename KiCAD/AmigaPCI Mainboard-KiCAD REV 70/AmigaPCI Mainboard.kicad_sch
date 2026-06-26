@@ -1,0 +1,660 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "72453515-27fe-4336-91f3-e3c8054f7767")
+	(paper "USLedger")
+	(title_block
+		(title "AMIGA PCI")
+		(date "2026-06-06")
+		(rev "7.0")
+	)
+	(lib_symbols)
+	(text "100 = PCI BUS\n200 = CHIPSET\n300 = VIDEO\n500 = AUDIO\n600 = POWER\n700 = CHIPSET RAM\n800 = VOLTAGE SHIFTER\n900 = ATA"
+		(exclude_from_sim no)
+		(at 158.75 121.158 0)
+		(effects
+			(font
+				(size 3 3)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "03d6913e-0783-4f08-bd37-f7010da4e748")
+	)
+	(text "DESIGNED WITH KiCAD REV 8"
+		(exclude_from_sim no)
+		(at 21.59 260.35 0)
+		(effects
+			(font
+				(size 2 2)
+			)
+			(justify left bottom)
+		)
+		(uuid "15edd3ae-2f36-4266-b83b-a51bfc978075")
+	)
+	(text "BUDDY"
+		(exclude_from_sim no)
+		(at 156.21 209.55 0)
+		(effects
+			(font
+				(size 15 15)
+				(thickness 1.6)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+		(uuid "82c564f8-ce35-4e3e-8545-a15c252dc228")
+	)
+	(sheet
+		(at 76.708 185.166)
+		(size 32.258 11.176)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "10b6104c-0a7e-4860-aaff-28e08b9ff253")
+		(property "Sheetname" "PCI Bus Logic"
+			(at 76.708 184.4544 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "pci_bus_logic.kicad_sch"
+			(at 76.708 196.9266 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "16")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 40.64 100.33)
+		(size 31.75 16.51)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "14024e2c-eaac-4547-8875-4a8ac58b1720")
+		(property "Sheetname" "Chip RAM Controller"
+			(at 40.64 99.6184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "cpu.kicad_sch"
+			(at 40.64 118.1866 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 40.64 76.2)
+		(size 31.75 17.78)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "2b6a6f7b-f16f-448f-a082-ded618631c29")
+		(property "Sheetname" "Agnus Multiadapter"
+			(at 40.64 75.4884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Agnus-Multi.kicad_sch"
+			(at 40.64 94.742 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 123.19)
+		(size 33.02 15.24)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "34f2eda3-97b6-4f91-ad2d-01637d6f5405")
+		(property "Sheetname" "Video"
+			(at 76.2 122.4784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "video.kicad_sch"
+			(at 76.2 139.0146 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 40.64 146.05)
+		(size 31.75 13.97)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "3746f476-970c-4acb-b19d-33c43fff35fb")
+		(property "Sheetname" "Motorola Bus Logic"
+			(at 40.64 145.3384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "motorola_bus_logic.kicad_sch"
+			(at 40.64 161.7476 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "15")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 39.878 29.21)
+		(size 31.75 16.51)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "4cb777ef-2899-49f4-b38f-a0c07d84fa7d")
+		(property "Sheetname" "Power and Spares"
+			(at 39.878 28.4984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "power.kicad_sch"
+			(at 39.878 46.2996 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "17")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 76.2)
+		(size 33.02 17.78)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "60b2ee65-4978-4bd8-934d-67b9c15d34cc")
+		(property "Sheetname" "HID and User Ports"
+			(at 76.2 75.4884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "hid.kicad_sch"
+			(at 76.2 94.5646 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "12")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 29.21)
+		(size 33.02 16.51)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "62a07d55-3759-49a3-8a3f-631cb4902a24")
+		(property "Sheetname" "Master Control"
+			(at 76.2 28.4984 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "bcontroller.kicad_sch"
+			(at 76.2 46.2846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 40.64 185.42)
+		(size 31.75 11.43)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "64185471-b9ae-4a50-a046-7157e86a04d0")
+		(property "Sheetname" "Floppy and Parallel"
+			(at 40.64 184.7084 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "floppy.kicad_sch"
+			(at 40.64 197.4346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "9")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 40.64 166.37)
+		(size 31.75 13.97)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "70231775-58c2-469a-996a-fc3c3a4a8de1")
+		(property "Sheetname" "Serial"
+			(at 40.64 165.6584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "serial.kicad_sch"
+			(at 40.64 180.9246 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "10")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 100.33)
+		(size 33.02 16.51)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "71ea5834-c2f1-44b0-9a09-0538600b01fd")
+		(property "Sheetname" "Audio"
+			(at 76.2 99.6184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "audio.kicad_sch"
+			(at 76.2 117.4246 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "8")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 53.34)
+		(size 33.02 16.51)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "7a35a97e-5686-44dd-976e-0306b0eb5ef2")
+		(property "Sheetname" "ATA Interface"
+			(at 76.2 52.6284 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "IDE.kicad_sch"
+			(at 76.2 70.4346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "11")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 40.132 53.086)
+		(size 31.75 16.51)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "c23015fc-f40a-4f75-aa79-1dfe37c2fc2e")
+		(property "Sheetname" "PCI Bus"
+			(at 40.132 52.3744 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "pcibus.kicad_sch"
+			(at 40.132 70.8156 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "13")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 40.64 123.19)
+		(size 31.75 15.24)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "c71cba2c-aa10-44ea-a37d-abe4b67b6d89")
+		(property "Sheetname" "PCI Bridge"
+			(at 40.64 122.4784 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "pci-bridge.kicad_sch"
+			(at 40.64 139.5226 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "14")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 166.37)
+		(size 33.02 13.97)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "d671396a-959f-409b-8612-87cb620c51cb")
+		(property "Sheetname" "Clocks, ROM, USB"
+			(at 76.2 165.6584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "clocks.kicad_sch"
+			(at 76.2 180.9246 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "6")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 76.2 146.05)
+		(size 33.02 13.97)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "f63de3eb-8614-4bac-88f2-650f5bad2338")
+		(property "Sheetname" "Chip Memory"
+			(at 76.2 145.3384 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "chip_memory.kicad_sch"
+			(at 76.2 161.798 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "AmigaPCI Mainboard"
+				(path "/72453515-27fe-4336-91f3-e3c8054f7767"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

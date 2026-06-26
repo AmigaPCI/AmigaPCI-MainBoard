@@ -40,7 +40,8 @@ module U110_ATA (
     output reg ATA_TACK, ATA_LATCH,
 
     //ATA Addresses
-    input ATA_ENn, PPIO, SPIO, PCS1 , PCS0, SCS1, SCS0,
+    input ATA_ENn, PCS1 , PCS0, SCS1, SCS0,
+    input ATA_J901, ATA_J902, ATA_J903,
 
     //ATA Chip Selects
     output CS0_PRIn, CS1_PRIn, CS0_SECn, CS1_SECn,
@@ -52,6 +53,20 @@ module U110_ATA (
  // ATA TIMING PARAMETERS //
 ///////////////////////////
 
+//Jumper Decoder
+//Primary Secondary J901 J902 J903
+//--------------------------------
+// PIO4    PIO4     OPEN OPEN OPEN
+// PIO4    PIO2     OPEN OPEN SHRT
+// PIO2    PIO4     OPEN SHRT OPEN
+// PIO2    PIO2     OPEN SHRT SHRT
+// Rest are reserved
+
+//------ Set the PIO Modes ------
+wire PPIO = (ATA_J902); //Primary Port
+wire SPIO = (ATA_J903); //Secondary Port
+
+//------ Load the PIO timings ------
 //T1 IS THE TIME AFTER ADDRESS IS VALID THAT WE ASSERT _DIOR/_DIOW
 //T2 IS THE TIME AFTER ASSERTION OF _DIOR/_DIOW THAT READ DATA IS VALID OR WRITE DATA CAN BE LATCHED.
 //T0 IS THE TOTAL CYCLE TIME.
@@ -71,13 +86,13 @@ module U110_ATA (
 //localparam M0_T2 = 8'd12; //290ns
 //localparam M0_T0 = 8'd24; //600ns
 
-localparam M2_T1 = 4'd1; //30ns
-localparam M2_T2 = 4'd5; //100ns
-localparam M2_T0 = 4'd9; //240ns
+localparam M2_T1 = 4'd1; //30ns  1
+localparam M2_T2 = 4'd5; //100ns 5
+localparam M2_T0 = 4'd9; //240ns 9
 
-localparam M4_T1 = 4'd0; //25ns
-localparam M4_T2 = 4'd3; //70ns
-localparam M4_T0 = 4'd5; //120ns
+localparam M4_T1 = 4'd0; //25ns  0
+localparam M4_T2 = 4'd3; //70ns  3
+localparam M4_T0 = 4'd5; //120ns 5
 
 wire CS_PRIMARY   = (!CS0_PRIn || !CS1_PRIn);
 wire CS_SECONDARY = (!CS0_SECn || !CS1_SECn);
@@ -115,7 +130,8 @@ assign DIOW_SECn = !(RW_EN &&  WRITE_CYCLE && S_CYCLE);
 reg P_CYCLE, S_CYCLE, RW_EN, WRITE_CYCLE, ATA_PENDING;
 reg [3:0] CYCLE_COUNT;
 
-always @(posedge CLK40) begin
+//always @(posedge CLK40) begin
+always @(negedge CLK40) begin
     if (!RESETn) begin        
         ATA_TACK    <= 0;
         WRITE_CYCLE <= 0;
@@ -160,7 +176,8 @@ always @(posedge CLK40) begin
                 CYCLE_COUNT <= 4'h1;
                 P_CYCLE <= CS_PRIMARY;
                 S_CYCLE <= CS_SECONDARY;
-                RW_EN <= ((CS_PRIMARY && P_T1 == 4'h0) || (CS_SECONDARY && S_T1 == 4'h0));
+                RW_EN <= ((CS_PRIMARY && P_T1 == 4'h0) || (CS_SECONDARY && S_T1 == 4'h0)); //Looks redundant
+                //RW_EN <= (!T1_ACTIVE); //Better?
             end
 
         end

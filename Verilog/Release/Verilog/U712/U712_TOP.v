@@ -22,7 +22,7 @@ Module Name: U712_TOP
 Project Name: AmigaPCI
 Target Devices: iCE40-HX4K-TQ144
 
-Description: U712 AMIGA PCI FPGA. Provides MC68000 compatable cycles for chip ram and chip set register access.
+Description: U712 AMIGA PCI REV 7.x FPGA. Provides MC68000 compatable cycles for chip ram and chip set register access.
 
 See individual modules for revision history.
 
@@ -35,17 +35,17 @@ module U712_TOP
 
 (
     //CLOCKS
-    input CLK40_IN, CLK7, C1, C3, RESETn,
-    output CLK40B_OUT, CLK40C_OUT, CLK40D_OUT, CLKRAM,
+    input CLK40_IN, CLK7, CDAC, C1, C3, RESETn,
+    output CLK40B_OUT, CLK40C_OUT, CLK40D_OUT, CLK40n_OUT, CLKRAM,
 
     //AGNUS
     input DBRn, RAMSPACEn, REGSPACEn, AWEn, CASLn, CASUn, RAS1n, RAS0n, AGNUS_REV,
     input [9:0] DRA,
-    output DRD_ENn, DRD_DIR, REGENn, RAMENn, UDSn, LDSn, ASn, BLSn, PRWn, VBENn, SAB_LATCH_EN, SAB_LATCH_CLK,
+    output DRD_ENn, DRD_DIR, REGENn, RAMENn, UDSn, LDSn, ASn, BLSn, PRnW, VBENn,
 
     //CYCLE START/TERMINATION
     input RnW, TSn,
-    output TACKn, TCIn, TBIn,
+    output TACKn,
 
     //BYTE ENABLES
     input [1:0] A, SIZ,
@@ -66,11 +66,10 @@ module U712_TOP
 ///////////////////
 
 wire
-    AGNUS_TACK,
     UDS,
     LDS,
     REG_CYCLE,
-    REG_WRITE_CYCLE,
+    AGNUS_WRITE_CYCLE,
     CPU_CYCLE,
     DMA_CYCLE,
     CLK40_PLL,
@@ -83,61 +82,51 @@ wire CLK40_PAD = CLK40_IN;
 // OUTPUT WIRES //
 /////////////////
 
-assign DRD_ENn = !(REG_CYCLE || DMA_CYCLE);
-assign DRD_DIR = !((REG_CYCLE && !REG_WRITE_CYCLE) || (DMA_CYCLE && DMA_WRITE_CYCLE)); //REG READS & DMA WRITES = 0, REG WRITES & DMA READS = 1
+assign DRD_ENn = ~(REG_CYCLE || DMA_CYCLE);
+assign DRD_DIR = ~((REG_CYCLE  && !AGNUS_WRITE_CYCLE) || (DMA_CYCLE && DMA_WRITE_CYCLE)); //REGESTER READS & DMA WRITES = 0, REG WRITES & DMA READS = 1
+
 assign CLK40B_OUT = !CLK40_PLL;
 assign CLK40C_OUT = !CLK40_PLL;
 assign CLK40D_OUT = !CLK40_PLL;
+assign CLK40n_OUT =  CLK40_PLL;
 assign CLKRAM     = !CLK40_PLL;
 
 //////////////////////////
 // AGNUS STATE MACHINE //
 ////////////////////////
 
-U712_AGNUS_SM U712_AGNUS_SM
+U712_AGNUS_CYCLE U712_AGNUS_CYCLE
 (
-    //input
-        .CLK40 (CLK40),
-        .C1 (C1),
-        .C3 (C3),
-        .RESETn (RESETn),
-        .RnW (RnW),
-        .DBRn (DBRn),
-        .RAMSPACEn (RAMSPACEn),
-        .REGSPACEn (REGSPACEn),
-        .TSn (TSn),
-        .UDS (UDS),
-        .LDS (LDS),
+    //Clocks
+    .CLK40 (CLK40),
+    .CLK7 (CLK7),
+    .CDAC (CDAC),
+    .C1 (C1),
+    .C3 (C3),
 
-    //output
-        .REG_CYCLE (REG_CYCLE),
-        .REG_WRITE_CYCLE (REG_WRITE_CYCLE),
-        .REGENn (REGENn),
-        .RAMENn (RAMENn),
-        .UDSn (UDSn),
-        .LDSn (LDSn),
-        .ASn (ASn),
-        .BLSn (BLSn),
-        .PRWn (PRWn),
-        .VBENn (VBENn),
-        .AGNUS_TACK (AGNUS_TACK)
-);
+    //Inputs
+    .RESETn (RESETn),
+    .TSn (TSn),
+    .RnW (RnW),
+    .REGSPACEn (REGSPACEn),
+    .RAMSPACEn (RAMSPACEn),
+    .DBRn (DBRn),
+    .UDS (UDS),
+    .LDS (LDS),
 
-////////////////////////
-// CYCLE TERMINATION //
-//////////////////////
+    //Outputs
+    .TACKn (TACKn),
+    .VBENn (VBENn),
+    .ASn (ASn),
+    .UDSn (UDSn),
+    .LDSn (LDSn),
+    .PRnW (PRnW),
+    .REGENn (REGENn), 
+    .RAMENn (RAMENn),
+    .BLSn (BLSn),
+    .REG_CYCLE (REG_CYCLE),
+    .AGNUS_WRITE_CYCLE (AGNUS_WRITE_CYCLE)
 
-U712_CYCLE_TERMINATION U712_CYCLE_TERMINATION
-(
-    //input
-        .CLK40 (CLK40),
-        .RESETn (RESETn),
-        .AGNUS_TACK (AGNUS_TACK),
-
-    //output
-        .TACKn (TACKn),
-        .TCIn (TCIn),
-        .TBIn (TBIn) 
 );
 
 ///////////////////
@@ -199,8 +188,6 @@ U712_CHIP_RAM_SM U712_CHIP_RAM_SM
     .CMA (CMA),
     .DB_ENn (DB_ENn),
     .DB_DIR (DB_DIR),
-    .SAB_LATCH_EN (SAB_LATCH_EN),
-    .SAB_LATCH_CLK (SAB_LATCH_CLK),
     .CPU_CYCLE (CPU_CYCLE),
     .DMA_CYCLE (DMA_CYCLE),
     .WRITE_CYCLE (DMA_WRITE_CYCLE)
@@ -222,12 +209,17 @@ assign ATA_AB = ATA_A;
 //WE DISTRIBUTE THE CLOCKS FROM THE PLL TO OTHER DEVICES ON THE AMIGAPCI. SINCE THIS PLL INVERTS THE CLOCK SIGNAL,
 //WE PHASE MATCH IT BEFORE PUTTING THE SIGNAL OUT.
 
+APCI_U712_4040_pll APCI_U712_4040_pll_inst(.PACKAGEPIN(CLK40_PAD),
+                                           .PLLOUTCORE(),
+                                           .PLLOUTGLOBAL(CLK40_PLL),
+                                           .RESET(1'b1));
+
 //Effect of FDA_FEEDBACK value
 //0  = Almost exact peak match
 //7  = ~2ns early peak
 //15 = ~4ns early peak
 
-SB_PLL40_CORE #(
+/*SB_PLL40_CORE #(
     .DIVR (4'b0000),
     .DIVF (7'b0000000),
     .DIVQ (3'b100),
@@ -250,6 +242,6 @@ SB_PLL40_CORE #(
     .SDI               (1'b0),
     .SCLK              (1'b0),
     .LATCHINPUTVALUE   (1'b0)
-);
+);*/
 
 endmodule

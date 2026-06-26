@@ -1,0 +1,78 @@
+Running in Lattice mode
+
+
+Starting:    C:\lscc\iCEcube2.2020.12\synpbase\bin64\mbin\synbatch.exe
+Install:     C:\lscc\iCEcube2.2020.12\synpbase
+Hostname:    JASON-LAB
+Date:        Sun Apr 12 20:59:02 2026
+Version:     L-2016.09L+ice40
+
+Arguments:   -product synplify_pro -batch APCI_U109_syn.prj
+ProductType: synplify_pro
+
+
+
+
+
+log file: "D:\AmigaPCI\U109\APCI_U109\APCI_U109_Implmnt\APCI_U109.srr"
+Running: APCI_U109_Implmnt in foreground
+
+Running APCI_U109_syn|APCI_U109_Implmnt
+
+Running: compile (Compile) on APCI_U109_syn|APCI_U109_Implmnt
+# Sun Apr 12 20:59:02 2026
+
+Running: compile_flow (Compile Process) on APCI_U109_syn|APCI_U109_Implmnt
+# Sun Apr 12 20:59:02 2026
+
+Running: compiler (Compile Input) on APCI_U109_syn|APCI_U109_Implmnt
+# Sun Apr 12 20:59:02 2026
+Copied D:\AmigaPCI\U109\APCI_U109\APCI_U109_Implmnt\synwork\APCI_U109_comp.srs to D:\AmigaPCI\U109\APCI_U109\APCI_U109_Implmnt\APCI_U109.srs
+
+compiler completed
+# Sun Apr 12 20:59:03 2026
+
+Return Code: 0
+Run Time:00h:00m:01s
+
+Running: multi_srs_gen (Multi-srs Generator) on APCI_U109_syn|APCI_U109_Implmnt
+# Sun Apr 12 20:59:03 2026
+
+multi_srs_gen completed
+# Sun Apr 12 20:59:03 2026
+
+Return Code: 0
+Run Time:00h:00m:00s
+Copied D:\AmigaPCI\U109\APCI_U109\APCI_U109_Implmnt\synwork\APCI_U109_mult.srs to D:\AmigaPCI\U109\APCI_U109\APCI_U109_Implmnt\APCI_U109.srs
+Complete: Compile Process on APCI_U109_syn|APCI_U109_Implmnt
+
+Running: premap (Pre-mapping) on APCI_U109_syn|APCI_U109_Implmnt
+# Sun Apr 12 20:59:03 2026
+
+premap completed with warnings
+# Sun Apr 12 20:59:04 2026
+
+Return Code: 1
+Run Time:00h:00m:01s
+Complete: Compile on APCI_U109_syn|APCI_U109_Implmnt
+
+Running: map (Map) on APCI_U109_syn|APCI_U109_Implmnt
+# Sun Apr 12 20:59:04 2026
+License granted for 4 parallel jobs
+
+Running: fpga_mapper (Map & Optimize) on APCI_U109_syn|APCI_U109_Implmnt
+# Sun Apr 12 20:59:04 2026
+Copied D:\AmigaPCI\U109\APCI_U109\APCI_U109_Implmnt\synwork\APCI_U109_m.srm to D:\AmigaPCI\U109\APCI_U109\APCI_U109_Implmnt\APCI_U109.srm
+
+fpga_mapper completed with warnings
+# Sun Apr 12 20:59:07 2026
+
+Return Code: 1
+Run Time:00h:00m:03s
+Complete: Map on APCI_U109_syn|APCI_U109_Implmnt
+Complete: Logic Synthesis on APCI_U109_syn|APCI_U109_Implmnt
+
+exit status=0
+
+exit status=0
+

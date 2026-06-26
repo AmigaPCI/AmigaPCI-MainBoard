@@ -1,0 +1,3683 @@
+{
+  "board": {
+    "3dviewports": [],
+    "design_settings": {
+      "defaults": {
+        "apply_defaults_to_fp_fields": false,
+        "apply_defaults_to_fp_shapes": false,
+        "apply_defaults_to_fp_text": false,
+        "board_outline_line_width": 0.1,
+        "copper_line_width": 0.2,
+        "copper_text_italic": false,
+        "copper_text_size_h": 1.5,
+        "copper_text_size_v": 1.5,
+        "copper_text_thickness": 0.3,
+        "copper_text_upright": false,
+        "courtyard_line_width": 0.05,
+        "dimension_precision": 4,
+        "dimension_units": 3,
+        "dimensions": {
+          "arrow_length": 1270000,
+          "extension_offset": 500000,
+          "keep_text_aligned": true,
+          "suppress_zeroes": false,
+          "text_position": 0,
+          "units_format": 1
+        },
+        "fab_line_width": 0.1,
+        "fab_text_italic": false,
+        "fab_text_size_h": 1.0,
+        "fab_text_size_v": 1.0,
+        "fab_text_thickness": 0.15,
+        "fab_text_upright": false,
+        "other_line_width": 0.15,
+        "other_text_italic": false,
+        "other_text_size_h": 1.0,
+        "other_text_size_v": 1.0,
+        "other_text_thickness": 0.15,
+        "other_text_upright": false,
+        "pads": {
+          "drill": 0.0,
+          "height": 0.3,
+          "width": 1.475
+        },
+        "silk_line_width": 0.15,
+        "silk_text_italic": false,
+        "silk_text_size_h": 1.0,
+        "silk_text_size_v": 1.0,
+        "silk_text_thickness": 0.15,
+        "silk_text_upright": false,
+        "zones": {
+          "45_degree_only": false,
+          "min_clearance": 0.25
+        }
+      },
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.0,
+          "via_gap": 0.0,
+          "width": 0.0
+        }
+      ],
+      "drc_exclusions": [],
+      "meta": {
+        "version": 2
+      },
+      "rule_severities": {
+        "annular_width": "error",
+        "clearance": "error",
+        "connection_width": "warning",
+        "copper_edge_clearance": "error",
+        "copper_sliver": "warning",
+        "courtyards_overlap": "error",
+        "diff_pair_gap_out_of_range": "error",
+        "diff_pair_uncoupled_length_too_long": "error",
+        "drill_out_of_range": "error",
+        "duplicate_footprints": "warning",
+        "extra_footprint": "warning",
+        "footprint": "error",
+        "footprint_symbol_mismatch": "warning",
+        "footprint_type_mismatch": "error",
+        "hole_clearance": "error",
+        "hole_near_hole": "error",
+        "holes_co_located": "warning",
+        "invalid_outline": "error",
+        "isolated_copper": "warning",
+        "item_on_disabled_layer": "error",
+        "items_not_allowed": "error",
+        "length_out_of_range": "error",
+        "lib_footprint_issues": "warning",
+        "lib_footprint_mismatch": "warning",
+        "malformed_courtyard": "error",
+        "microvia_drill_out_of_range": "error",
+        "missing_courtyard": "ignore",
+        "missing_footprint": "warning",
+        "net_conflict": "warning",
+        "npth_inside_courtyard": "ignore",
+        "padstack": "error",
+        "pth_inside_courtyard": "ignore",
+        "shorting_items": "error",
+        "silk_edge_clearance": "warning",
+        "silk_over_copper": "warning",
+        "silk_overlap": "warning",
+        "skew_out_of_range": "error",
+        "solder_mask_bridge": "error",
+        "starved_thermal": "error",
+        "text_height": "warning",
+        "text_thickness": "warning",
+        "through_hole_pad_without_hole": "error",
+        "too_many_vias": "error",
+        "track_dangling": "warning",
+        "track_width": "error",
+        "tracks_crossing": "error",
+        "unconnected_items": "error",
+        "unresolved_variable": "error",
+        "via_dangling": "warning",
+        "zones_intersect": "error"
+      },
+      "rules": {
+        "allow_blind_buried_vias": false,
+        "allow_microvias": false,
+        "max_error": 0.005,
+        "min_clearance": 0.1,
+        "min_connection": 0.0,
+        "min_copper_edge_clearance": 0.0,
+        "min_hole_clearance": 0.254,
+        "min_hole_to_hole": 0.25,
+        "min_microvia_diameter": 0.2,
+        "min_microvia_drill": 0.1,
+        "min_resolved_spokes": 1,
+        "min_silk_clearance": 0.0,
+        "min_text_height": 0.8,
+        "min_text_thickness": 0.08,
+        "min_through_hole_diameter": 0.2,
+        "min_track_width": 0.1,
+        "min_via_annular_width": 0.13,
+        "min_via_diameter": 0.4,
+        "solder_mask_clearance": 0.0,
+        "solder_mask_min_width": 0.0,
+        "solder_mask_to_copper_clearance": 0.005,
+        "use_height_for_length_calcs": true
+      },
+      "teardrop_options": [
+        {
+          "td_onpadsmd": true,
+          "td_onroundshapesonly": false,
+          "td_ontrackend": false,
+          "td_onviapad": true
+        }
+      ],
+      "teardrop_parameters": [
+        {
+          "td_allow_use_two_tracks": false,
+          "td_curve_segcount": 0,
+          "td_height_ratio": 1.0,
+          "td_length_ratio": 0.5,
+          "td_maxheight": 2.0,
+          "td_maxlen": 1.0,
+          "td_on_pad_in_zone": false,
+          "td_target_name": "td_round_shape",
+          "td_width_to_size_filter_ratio": 0.9
+        },
+        {
+          "td_allow_use_two_tracks": false,
+          "td_curve_segcount": 0,
+          "td_height_ratio": 1.0,
+          "td_length_ratio": 0.5,
+          "td_maxheight": 2.0,
+          "td_maxlen": 1.0,
+          "td_on_pad_in_zone": false,
+          "td_target_name": "td_rect_shape",
+          "td_width_to_size_filter_ratio": 0.9
+        },
+        {
+          "td_allow_use_two_tracks": false,
+          "td_curve_segcount": 0,
+          "td_height_ratio": 1.0,
+          "td_length_ratio": 0.5,
+          "td_maxheight": 2.0,
+          "td_maxlen": 1.0,
+          "td_on_pad_in_zone": false,
+          "td_target_name": "td_track_end",
+          "td_width_to_size_filter_ratio": 0.9
+        }
+      ],
+      "track_widths": [
+        0.0,
+        0.11,
+        0.15,
+        0.2,
+        0.3,
+        0.5,
+        1.0,
+        1.5,
+        2.0,
+        3.0
+      ],
+      "tuning_pattern_settings": {
+        "diff_pair_defaults": {
+          "corner_radius_percentage": 80,
+          "corner_style": 1,
+          "max_amplitude": 1.0,
+          "min_amplitude": 0.2,
+          "single_sided": false,
+          "spacing": 1.0
+        },
+        "diff_pair_skew_defaults": {
+          "corner_radius_percentage": 80,
+          "corner_style": 1,
+          "max_amplitude": 1.0,
+          "min_amplitude": 0.2,
+          "single_sided": false,
+          "spacing": 0.6
+        },
+        "single_track_defaults": {
+          "corner_radius_percentage": 80,
+          "corner_style": 1,
+          "max_amplitude": 1.0,
+          "min_amplitude": 0.2,
+          "single_sided": false,
+          "spacing": 0.6
+        }
+      },
+      "via_dimensions": [
+        {
+          "diameter": 0.0,
+          "drill": 0.0
+        },
+        {
+          "diameter": 0.6,
+          "drill": 0.3
+        },
+        {
+          "diameter": 0.8,
+          "drill": 0.4
+        },
+        {
+          "diameter": 0.9,
+          "drill": 0.5
+        }
+      ],
+      "zones_allow_external_fillets": false,
+      "zones_use_no_outline": true
+    },
+    "ipc2581": {
+      "dist": "",
+      "distpn": "",
+      "internal_id": "",
+      "mfg": "",
+      "mpn": ""
+    },
+    "layer_presets": [],
+    "viewports": []
+  },
+  "boards": [],
+  "cvpcb": {
+    "equivalence_files": []
+  },
+  "erc": {
+    "erc_exclusions": [],
+    "meta": {
+      "version": 0
+    },
+    "pin_map": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        2,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        2,
+        2,
+        2,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        2
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        1,
+        1,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        2,
+        1,
+        2,
+        0,
+        0,
+        1,
+        0,
+        2,
+        2,
+        2,
+        2
+      ],
+      [
+        0,
+        2,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        2,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        2,
+        0,
+        0,
+        2
+      ],
+      [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    ],
+    "rule_severities": {
+      "bus_definition_conflict": "error",
+      "bus_entry_needed": "error",
+      "bus_to_bus_conflict": "error",
+      "bus_to_net_conflict": "error",
+      "conflicting_netclasses": "error",
+      "different_unit_footprint": "error",
+      "different_unit_net": "error",
+      "duplicate_reference": "error",
+      "duplicate_sheet_names": "error",
+      "endpoint_off_grid": "warning",
+      "extra_units": "error",
+      "global_label_dangling": "warning",
+      "hier_label_mismatch": "error",
+      "label_dangling": "error",
+      "lib_symbol_issues": "warning",
+      "missing_bidi_pin": "warning",
+      "missing_input_pin": "warning",
+      "missing_power_pin": "error",
+      "missing_unit": "warning",
+      "multiple_net_names": "warning",
+      "net_not_bus_member": "warning",
+      "no_connect_connected": "warning",
+      "no_connect_dangling": "warning",
+      "pin_not_connected": "error",
+      "pin_not_driven": "error",
+      "pin_to_pin": "error",
+      "power_pin_not_driven": "error",
+      "similar_labels": "warning",
+      "simulation_model_issue": "error",
+      "unannotated": "error",
+      "unit_value_mismatch": "error",
+      "unresolved_variable": "error",
+      "wire_dangling": "error"
+    }
+  },
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "meta": {
+    "filename": "AmigaPCI Mainboard.kicad_pro",
+    "version": 1
+  },
+  "net_settings": {
+    "classes": [
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Default",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.15,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Narrow",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.15,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.1,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "PCI",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.13,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "PWR",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.5,
+        "via_diameter": 0.8,
+        "via_drill": 0.4,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Power",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.3,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.1,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "SDRAM",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.11,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Standard",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.2,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      }
+    ],
+    "meta": {
+      "version": 3
+    },
+    "net_colors": null,
+    "netclass_assignments": null,
+    "netclass_patterns": [
+      {
+        "netclass": "PCI",
+        "pattern": "AD*"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_CBE*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bus/_ACK64"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_FRAME"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_PAR"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_PERR"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_SYSERR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bus/_REQ64"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/SMBDAT4"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/SMBCLK4"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_STOP"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_DEVSEL"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_TRDY"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_IRDY"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/IDSEL4"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSREQ4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BUSGRANT4"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSREQ3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BUSGRANT3"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_RSTBUS"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_INTD"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_INTB"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_INTA"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_INTC"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/TDI"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/TMS"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_LOCK"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/IDSEL3"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/IDSEL0"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/IDSEL1"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/IDSEL2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Forward"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Back"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Left"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Right"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/PotY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/PotX"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Fire"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/LSCLKOUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/LSCLKIN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/HSCLKOUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/HSCLKIN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "D*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "A*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RTCWR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RTCRD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_HIDEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PotX0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Fire0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PotY0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Right0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Left0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Back0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Forward0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/R1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/PX1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/PY1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/R0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/B0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/PX0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/PY0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/FIR0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/F1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/FIR1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/FOR0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/B1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/L0"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "+5V"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/L1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_FIR0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Forward1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_FIR1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Back1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Left1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_Right1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PotY1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PotX1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PBUSY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPOUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PSEL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/DSR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/CTS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/CD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/RTS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/DTR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_STEP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "DIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SEL0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SEL1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SEL2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_MTR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BHS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/TMS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/TCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/TDI"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "GND"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/TDO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "KBData"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_KBCLK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_KBRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_EN1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "A8"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "A9"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "A10"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SIDE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_RDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_DRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_DCHNG"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_PCRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INDEX"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/SEL0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/SEL1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_INUSE1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_INUSE0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_MTROD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_CHNG"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_WPROT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_TRK0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DKRD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "OVL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LED"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_DKWEB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DKWD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_DKWDB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_DF1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD5"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD6"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPD7"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PSTROBE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TBASE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INT2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CIA0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PACK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLKCIA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/SEL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/POUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/BUSY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/ACK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD7"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD6"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD5"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/INIT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/PD0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/STROBE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/LINEFEED"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/CTS-IN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/_TxD-OUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/RTS-OUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/DTR-OUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/_RxD-IN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TxD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/CD-IN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/DSR-IN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RxD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/RI-OUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/SCD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/SDTR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/SDSR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/SCTS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/SRTS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/SRxD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Serial/STxD"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TM2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TM1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TM0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TT1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TT0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "R_W"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "SIZ0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "SIZ1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TIP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TEA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TCI"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TBI"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_AVEC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IPL2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IPL1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IPL0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RSTOUT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CPURST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/_MDIS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/_CDIS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BG"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/SC1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/SC0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LOCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LOCKE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "DRD*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "RGA*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "BR_W"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UDB*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CMA*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/IDE Interface/_ACTIVITY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/IDE Interface/_ACTB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/IDE Interface/_ACTA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RESET"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CIA1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INT6"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INT3"
+      },
+      {
+        "netclass": "PWR",
+        "pattern": "AUDIO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "C3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "C1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/MH0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/MV1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/MH1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/MV0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "M0V"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "M1H"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "M1V"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "M0H"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/BURST"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "AUDOUT"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "AUDIN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_VSYNC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/BLU3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/BLU0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/RED3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/RED2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/RED1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/RED0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/BLU1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/BLU2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/GRN0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/GRN1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/GRN2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/GRN3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CSYNC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/PIXELSW"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/G3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/G2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/G1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/G0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/B0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/B1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/B2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/B3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/_COMPSYNC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/R0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/R1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/R2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/R3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_HSYNC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/SYNC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/COMPVID"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TICK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/BUR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/PSW"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "IORDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IDEHEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IDELATCH"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BLS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DBR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_REGEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_AS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_AWE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RAMEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/A20_XCLK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/CDAC_XCLKEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/7MHz_CDAC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/CCKQ_7MHz"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/VBB_CCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/DRA8"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/CCK_CCKQ"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/LDS_DRA8"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/CASL_UDS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/CASU_CASL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/UDS_LDS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/DRA9_CASU"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RAS1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RAS0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CASU"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CASL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CDAC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CUUBE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CWE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CCAS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CRCS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CLMBE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CRAS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB15"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_VBEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DBEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IDELEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_UDS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LDS"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "/IDE Interface/_RSTIDE"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_UMBE"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_UUBE"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_LMBE"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_LLBE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DIOWB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DIORB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CS1B"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CS0B"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DIOWA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DIORA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CS1A"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CS0A"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RTSEL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_VC3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "VCDAC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Video/_C4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_MC1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_VC1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "C4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/7MHz"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_DKRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/_IORST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_XCLKEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "XCLK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IDEROMEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_ROMEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_UPA1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_UPA0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PARITY"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_PLOCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UPA1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UPA0"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "EMA*"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "EMD*"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_EMRAS"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_EM1CS"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_EM0CS"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_EMWE"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "_EMCAS"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "EMCLKE"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "CLK_RAM"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "BANK1"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "BANK0"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_RSTPCI"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSGRANT1"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSGRANT2"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSGRANT0"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSREQ0"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSREQ1"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_BUSREQ2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/IDE Interface/CLK28"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Board Controller/ULTRA_S"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Board Controller/ULTRA_P"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Board Controller/AUTOBOOT"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "PARITY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/DRA9"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IDEEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK7"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK80"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CONFIGED"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/_AVEC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/ULTRA_S"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/ULTRA_P"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/AUTOBOOT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TRISTATE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PIO_P0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PIO_P1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PIO_P2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PIO_S0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PIO_S1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PIO_S2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/_ARAMEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK40"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CCLKE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DRDEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "A20"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CUMBE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CLLBE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CPUSPACE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "SDA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "SCL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SYSTEMRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVD*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVR_W"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVDBR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVAWE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVCASU"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVCASL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA0-G"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA1-0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA2-1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA3-2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA4-3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA5-4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA6-5"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA7-6"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVDRA8-7"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVRAS0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVRAS1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB14"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB13"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB12"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB11"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB10"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB9"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB8"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB5"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB6"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip Memory/LDB7"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UDB7"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UDB4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UDB3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UDB2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "UDB1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CR_W"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "+3V3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/U712_SCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/U712_SDO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/U712_SS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/U712_SDI"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/U712_CRESET"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BTNRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TICK50"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "TICK60"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK6"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK20"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVSIZ0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVTIP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVTS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVBR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVLOCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVUPA1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVUPA0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA12"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA10"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA16"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA11"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA13"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA14"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/CPU/LVA8"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVA*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVAD*"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "IDSEL0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "IDSEL1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "IDSEL2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "IDSEL3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "IDSEL4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CONFIG_CYCLE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U109_SDO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U109_SDI"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U109_SCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U109_SS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U109_CRESET"
+      },
+      {
+        "netclass": "Standard",
+        "pattern": "CLKPCI2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/U409_SDI"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/U409_SDO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/U409_SCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/U409_SS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/U409_CRESET"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_REQ0"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_REQ2"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_REQ1"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_REQ4"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_REQ3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/IDE Interface/IRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCIINT"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVRESET"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IDEHREN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_IDEHWEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "IDEDIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PAR_DA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PHASEA_D"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CYCLE_ACTIVE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCI_DATA_DIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INT2B"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INT2A"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVCBE0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVCBE1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVDEVSEL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVCBE2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVCBE3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVIRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVTRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVFRAME"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVSTOP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVPLOCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVPERR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVPARITY"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_LVSYSERR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVBB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVSIZ1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVTM0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVTM1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVTT0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVTT1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVTM2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CIACS0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CIACS1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "RTCR_W"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U409_SDI"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U409_SCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U409_SDO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U409_CRESET"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/U409_SS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/J102"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/J101"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/J100"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/DIO"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_INTD"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_INTB"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_INTC"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_INTA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Floppy and Parallel/TICK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "RAMCLK"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_REQ4"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_REQ3"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_REQ1"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_REQ2"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_REQ0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RTCEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVCLK7"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVC3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVC1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RAMSPACE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_REGSPACE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CBANK0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CBANK1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/PCI_SPARE"
+      },
+      {
+        "netclass": "SDRAM",
+        "pattern": "EMA4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVOVL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Power and Spares/RSTBTN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "A2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "A3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "BUFDIS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CPUCONF"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVD31"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BUFEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_FRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LVLOCKE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/PCIR_W"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CONFIGEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCIR_W"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "ADLATCH"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "ALATCH"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCICYCLE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/EXTRA0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BURST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BREG"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/PAR"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_DEVSEL"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_TRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bus/_STOP"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_PERR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCIDIR"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_IRDY"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "/PCI Bus/_FRAME"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_CBE3"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_CBE2"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_CBE1"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "_CBE0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DSACK0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RSTBTN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Power and Spares/_BTNRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK40A"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK40B"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK40C"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK40D"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DSACK1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RESETB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_WEB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_WEA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_RESETA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "R_WA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CLK28"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/IDE Interface/INTRQP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/IDE Interface/INTRQS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "INTRP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "INTRS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip RAM Controller/U712_SDI"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip RAM Controller/U712_SCK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip RAM Controller/U712_SDO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip RAM Controller/U712_SS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Chip RAM Controller/U712_CRESET"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_LBEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "BUSDIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_TACK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PORTSIZE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/SWCLK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/NRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_STMRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/_STMRSTA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/USB5VEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "FANPWM"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "FANTACH"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/CONS_RX"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/CONS_TX"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/VMON1V2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/VMON-12"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/VMON12"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/VMON5"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/VMON3V3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/VMON5SB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/POWER_LED"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LATCHCLK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "DMALATCH"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Power and Spares/E_FANTACH"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Power and Spares/E_FANPWM"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/VBB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "R_WB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "R_WC"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "RESET"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "ATA_LED"
+      },
+      {
+        "netclass": "PCI",
+        "pattern": "PAR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_ADEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/GND_PAL_NTSC"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Agnus Multiadapter/ACLK"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_AWEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Power and Spares/_KBRSTH"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/DA16"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/DA17"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/DA18"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/DA19"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/J900"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/J901"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/Master Control/J902"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCIAT0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCIAT1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/ST1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/ST0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "ST0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "ST1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SLOT3"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SLOT2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SLOT1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SLOT0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PROMEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_SLOT4"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/ATA Interface/_ACTIVITY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PPIO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "SPIO"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "SCS1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "SCS0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCS1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCS0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "FBANK1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_FWREN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "FRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "FBANK0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_FRDEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_FEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/ATA Interface/_ACTB"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/ATA Interface/_ACTA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/ATA Interface/INTRQP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/ATA Interface/INTRQS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/ATA Interface/IRDY"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/SCL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/SDA"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_FWP"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "POW_SW"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCIAT2"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCI1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCI0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BPROEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BREGEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PR_W"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "LVAD29"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCIEND"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PTIP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCISTART"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCITIP"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/HID and User Ports/CLKCAL"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "RESET_BTN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "CDONE"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PARITYDIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCIRST"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "PCIBUFDIR"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_INTEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_BRIDGEEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_PCIEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_WLATCHFRAME"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/TP1"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "/PCI Bridge/TP0"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_CPUBUS"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_ADDRESSEN"
+      },
+      {
+        "netclass": "Narrow",
+        "pattern": "_DATARDY"
+      },
+      {
+        "netclass": "Default",
+        "pattern": "+VID"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/HID and User Ports/VBAT_STM"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "+3V3SB"
+      }
+    ]
+  },
+  "pcbnew": {
+    "last_paths": {
+      "gencad": "",
+      "idf": "",
+      "netlist": "",
+      "plot": "/home/jason/Documents/Gerbers/",
+      "pos_files": "/home/jason/Documents/AmigaPCI Mainboard-KiCAD REV 70/",
+      "specctra_dsn": "",
+      "step": "",
+      "svg": "",
+      "vrml": ""
+    },
+    "page_layout_descr_file": ""
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_export_filename": "/home/jason/Documents/GitHub/AmigaPCI-MainBoard/Gerber/Pick Place/AmigaPCI Mainboard.csv",
+    "bom_fmt_presets": [],
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "keep_line_breaks": false,
+      "keep_tabs": false,
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "ref_range_delimiter": "",
+      "string_delimiter": "\""
+    },
+    "bom_presets": [],
+    "bom_settings": {
+      "exclude_dnp": false,
+      "fields_ordered": [
+        {
+          "group_by": false,
+          "label": "Reference",
+          "name": "Reference",
+          "show": true
+        },
+        {
+          "group_by": true,
+          "label": "Value",
+          "name": "Value",
+          "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Datasheet",
+          "name": "Datasheet",
+          "show": false
+        },
+        {
+          "group_by": true,
+          "label": "Footprint",
+          "name": "Footprint",
+          "show": true
+        },
+        {
+          "group_by": false,
+          "label": "LCSC",
+          "name": "LCSC",
+          "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Qty",
+          "name": "${QUANTITY}",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "DNP",
+          "name": "${DNP}",
+          "show": true
+        },
+        {
+          "group_by": false,
+          "label": "#",
+          "name": "${ITEM_NUMBER}",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Availability",
+          "name": "Availability",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Field4",
+          "name": "Field4",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "MF",
+          "name": "MF",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "MP",
+          "name": "MP",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Package",
+          "name": "Package",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Part",
+          "name": "Part",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Part Number",
+          "name": "Part Number",
+          "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Price",
+          "name": "Price",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Volts",
+          "name": "Volts",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Wattage",
+          "name": "Wattage",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "pART",
+          "name": "pART",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Description",
+          "name": "Description",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "PartNumber",
+          "name": "PartNumber",
+          "show": true
+        }
+      ],
+      "filter_string": "",
+      "group_symbols": true,
+      "name": "",
+      "sort_asc": true,
+      "sort_field": "LCSC"
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {
+      "dashed_lines_dash_length_ratio": 12.0,
+      "dashed_lines_gap_length_ratio": 3.0,
+      "default_line_thickness": 6.0,
+      "default_text_size": 50.0,
+      "field_names": [],
+      "intersheets_ref_own_page": false,
+      "intersheets_ref_prefix": "",
+      "intersheets_ref_short": false,
+      "intersheets_ref_show": true,
+      "intersheets_ref_suffix": "",
+      "junction_size_choice": 3,
+      "label_size_ratio": 0.375,
+      "operating_point_overlay_i_precision": 3,
+      "operating_point_overlay_i_range": "~A",
+      "operating_point_overlay_v_precision": 3,
+      "operating_point_overlay_v_range": "~V",
+      "overbar_offset_ratio": 1.23,
+      "pin_symbol_size": 25.0,
+      "text_offset_ratio": 0.15
+    },
+    "legacy_lib_dir": "",
+    "legacy_lib_list": [],
+    "meta": {
+      "version": 1
+    },
+    "net_format_name": "",
+    "ngspice": {
+      "fix_include_paths": true,
+      "fix_passive_vals": false,
+      "meta": {
+        "version": 0
+      },
+      "model_mode": 0,
+      "workbook_filename": ""
+    },
+    "page_layout_descr_file": "",
+    "plot_directory": "/home/jason/Documents/GitHub/AmigaPCI-MainBoard/Schematic/",
+    "spice_adjust_passive_values": false,
+    "spice_current_sheet_as_root": false,
+    "spice_external_command": "spice \"%I\"",
+    "spice_model_current_sheet_as_root": true,
+    "spice_save_all_currents": false,
+    "spice_save_all_dissipations": false,
+    "spice_save_all_voltages": false,
+    "subpart_first_id": 65,
+    "subpart_id_separator": 0
+  },
+  "sheets": [
+    [
+      "72453515-27fe-4336-91f3-e3c8054f7767",
+      "Root"
+    ],
+    [
+      "14024e2c-eaac-4547-8875-4a8ac58b1720",
+      "Chip RAM Controller"
+    ],
+    [
+      "f63de3eb-8614-4bac-88f2-650f5bad2338",
+      "Chip Memory"
+    ],
+    [
+      "62a07d55-3759-49a3-8a3f-631cb4902a24",
+      "Master Control"
+    ],
+    [
+      "2b6a6f7b-f16f-448f-a082-ded618631c29",
+      "Agnus Multiadapter"
+    ],
+    [
+      "d671396a-959f-409b-8612-87cb620c51cb",
+      "Clocks, ROM, USB"
+    ],
+    [
+      "34f2eda3-97b6-4f91-ad2d-01637d6f5405",
+      "Video"
+    ],
+    [
+      "71ea5834-c2f1-44b0-9a09-0538600b01fd",
+      "Audio"
+    ],
+    [
+      "64185471-b9ae-4a50-a046-7157e86a04d0",
+      "Floppy and Parallel"
+    ],
+    [
+      "70231775-58c2-469a-996a-fc3c3a4a8de1",
+      "Serial"
+    ],
+    [
+      "7a35a97e-5686-44dd-976e-0306b0eb5ef2",
+      "ATA Interface"
+    ],
+    [
+      "60b2ee65-4978-4bd8-934d-67b9c15d34cc",
+      "HID and User Ports"
+    ],
+    [
+      "c23015fc-f40a-4f75-aa79-1dfe37c2fc2e",
+      "PCI Bus"
+    ],
+    [
+      "c71cba2c-aa10-44ea-a37d-abe4b67b6d89",
+      "PCI Bridge"
+    ],
+    [
+      "3746f476-970c-4acb-b19d-33c43fff35fb",
+      "Motorola Bus Logic"
+    ],
+    [
+      "10b6104c-0a7e-4860-aaff-28e08b9ff253",
+      "PCI Bus Logic"
+    ],
+    [
+      "4cb777ef-2899-49f4-b38f-a0c07d84fa7d",
+      "Power and Spares"
+    ]
+  ],
+  "text_variables": {}
+}

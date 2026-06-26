@@ -52,12 +52,8 @@ module U712_CHIP_RAM_SM
     output reg [10:0] CMA,
     
     //Buffers
-    output SAB_LATCH_EN, SAB_LATCH_CLK,
     output reg DB_ENn, DB_DIR, CPU_CYCLE, DMA_CYCLE, WRITE_CYCLE
 );
-
-assign SAB_LATCH_EN  = 0; //0=Real Time
-assign SAB_LATCH_CLK = 0;
 
 /////////////////
 // PARAMETERS //
