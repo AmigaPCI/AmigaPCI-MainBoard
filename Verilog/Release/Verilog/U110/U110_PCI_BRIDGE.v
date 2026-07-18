@@ -41,7 +41,7 @@ module U110_PCI_BRIDGE (
     input CPU_BUS_OWN,
     
 
-    output PARITY, PCI_TIPn, BB_EN, DMA_START, PPDMA,
+    output PARITY, PCI_TIPn, BB_EN, DMA_START, PPDMA, PCI_ENn,
     output reg DMA_WRITE_CYCLE, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn,
     output [1:0] A_LOW,
     output reg [1:0] SIZ_OUT,
@@ -58,6 +58,8 @@ module U110_PCI_BRIDGE (
 //assign TP0 = PCI_CYCLE_ACTIVE;
 //assign TP1 = DMA_PCI_CYCLE;
 //assign TP2 = BURST_CYCLE;
+
+assign PCI_ENn = 1'b1;
 
   ////////////////
  // PARAMETERS //

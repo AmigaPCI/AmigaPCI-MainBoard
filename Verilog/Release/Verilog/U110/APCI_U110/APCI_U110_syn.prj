@@ -5,12 +5,12 @@
 add_file -verilog -lib work "../U110_BUFFERS.v" 
 add_file -verilog -lib work "../U110_CYCLE_TERMINATION.v" 
 add_file -verilog -lib work "../U110_INTERRUPT.v" 
-add_file -verilog -lib work "../U110_TOP.v" 
 add_file -verilog -lib work "../U110_ATA.v" 
 add_file -verilog -lib work "../U110_PCI_BRIDGE.v" 
 add_file -verilog -lib work "../U110_ARBITER.v" 
 add_file -verilog -lib work "../U110_3366_pll.v" 
 add_file -verilog -lib work "../U110_4040_pll.v" 
+add_file -verilog -lib work "../U110_TOP.v" 
 add_file -constraint -lib work "../U110_TOP.sdc"
 #implementation: "APCI_U110_Implmnt"
 impl -add APCI_U110_Implmnt -type fpga

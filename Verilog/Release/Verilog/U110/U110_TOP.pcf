@@ -43,14 +43,14 @@ set_io TCIn      33
 set_io TBIn      34
 set_io TSn       21
 set_io RnW       80
-set_io TACKn     76
+set_io TACKn     75
 set_io BURSTn    81
 set_io DATA_DIR   9
 set_io PCIINTENn 62
 #set_io TT[0]      31
 #set_io TT[1]      32
 #set_io TEAn      10
-#set_io TACKn_OUT 76
+#set_io TACKn_OUT 75
 #set_io TACKn_IN  93
 
 #BUS ARBRITRATION
@@ -90,11 +90,11 @@ set_io PARITY_DA     83
 set_io PCI_CYCLEn    79
 set_io AD31          91
 set_io PCIINTn      117
-set_io LATCH_ADn     75 
+set_io LATCH_ADn     76
 set_io PCI_BUFF_ENn   7
 set_io IRDYn        139
 set_io PPDMA          8
-set_io PCIENn        26
+set_io PCI_ENn       26
 #set_io SYSERRn       1
 #set_io PERRn       143
 #set_io PLOCKn      142

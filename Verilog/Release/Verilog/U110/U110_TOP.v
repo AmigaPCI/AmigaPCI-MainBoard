@@ -39,7 +39,7 @@ module U110_TOP (
     input  RESETn, TSn,
     inout  RnW,
     inout  [1:0] SIZ,
-    output TCIn, TBIn, DATA_DIR, //TEAn, 
+    output TCIn, TBIn, DATA_DIR,
     output [1:0] A_LOW,
     inout  TACKn,   
     
@@ -53,7 +53,7 @@ module U110_TOP (
     //PCI 
     input  AD31, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, IRDYn,
     input  [2:0] PCIAT,    
-    output DEVSEL_OUTn, PCI_TIPn, PARITY, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn, PPDMA,
+    output DEVSEL_OUTn, PCI_TIPn, PARITY, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn, PPDMA, PCI_ENn,
     inout  DEVSELn, FRAMEn,
     inout  [3:0] CBE,
     
@@ -71,6 +71,7 @@ module U110_TOP (
 //assign TP1 = BRIDGE_ENn;
 //assign TP0 = PCI_TIPn;
 //assign TP2 = CPU_BUS_OWN;
+//assign TACKn_IN = 1'bz;
 
 ////////////////////////////
 // INTERNAL SIGNAL WIRES //
@@ -245,6 +246,7 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .BB_EN (BB_EN),
     .DMA_START (DMA_START),
     .PPDMA (PPDMA),
+    .PCI_ENn (PCI_ENn),
     .W_LATCH_ENn (W_LATCH_ENn),
     .LATCH_ADn (LATCH_ADn),
     .PCI_BUFF_ENn (PCI_BUFF_ENn),
