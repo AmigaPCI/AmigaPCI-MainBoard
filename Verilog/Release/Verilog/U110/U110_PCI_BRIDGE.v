@@ -41,8 +41,8 @@ module U110_PCI_BRIDGE (
     input CPU_BUS_OWN,
     
 
-    output PARITY, PCI_TIPn, BB_EN, DMA_START, PPDMA, PCI_ENn,
-    output reg DMA_WRITE_CYCLE, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn,
+    output PARITY, PCI_TIPn, BB_EN, DMA_START, PPDMA, PCI_BUFF_ENn,
+    output reg DMA_WRITE_CYCLE, W_LATCH_ENn, LATCH_ADn,
     output [1:0] A_LOW,
     output reg [1:0] SIZ_OUT,
 
@@ -58,8 +58,6 @@ module U110_PCI_BRIDGE (
 //assign TP0 = PCI_CYCLE_ACTIVE;
 //assign TP1 = DMA_PCI_CYCLE;
 //assign TP2 = BURST_CYCLE;
-
-assign PCI_ENn = 1'b1;
 
   ////////////////
  // PARAMETERS //
@@ -104,7 +102,8 @@ assign PCI2PCI_START =  (RESETn && !FRAMEn &&  AD31);
 // DMA to Ami  Bridge -> PCI     0
 // DMA to PCI  Bridge <- PCI     1
 
-assign PPDMA = (PCI_BUFF_ENn || PCI_CYCLE_ACTIVE);
+//assign PPDMA = (PCI_BUFF_ENn || PCI_CYCLE_ACTIVE);
+assign PPDMA = ~PCI_BUFF_ENn; //PCI_BUF_ENn = 1 when PCI <-> PCI DMA cycle.
 
   //////////////////
  // TRISTATE I/O //
@@ -477,7 +476,9 @@ end
 //disabling the AD buffers. We need to monitor the bus to know when 
 //this cycle type starts and ends.
 
-always @(posedge CLK33) begin
+assign PCI_BUFF_ENn = 1'b0;
+
+/*always @(posedge CLK33) begin
     if (!RESETn) begin
         PCI_BUFF_ENn <= 0;
     end else begin
@@ -489,7 +490,7 @@ always @(posedge CLK33) begin
             PCI_BUFF_ENn <= 0;
         end
     end
-end
+end*/
     
   ////////////
  // PARITY //

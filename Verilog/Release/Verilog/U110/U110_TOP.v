@@ -53,7 +53,7 @@ module U110_TOP (
     //PCI 
     input  AD31, PCI_CYCLEn, UUBEn, UMBEn, LMBEn, LLBEn, BRIDGE_ENn, PARITY_DA, IRDYn,
     input  [2:0] PCIAT,    
-    output DEVSEL_OUTn, PCI_TIPn, PARITY, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn, PPDMA, PCI_ENn,
+    output DEVSEL_OUTn, PCI_TIPn, PARITY, W_LATCH_ENn, LATCH_ADn, PCI_BUFF_ENn, PPDMA,
     inout  DEVSELn, FRAMEn,
     inout  [3:0] CBE,
     
@@ -246,7 +246,6 @@ U110_PCI_BRIDGE U110_PCI_BRIDGE (
     .BB_EN (BB_EN),
     .DMA_START (DMA_START),
     .PPDMA (PPDMA),
-    .PCI_ENn (PCI_ENn),
     .W_LATCH_ENn (W_LATCH_ENn),
     .LATCH_ADn (LATCH_ADn),
     .PCI_BUFF_ENn (PCI_BUFF_ENn),

@@ -94,7 +94,7 @@ set_io LATCH_ADn     76
 set_io PCI_BUFF_ENn   7
 set_io IRDYn        139
 set_io PPDMA          8
-set_io PCI_ENn       26
+#set_io PCI_ENn       26
 #set_io SYSERRn       1
 #set_io PERRn       143
 #set_io PLOCKn      142
