@@ -34,7 +34,7 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 
 module U712_AGNUS_CYCLE
 (
-    input CLK40, CLK7, CDAC, C1, C3,
+    input CLK40, CLK14, C1, C3,
 
     input RESETn, TSn, RnW, REGSPACEn, RAMSPACEn, DBRn, UDS, LDS,
 
@@ -43,7 +43,7 @@ module U712_AGNUS_CYCLE
 );
 
 //The 14MHz clock has a rising edge on every 7MHz edge.
-wire CLK14 = ~(CLK7 ^ CDAC); //XNOR
+//wire CLK14 = ~(CLK7 ^ CDAC); //XNOR
 
 //--- Detect Cycle Start ---
 wire AGNUS_SPACE = (!REGSPACEn || !RAMSPACEn);
@@ -162,7 +162,7 @@ assign VBENn     = ~(RAM_CYCLE || REG_CYCLE);
 localparam [1:0] TACK_IDLE  = 2'b00;
 localparam [1:0] TACK_ASST  = 2'b01;
 localparam [1:0] TACK_NEG   = 2'b10;
-localparam [1:0] TACK_RARM  = 2'b11;
+localparam [1:0] TACK_REARM  = 2'b11;
 localparam [3:0] RD_RAM_DELAY = 4'h4; //This can be made lesser if the CLKE signal is released sooner in the RAM FSM.
 localparam [3:0] RD_REG_DELAY = 4'h2; //3 causes some instability. This timing has a very narrow tolerance.
 localparam [3:0] WR_RAM_DELAY = 4'h2;
@@ -176,7 +176,8 @@ reg [1:0] TACK_STATE;
 reg [1:0] TACK_SYNC;
 reg [3:0] TACK_DELAY_COUNT;
 reg [3:0] TACK_DELAY;
-always @(negedge CLK40) begin
+//always @(negedge CLK40) begin
+always @(posedge CLK40) begin
     if (!RESETn) begin
         TACK_EN    <= 1'b0;
         TACK_OUT   <= 1'b1;
@@ -211,9 +212,9 @@ always @(negedge CLK40) begin
             end
             TACK_NEG : begin
                 TACK_OUT <= 1'b1;
-                TACK_STATE <= TACK_RARM;
+                TACK_STATE <= TACK_REARM;
             end
-            TACK_RARM : begin
+            TACK_REARM : begin
                 TACK_EN <= 1'b0;
                 if (!TACK_SYNC[1]) begin
                     TACK_STATE <= TACK_IDLE;

@@ -4,7 +4,7 @@ module APCI_U712_4040_pll(PACKAGEPIN,
                           RESET);
 
 inout PACKAGEPIN;
-input RESET;    /* To initialize the simulation properly, the RESET signal (Active Low) must be asserted at the beginning of the simulation */ 
+input RESET;
 output PLLOUTCORE;
 output PLLOUTGLOBAL;
 

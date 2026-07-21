@@ -28,7 +28,7 @@ See individual modules for revision history.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 
-iceprog D:\AmigaPCI\U712\U712_icecube\U712_icecube_Implmnt\sbt\outputs\bitmap\U712_TOP_bitmap.bin
+iceprog D:\AmigaPCI\U712\APCI_U712\APCI_U712_Implmnt\sbt\outputs\bitmap\U712_TOP_bitmap.bin
 */
 
 module U712_TOP
@@ -59,7 +59,11 @@ module U712_TOP
     input  [2:0] ATA_A,
     output [2:0] ATA_AB
 
+    ,output TP0
+
 );
+
+assign TP0 = RAMSPACEn;
 
 /////////////////////
 // INTERNAL WIRES //
@@ -75,7 +79,6 @@ wire
     CLK40_PLL,
     DMA_WRITE_CYCLE;
 
-wire CLK40 = !CLK40_PLL;
 wire CLK40_PAD = CLK40_IN;
 
 ///////////////////
@@ -85,11 +88,23 @@ wire CLK40_PAD = CLK40_IN;
 assign DRD_ENn = ~(REG_CYCLE || DMA_CYCLE);
 assign DRD_DIR = ~((REG_CYCLE  && !AGNUS_WRITE_CYCLE) || (DMA_CYCLE && DMA_WRITE_CYCLE)); //REGESTER READS & DMA WRITES = 0, REG WRITES & DMA READS = 1
 
-assign CLK40B_OUT = !CLK40_PLL;
-assign CLK40C_OUT = !CLK40_PLL;
-assign CLK40D_OUT = !CLK40_PLL;
+/////////////
+// CLOCKS //
+///////////
+
+//The 14MHz clock has a rising edge on every 7MHz edge.
+wire CLK14 = ~(CLK7 ^ CDAC); //XNOR
+
+//The PLL shifts the output clock 180 degrees from the input clock.
+//So we shift it 180 degrees to realign it with the input clock.
+
+wire CLK40 = ~CLK40_PLL;
+
+assign CLK40B_OUT = ~CLK40_PLL;
+assign CLK40C_OUT = ~CLK40_PLL;
+assign CLK40D_OUT = ~CLK40_PLL;
 assign CLK40n_OUT =  CLK40_PLL;
-assign CLKRAM     = !CLK40_PLL;
+assign CLKRAM     = ~CLK40_PLL;
 
 //////////////////////////
 // AGNUS STATE MACHINE //
@@ -99,8 +114,9 @@ U712_AGNUS_CYCLE U712_AGNUS_CYCLE
 (
     //Clocks
     .CLK40 (CLK40),
-    .CLK7 (CLK7),
-    .CDAC (CDAC),
+    //.CLK7 (CLK7),
+    //.CDAC (CDAC),
+    .CLK14 (CLK14),
     .C1 (C1),
     .C3 (C3),
 
@@ -205,43 +221,8 @@ assign ATA_AB = ATA_A;
 // PLL //
 ////////
 
-//WE GENERATE THE 40MHz CLOCKS HERE BASED ON THE CLK40_IN CLOCK SIGNAL FROM THE LOCAL BUS CARD.
-//WE DISTRIBUTE THE CLOCKS FROM THE PLL TO OTHER DEVICES ON THE AMIGAPCI. SINCE THIS PLL INVERTS THE CLOCK SIGNAL,
-//WE PHASE MATCH IT BEFORE PUTTING THE SIGNAL OUT.
-
 APCI_U712_4040_pll APCI_U712_4040_pll_inst(.PACKAGEPIN(CLK40_PAD),
                                            .PLLOUTCORE(),
                                            .PLLOUTGLOBAL(CLK40_PLL),
                                            .RESET(1'b1));
-
-//Effect of FDA_FEEDBACK value
-//0  = Almost exact peak match
-//7  = ~2ns early peak
-//15 = ~4ns early peak
-
-/*SB_PLL40_CORE #(
-    .DIVR (4'b0000),
-    .DIVF (7'b0000000),
-    .DIVQ (3'b100),
-    .FILTER_RANGE (3'b011),
-    .FEEDBACK_PATH ("DELAY"),
-    .DELAY_ADJUSTMENT_MODE_FEEDBACK ("FIXED"),
-    .FDA_FEEDBACK   (4'b1111),
-    .DELAY_ADJUSTMENT_MODE_RELATIVE ("FIXED"),
-    .FDA_RELATIVE   (4'b0000),
-    .PLLOUT_SELECT ("GENCLK")
-) pll (
-    .LOCK           (),
-    .RESETB         (1'b1),
-    .REFERENCECLK   (CLK40_PAD),
-    .PLLOUTGLOBAL   (CLK40_PLL),
-
-    .EXTFEEDBACK       (1'b0),
-    .DYNAMICDELAY      (8'b00000000),
-    .BYPASS            (1'b0),
-    .SDI               (1'b0),
-    .SCLK              (1'b0),
-    .LATCHINPUTVALUE   (1'b0)
-);*/
-
 endmodule
