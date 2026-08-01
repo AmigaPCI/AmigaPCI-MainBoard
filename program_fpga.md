@@ -1,10 +1,10 @@
 # Programming the FPGA Flash Memory
-There are four Lattice iCE40 FPGAs on the AmigaPCI board. Each FPGA has an associated flash memory module to store the FPGA configuration, which is loaded by the FPGA at startup. Each flash memory module has a programming header. The header is identified similarly to the associated FPGA. For example, CN712 programs the flash module for U712. CN409 for U409, etc.
+There are four Lattice iCE40 FPGAs on the AmigaPCI board. Each FPGA has an associated flash memory module to store the FPGA configuration, which is loaded by the FPGA at startup. Each flash memory module has a programming header. The header is identified similarly to the associated FPGA. For example, CN712 programs the flash module for U712. CN409 for U409, etc. **If you have not already programmed the on-board STM microcontroller, stop and do that now**.
 
 ## Programming with a FT232H USB to SPI Board
 We will discuss programming the flash memory modules using iceprog with cheap FTDI FT232H interface boards. Such an example is the [Adafruit FT232H](https://www.adafruit.com/product/2264). Similar boards can be obtained from other manufacturers. The following steps describe how to program the flash modules. Do not leave the AmigaPCI powered on for longer than necessary during the programming process.
 
-It is recommended to program the FPGA's in specific order. Program any FPGAs on the local bus card first. If you have the AmigaPCI local bus card ("THE BRAIN") program these in this order: U400, U111. Then, on the AmigaPCI, program these in this order: U409, U712, U110, U109.
+It is recommended to program the FPGA's in specific order. Program FPGAs on the local bus card first. **For the AmigaPCI local bus card ("THE BRAIN") program in this order: U400, U111. Then, on the AmigaPCI, program in this order: U409, U712, U110, U109**.
 
 ### Obtain ICEPROG programming tool
 #### Linux
