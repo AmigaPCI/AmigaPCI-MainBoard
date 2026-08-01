@@ -6,7 +6,9 @@ We will discuss programming the flash memory modules using iceprog with cheap FT
 
 It is recommended to program the FPGA's in specific order. Program any FPGAs on the local bus card first. If you have the AmigaPCI local bus card ("THE BRAIN") program these in this order: U400, U111. Then, on the AmigaPCI, program these in this order: U409, U712, U110, U109.
 
-1. Install [icestorm](https://github.com/YosysHQ/icestorm).  
+### Obtain ICEPROG programming tool
+#### Linux
+   Install [icestorm](https://github.com/YosysHQ/icestorm).  
 
    Debian:
    ```
@@ -16,9 +18,12 @@ It is recommended to program the FPGA's in specific order. Program any FPGAs on 
    ```
    sudo dnf install icestorm
    ```
+#### Windows
+   Download from [FPGAwars](https://github.com/FPGAwars/toolchain-icestorm/wiki#testing-in-windows) GitHub.  
 
-2. If it is on, turn off the AmigaPCI.
-3. Connect the FT232H board to the desired FPGA programming port.
+### Install FPGA Firmware
+1. If it is on, turn off the AmigaPCI.
+2. Connect the FT232H board to the desired FPGA programming port.
    
    AmigaPCI|Adafruit FT232H|C232HM MPSSE
    -|-|-
