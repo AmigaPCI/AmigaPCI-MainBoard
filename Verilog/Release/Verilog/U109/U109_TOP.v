@@ -52,7 +52,7 @@ module U109_TOP (
     inout [31:0] D,
     inout [31:0] AD
 
-    ,output TP0, output TP1
+    //,output TP0, output TP1
 );
 
 //assign TP0 = TACK_EN;
@@ -162,8 +162,8 @@ U109_PCI_STATE_MACHINE U109_PCI_STATE_MACHINE (
     .TACKn_IN (TACKn_IN),
     .TACK_EN (TACK_EN),
     .TACKn_OUT (TACKn_OUT)
-    ,.TP0 (TP0)
-    ,.TP1 (TP1)
+    //,.TP0 (TP0)
+    //,.TP1 (TP1)
 );
 
 //////////////////

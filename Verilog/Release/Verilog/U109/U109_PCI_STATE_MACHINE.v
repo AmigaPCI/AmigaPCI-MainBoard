@@ -57,12 +57,12 @@ module U109_PCI_STATE_MACHINE (
 
     
 
-    ,output TP0
-    ,output TP1
+    //,output TP0
+    //,output TP1
 );
 
-assign TP0 = DMA_TRDY[0];
-assign TP1 = PCI_CYCLEn;
+//assign TP0 = DMA_TRDY[0];
+//assign TP1 = PCI_CYCLEn;
 
 /////////////////
 // PARAMETERS //

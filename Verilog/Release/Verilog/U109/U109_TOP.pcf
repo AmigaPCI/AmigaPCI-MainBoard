@@ -119,4 +119,4 @@ set_io PCIAT[0]           42
 #set_io CONFIG_ENn    24
 
 #set_io TP0 38
-#set_io TP1 37 -pullup yes
+#set_io TP1 37
