@@ -59,14 +59,14 @@ module U712_TOP
     input  [2:0] ATA_A,
     output [2:0] ATA_AB
 
-    ,output TP0
-    ,output TP1
+    //,output TP0
+    //,output TP1
 
 );
 
-assign TP0 = (RAS0n != RAS1n);
+//assign TP0 = (RAS0n != RAS1n);
 //assign TP1 = (!CASUn || ! CASLn);
-assign TP1 = DB_ENn;
+//assign TP1 = DB_ENn;
 
 /////////////////////
 // INTERNAL WIRES //
