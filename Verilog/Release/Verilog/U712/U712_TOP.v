@@ -60,10 +60,13 @@ module U712_TOP
     output [2:0] ATA_AB
 
     ,output TP0
+    ,output TP1
 
 );
 
-assign TP0 = RAMSPACEn;
+assign TP0 = (RAS0n != RAS1n);
+//assign TP1 = (!CASUn || ! CASLn);
+assign TP1 = DB_ENn;
 
 /////////////////////
 // INTERNAL WIRES //

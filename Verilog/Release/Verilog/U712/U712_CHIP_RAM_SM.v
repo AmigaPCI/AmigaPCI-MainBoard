@@ -27,7 +27,7 @@ Description: Chip RAM state machine
 Revision History
 Date          Who  Description
 -----------------------------------
-03-OCT-2025 : JN   First release
+31-JUL-2026   JN   Fix video tearing for Rev 7.x hardware.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 
@@ -52,7 +52,8 @@ module U712_CHIP_RAM_SM
     output reg [10:0] CMA,
     
     //Buffers
-    output reg DB_ENn, DB_DIR, CPU_CYCLE, DMA_CYCLE, WRITE_CYCLE
+    output DB_ENn, DB_DIR,
+    output reg CPU_CYCLE, DMA_CYCLE, WRITE_CYCLE
 );
 
 /////////////////
@@ -117,16 +118,18 @@ always @(posedge C3) begin
     end
 end
 
+wire DMA_A1 = AGNUS_REV ? DRA[0] : DRA[1];
+wire [8:0] AGNUS_COL_ADDRESS = AGNUS_REV ? DRA[9:1] : {1'b0, DRA[9:2]};
+
+reg DATA_BRIDGE_ENABLE;
 reg [8:0] COL_ADDRESS;
 always @(negedge C1) begin
     if (!RESETn) begin
+        DATA_BRIDGE_ENABLE <= 1'b0;
         COL_ADDRESS <= 9'b0;
     end else begin
-        if (AGNUS_REV) begin
-            COL_ADDRESS <= DRA[9:1];
-        end else begin
-            COL_ADDRESS <= {1'b0, DRA[9:2]};
-        end
+        COL_ADDRESS <= AGNUS_COL_ADDRESS;
+        DATA_BRIDGE_ENABLE <= DMA_A1;
     end
 end
 
@@ -192,27 +195,19 @@ AGNUS MULTIADAPTER ADDRESS SIGNAL CONFIGURATION
       COL  A20  A18  A8   A7   A6   A5   A4   A3   A2   A1
 */
 
-assign BANK1 = 1;
-assign BANK0 = 1;
+assign BANK1 = 1'b0;
+assign BANK0 = 1'b0;
 
 reg SDRAM_CONFIGURED;
 reg [3:0] SDRAM_CMD;
 reg [3:0] SDRAM_STATE;
 
-//Assert the enable signal of the chip ram data bridge.
-//This is done in the 7MHz domain.
-wire DMA_A1 = AGNUS_REV ? DRA[0] : DRA[1];
-always @(negedge CLK7) begin
-    if (!RESETn) begin
-        DB_ENn <= 1;
-        DB_DIR <= 1;
-    end else begin
-        DB_ENn <= !(!DBRn && DMA_A1 && (RAS1n != RAS0n));
-        DB_DIR <= !AWEn;
-    end
-end
 
-//The SDRAM state machine.
+//--- Assert the enable signal of the chip ram data bridge. ---
+assign DB_ENn = ~(DMA_CYCLE && DATA_BRIDGE_ENABLE);
+assign DB_DIR = ~(AWEn);
+
+//--- The SDRAM state machine. ---
 always @(negedge CLK40) begin
     if (!RESETn) begin
         DMA_CYCLE <= 0;

@@ -122,3 +122,4 @@ set_io ATA_AB[0] 129
 
 #TEST POINTS
 set_io TP0 37
+set_io TP1 68
