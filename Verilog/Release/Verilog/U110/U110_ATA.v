@@ -24,8 +24,7 @@ Description: ATA Controller
 
 Date          Who  Description
 -----------------------------------
-02-JUL-2025   JN   Initial release for Rev 6.0 hardware.
-16-OCT-2025   JN   Added user selectable ATA timing.
+02-AUG-2026   JN   Change edge alignment for ATA start cycle.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -130,8 +129,8 @@ assign DIOW_SECn = !(RW_EN &&  WRITE_CYCLE && S_CYCLE);
 reg P_CYCLE, S_CYCLE, RW_EN, WRITE_CYCLE, ATA_PENDING;
 reg [3:0] CYCLE_COUNT;
 
-//always @(posedge CLK40) begin
-always @(negedge CLK40) begin
+always @(posedge CLK40) begin
+//always @(negedge CLK40) begin
     if (!RESETn) begin        
         ATA_TACK    <= 0;
         WRITE_CYCLE <= 0;
