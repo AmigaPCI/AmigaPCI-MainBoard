@@ -41,7 +41,9 @@ module U110_TOP (
     inout  [1:0] SIZ,
     output TCIn, TBIn, DATA_DIR,
     output [1:0] A_LOW,
-    inout  TACKn,   
+    //inout  TACKn,
+    input TACKn_IN,
+    output TACKn_OUT,
     
     //ATA Chip Selects
     input  ATA_ENn, PCS1, PCS0, SCS1, SCS0, ATA_J901, ATA_J902, ATA_J903,
@@ -64,9 +66,13 @@ module U110_TOP (
     output [4:0] BUSGNT,
     inout  BBn
 
-    //,output TP0,TP1//,TP2
+    //,output TP2
 
 );
+
+//wire ATA_J903 = 1'b1;
+//assign TP2 = DATA_DIR;
+//assign TP2 = ATA_ENn;
 
 //assign TP1 = BRIDGE_ENn;
 //assign TP0 = PCI_TIPn;
@@ -130,7 +136,9 @@ U110_CYCLE_TERMINATION U110_CYCLE_TERMINATION (
 
     //output
     //.TEAn (TEAn),
-    .TACKn (TACKn),
+    //.TACKn (TACKn),
+    .TACKn_IN (TACKn_IN),
+    .TACKn_OUT (TACKn_OUT),
     .TCIn (TCIn),
     .TBIn (TBIn)
 );

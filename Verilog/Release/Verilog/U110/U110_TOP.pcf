@@ -43,15 +43,15 @@ set_io TCIn      33
 set_io TBIn      34
 set_io TSn       21
 set_io RnW       80
-set_io TACKn     75
+#set_io TACKn     75
 set_io BURSTn    81
 set_io DATA_DIR   9
 set_io PCIINTENn 62
 #set_io TT[0]      31
 #set_io TT[1]      32
 #set_io TEAn      10
-#set_io TACKn_OUT 75
-#set_io TACKn_IN  93
+set_io TACKn_OUT 75
+set_io TACKn_IN  93
 
 #BUS ARBRITRATION
 set_io LOCKn      43
@@ -110,4 +110,4 @@ set_io LLBEn 41
 #Test
 #set_io TP0    
 #set_io TP1    
-#set_io TP2    
+#set_io TP2 4

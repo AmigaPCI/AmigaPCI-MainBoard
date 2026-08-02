@@ -24,10 +24,7 @@ Description: Terminate ATA and PCI data transfers.
 
 Date          Who  Description
 -----------------------------------
-02-JUL-2025   JN   Initial release for Rev 6.0 hardware.
-16-OCT-2025   JN   Changed to rising clock edge to better accomodate latency in the FPGA.
-17-NOV-2025   JN   Added PCI TACK.
-24-NOV-2025   JN   Added cycle timeouts on the PCI bus.
+02-AUG-2026   JN   Fixed _TACK clock edge alignment.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -41,7 +38,9 @@ module U110_CYCLE_TERMINATION (
     input RESETn, ATA_TACK, PCI_CYCLEn,
     output TCIn, TBIn, //TEAn, 
 
-    inout TACKn
+    //inout TACKn
+    input TACKn_IN,
+    output TACKn_OUT
 
 );
 
@@ -60,7 +59,8 @@ module U110_CYCLE_TERMINATION (
 wire TCI_EN  =  (TACK_OUT_EN ||  PCI_TCI_EN);
 wire TxI_OUT = !(!TACK_OUT   || !PCI_TCI_OUT);
 
-assign TACKn = TACK_OUT_EN ? TACK_OUT : 1'bz;
+//assign TACKn = TACK_OUT_EN ? TACK_OUT : 1'bz;
+assign TACKn_OUT = TACK_OUT_EN ? TACK_OUT : 1'bz;
 assign TCIn  = TCI_EN ? TxI_OUT : 1'bz;
 assign TBIn = TACK_OUT_EN ? TACK_OUT : 1'bz;
 //assign TEAn  = 1;
@@ -68,7 +68,7 @@ assign TBIn = TACK_OUT_EN ? TACK_OUT : 1'bz;
 //------ _TACK State Machine ------
 reg TACK_OUT_EN, TACK_OUT;
 reg [3:0] TACK_COUNT;
-always @(posedge CLK40) begin
+always @(negedge CLK40) begin
     if (!RESETn) begin
         TACK_OUT_EN <= 0;
         TACK_OUT <= 1;
@@ -115,7 +115,8 @@ always @(posedge CLK40) begin
                 end
             end
             2'b01 : begin
-                if (!TACKn) begin
+                //if (!TACKn) begin
+                if (!TACKn_IN) begin
                     PCI_TCI_OUT <= 1;
                     TCI_CYCLE_EN <= 2'b0;
                     TCI_STATE <= 2'b10;
