@@ -108,6 +108,6 @@ set_io LMBEn 39
 set_io LLBEn 41
 
 #Test
-#set_io TP0    
-#set_io TP1    
+#set_io TP0 2  
+#set_io TP1 3   
 #set_io TP2 4
