@@ -26,9 +26,7 @@ Description: Part of the PCI state machine.
 
 Date          Who  Description
 -----------------------------------
-18-NOV-2025   JN   INITIAL CODE
-21-NOV-2025   JN   Moved PCIAT assertion to this module.
-01-DEC-2025   JN   Incorporate FIFO transactions.
+05-AUG-2026   JN   Add PCI_INT_ENn and hold devices in reset at power on.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -39,7 +37,8 @@ module U109_PCI_STATE_MACHINE (
     input CLK80, CLK66, CLK40, CLK33, RESETn, RnW,
 
     //Cycle Start/Termination
-    input CPU_BUSn, REG_DATA,
+    input CPU_BUSn, 
+    input [31:30] REG_DATA,
     input BURSTn, PCI_TIPn, BRIDGE_CONF_SPACE, A, TACKn_IN,
     output reg TACKn_OUT, TACK_EN,
     inout TSn, 
@@ -51,7 +50,7 @@ module U109_PCI_STATE_MACHINE (
     //PCI Signals
     input CACHE_SPACE_EN, //DEVSELn,
     output PARITY_DIR, PCI_RSTn,
-    output reg P2A_BURST_CYCLE, P2A_READ_NEXT, A2P_READ_NEXT, TCI_ENn, BUFFER_EN, P2A_TIMEOUT, PCI_CYCLEn, RETRY_CYCLE,
+    output reg P2A_BURST_CYCLE, P2A_READ_NEXT, A2P_READ_NEXT, TCI_ENn, BUFFER_EN, P2A_TIMEOUT, PCI_CYCLEn, RETRY_CYCLE, PCI_INT_ENn,
 
     inout INIT_READYn, TARGET_READYn, STOPn
 
@@ -103,7 +102,10 @@ assign PARITY_DIR = ((!CPU_BUSn && PCI_CYCLEn) || A2P_CYCLE_EN);
 //We support a write only register at offset $FC in the bridge
 //config0 space.
 
-//D[31] = PCI bus reset bit
+//PCI devices are held in reset until a write to this register takes them out of reset.
+
+//D[31] = PCI bus reset bit.
+//D[30] = Enable PCI interupts.
 
 assign PCI_RSTn = !(!RESETn || PCI_RST_REG);
 wire REG_CYCLE_START = (!TSn && !RnW && BRIDGE_CONF_SPACE && A);
@@ -111,14 +113,16 @@ wire REG_CYCLE_START = (!TSn && !RnW && BRIDGE_CONF_SPACE && A);
 reg REG_CYCLE, PCI_RST_REG;
 always @(posedge CLK40 or posedge REG_CYCLE_START) begin
     if (REG_CYCLE_START) begin
-        REG_CYCLE <= 1;
+        REG_CYCLE <= 1'b1;
     end else if (!RESETn) begin
-        PCI_RST_REG <= 0;
-        REG_CYCLE <= 0;
+        PCI_RST_REG <= 1'b1;
+        PCI_INT_ENn <= 1'b1;
+        REG_CYCLE <= 1'b0;
     end else begin
         if (REG_CYCLE) begin
-            PCI_RST_REG <= ~REG_DATA;
-            REG_CYCLE   <= 0;
+            PCI_RST_REG <= ~REG_DATA[31];
+            PCI_INT_ENn <=  REG_DATA[30];
+            REG_CYCLE   <= 1'b0;
         end
     end    
 end

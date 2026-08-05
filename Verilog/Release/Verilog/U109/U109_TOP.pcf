@@ -112,11 +112,11 @@ set_io PCIAT[1]           43
 set_io PCIAT[0]           42
 #set_io DEVSELn            10
 #set_io PERRn              37 #Input from U110
-#set_io PCI_INT_ENn        22 #Output to U110
+set_io PCI_INT_ENn        22 #Output to U110
 #set_io DATARDYn           29 #Output for RAM handshaking
 #set_io PCI_ENn            31 #Output to U110 for turning on/off PCI signals
 
 #set_io CONFIG_ENn    24
 
-#set_io TP0 38
+#set_io TP0 68 #SDO
 #set_io TP1 37
