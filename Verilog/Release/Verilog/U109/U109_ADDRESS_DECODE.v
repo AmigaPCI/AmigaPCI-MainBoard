@@ -37,7 +37,7 @@ GitHub: https://github.com/jasonsbeer/AmigaPCI
 module U109_ADDRESS_DECODE
 (   
   //Cycle Start
-  input CLK40, TSn, RESETn, BUFFER_EN, PCI_CYCLEn,
+  input CLK40, TSn, RESETn, DATA_BUFFER_EN, PCI_CYCLEn,
   input [31:16] A,
 
   //Chip Selects
@@ -69,7 +69,7 @@ wire   NOCACHE_SPACE     =  (A[31:29] == BRIDGE_BASE[3:1]);
 assign CACHE_SPACE       =  (A[31:29] == CACHE_BASE[3:1]);
 assign BRIDGE_SPACE      =  (RESETn && PCI_CYCLEn && (NOCACHE_SPACE || CACHE_SPACE));
 assign BRIDGE_CONF_SPACE =  (BRIDGE_SPACE && A[29:20] == CONF0_ADD_SPACE && A[19:16] == BRIDGE_ADDRESS);
-assign BRIDGE_ENn        = !(BRIDGE_SPACE || BRIDGE_HOLD || BUFFER_EN);
+assign BRIDGE_ENn        = !(BRIDGE_SPACE || BRIDGE_HOLD || DATA_BUFFER_EN);
 
 reg BRIDGE_HOLD;
 reg [1:0] BRIDGE_HOLD_COUNT;

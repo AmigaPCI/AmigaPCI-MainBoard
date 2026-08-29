@@ -41,8 +41,8 @@ module U110_PCI_BRIDGE (
     input CPU_BUS_OWN,
     
 
-    output PARITY, PCI_TIPn, BB_EN, DMA_START, PPDMA, PCI_BUFF_ENn,
-    output reg DMA_WRITE_CYCLE, W_LATCH_ENn, LATCH_ADn,
+    output PARITY, BB_EN, DMA_START, PPDMA, PCI_BUFF_ENn, W_LATCH_ENn,
+    output reg DMA_WRITE_CYCLE, LATCH_ADn, PCI_TIPn, 
     output [1:0] A_LOW,
     output reg [1:0] SIZ_OUT,
 
@@ -89,9 +89,17 @@ localparam [1:0] BURST_TOTAL = 2'b11;
 ///////////
 
 assign BB_EN         =   BB_EN_SYNC[1];
-assign PCI_TIPn      = ~(PCI_CYCLE_ACTIVE || DMA_PCI_CYCLE);
+//assign PCI_TIPn      = ~(PCI_CYCLE_ACTIVE || DMA_PCI_CYCLE);
 assign DMA_START     =  (RESETn && !FRAMEn && !AD31);
 assign PCI2PCI_START =  (RESETn && !FRAMEn &&  AD31);
+
+always @(posedge CLK33) begin
+    if (!RESETn) begin
+        PCI_TIPn <= 1'b1;
+    end else begin
+        PCI_TIPn <= ~(PCI_CYCLE_ACTIVE || DMA_PCI_CYCLE);
+    end
+end
 
 //PPDMA controls the direction of the _DEVSEL and _TRDY signals.
 //The direction is conditioned on the cycle type in progress.
@@ -156,50 +164,69 @@ end
  // CPU CYCLE START //
 /////////////////////
 
+//All CPU driven PCI cycles start here by watching for assertion of _TS
+//while in the bridge address space. When a new cycle start is detected,
+//the PCI (33MHz) state machine is signaled to start. This state machine
+//then returns to an idle state.
+
 //This currently DOES NOT support burst writes to PCI.
 //Future idea...drive _TACK from here instead of asserting W_LATCH_EN?
 
-reg PCI_CYCLE_START_HOLD, WRITE_CYCLE, BURST_CYCLE_EN; //W_LATCH_EN, 
-reg [1:0] PCI_CYCLE_ACTIVE_SYNC, PCI_CYCLE_STATE;;
+wire CPU_PCI_CYCLE_START = (!TSn && !BRIDGE_ENn && CPU_BUS_OWN);
+
+reg PCI_CYCLE_START_HOLD, WRITE_CYCLE, BURST_CYCLE_EN, WRITE_LATCH_EN;
+reg [1:0] PCI_CYCLE_ACTIVE_SYNC;
 always @(posedge CLK40) begin
     if (!RESETn) begin
-        PCI_CYCLE_START_HOLD <= 0;
-        WRITE_CYCLE <= 0;
-        W_LATCH_ENn <= 1;
-        BURST_CYCLE_EN <= 0;
-        PCI_CYCLE_STATE <= 2'b0;
-        PCI_CYCLE_ACTIVE_SYNC <= 2'b0;
+        PCI_CYCLE_START_HOLD <= 1'b0;
+        WRITE_CYCLE <= 1'b0;
+        WRITE_LATCH_EN <= 1'b0;
+        BURST_CYCLE_EN <= 1'b0;
+        PCI_CYCLE_ACTIVE_SYNC <= 2'b00;
     end else begin
 
-        PCI_CYCLE_ACTIVE_SYNC <= {PCI_CYCLE_ACTIVE_SYNC[0], PCI_CYCLE_ACTIVE};
+        WRITE_LATCH_EN <= 1'b0;
 
-        case (PCI_CYCLE_STATE)
-            2'b00 : begin
-                if (!TSn && !BRIDGE_ENn && CPU_BUS_OWN) begin
-                    PCI_CYCLE_START_HOLD <= 1;
-                    BURST_CYCLE_EN <= PCIAT[2];           
-                    if (!RnW) begin
-                        W_LATCH_ENn <= 0;
-                        WRITE_CYCLE <= 1;
-                    end else begin
-                        WRITE_CYCLE <= 0;
-                    end
-                    PCI_CYCLE_STATE <= 2'b01;
+        if (PCI_CYCLE_START_HOLD) begin
+            if (PCI_CYCLE_ACTIVE_SYNC != 2'b00) begin
+                PCI_CYCLE_START_HOLD <= 1'b0;
+                BURST_CYCLE_EN <= 1'b0;
+                PCI_CYCLE_ACTIVE_SYNC <= 2'b00;
+            end else begin
+                //Wait for the 33MHz state machine to start before returning to idle state.
+                PCI_CYCLE_ACTIVE_SYNC <= {PCI_CYCLE_ACTIVE_SYNC[0], PCI_CYCLE_ACTIVE};
+            end
+        end else begin
+            //Start the CPU driven PCI cycle.
+            if (CPU_PCI_CYCLE_START) begin
+                PCI_CYCLE_START_HOLD <= 1'b1;
+                BURST_CYCLE_EN <= PCIAT[2];           
+                if (!RnW) begin
+                    WRITE_LATCH_EN <= 1'b1;
+                    WRITE_CYCLE <= 1'b1;
+                end else begin
+                    WRITE_CYCLE <= 1'b0;
                 end
             end
-            2'b01: begin
-                W_LATCH_ENn <= 1;
-                PCI_CYCLE_STATE <= 2'b10;
-            end
-            2'b10 : begin
-                if (PCI_CYCLE_ACTIVE_SYNC != 2'b0) begin
-                    PCI_CYCLE_START_HOLD <= 0;
-                    //WRITE_CYCLE <= 0;
-                    BURST_CYCLE_EN <= 0;
-                    PCI_CYCLE_STATE <= 2'b00;
-                end
-            end
-        endcase
+        end
+    end
+end
+
+  //////////////////////
+ // FIFO WRITE LATCH //
+//////////////////////
+
+//Signal the FIFO in U109 to latch data on an A2P cycle.
+//This state machine gets it on the correct edge.
+
+assign W_LATCH_ENn = ~(WRITE_LATCH);
+
+reg WRITE_LATCH;
+always @(negedge CLK40) begin
+    if (!RESETn) begin
+        WRITE_LATCH <= 1'b0;
+    end else begin
+        WRITE_LATCH <= WRITE_LATCH_EN;
     end
 end
 

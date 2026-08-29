@@ -42,7 +42,13 @@ module U109_FIFO
     output FIFO_EMPTY,
     output FIFO_FULL,
     output reg [31:0] DATA_OUT
+
+    //,output TP0
+    //,output TP1
 );
+
+//assign TP0 = RD_POINTER_BIN[0];
+//assign TP1 = RD_POINTER_BIN[1];
 
 //This is the BRAM asynchronous FIFO. We use the same module for two
 //seperate FIFOs. One FIFO moves the data from the Amiga to the PCI bus.

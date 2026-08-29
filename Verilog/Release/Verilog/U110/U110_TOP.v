@@ -66,14 +66,14 @@ module U110_TOP (
     output [4:0] BUSGNT,
     inout  BBn
 
-    //,output TP0
+    ,output TP0
     //,output TP1
     //,output TP2
 
 );
 
 //assign TP0 = CLK33;
-//assign TP1 = PCI_TIPn;
+assign TP0 = PCI_TIPn;
 
 //wire ATA_J901 = 1'b1;
 //wire ATA_J902 = 1'b1;

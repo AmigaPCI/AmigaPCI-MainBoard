@@ -76,14 +76,14 @@ set_io D[30] 106 #D30
 set_io D[31] 107 #D31
 
 #DATA TRANSFER SIGNALS
-set_io TACKn    23
-set_io TSn      33
-set_io CPU_BUSn 32
-set_io TBIn     19
-set_io RnW      17
-set_io BURSTn   16
-#set_io TACKn_OUT 23
-#set_io TACKn_IN  21
+#set_io TACKn   23
+set_io TSn       33
+set_io CPU_BUSn  32
+set_io TBIn      19
+set_io RnW       17
+set_io BURSTn    16
+set_io TACKn_OUT 23 #23
+set_io TACKn_IN  21 #21
 #set_io TSn_OUT   33
 #set_io TSn_IN    20
 
@@ -98,8 +98,8 @@ set_io PARITY_DIR         34
 set_io PCI_CYCLEn         18
 set_io BRIDGE_ENn         47
 set_io PARITY_DA          15
-set_io TARGET_READYn      12
-set_io INIT_READYn        11
+set_io TRDYn              12 -pullup yes
+set_io IRDYn              11 -pullup yes
 set_io IDSEL[0]           48
 set_io IDSEL[1]           61
 set_io IDSEL[2]           55
@@ -118,5 +118,5 @@ set_io PCI_INT_ENn        22 #Output to U110
 
 #set_io CONFIG_ENn    24
 
-#set_io TP0 68 #SDO
-#set_io TP1 37
+set_io TP0 68 #SDO
+set_io TP1 67 #SDI
