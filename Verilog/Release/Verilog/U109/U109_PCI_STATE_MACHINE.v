@@ -1,3 +1,35 @@
+/*
+LICENSE:
+
+This work is released under the Creative Commons Attribution-NonCommercial 4.0 International
+https://creativecommons.org/licenses/by-nc/4.0/
+
+You are free to:
+Share — copy and redistribute the material in any medium or format
+Adapt — remix, transform, and build upon the material
+The licensor cannot revoke these freedoms as long as you follow the license terms.
+
+Under the following terms:
+Attribution — You must give appropriate credit , provide a link to the license, and indicate if changes were made . You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+NonCommercial — You may not use the material for commercial purposes .
+No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+
+RTL MODULE:
+
+Engineer: Jason Neus
+Design Name: U109
+Module Name: U109_BUFFERS
+Project Name: AmigaPCI
+Target Devices: iCE40-HX4K-TQ144
+
+Description: Buffers for the PCI bus interface.
+
+Date          Who  Description
+-----------------------------------
+02-SEP-2026   JN   Fixed retry cycle.
+
+GitHub: https://github.com/jasonsbeer/AmigaPCI
+*/
 
 module U109_PCI_STATE_MACHINE (
     
@@ -42,7 +74,6 @@ wire A2P_CYCLE_EN = (CPU_A2P_CYCLE || DMA_A2P_CYCLE);
 wire PAR_RST = (!RESETn || PCI_TIPn);
 
 reg PAR_ADDRESS_PHASE;
-reg [1:0] PAR_STATE;
 always @(negedge CLK33, posedge PAR_RST) begin
     if (PAR_RST) begin
         PARITY_DIR <= 1'b1;
@@ -126,9 +157,10 @@ localparam [3:0] START_CYCLE_IP    = 4'h1;
 localparam [3:0] START_CYCLE_NEG   = 4'h2;
 localparam [3:0] START_CYCLE_REARM = 4'h3;
 localparam [3:0] START_CYCLE_END   = 4'h4;
+localparam [3:0] START_CYCLE_RETRY = 4'h5;
 
 //--- External PCI signals ---
-assign IRDYn = CPU_CYCLE ? ~IRDY_EN : 1'bz;
+assign IRDYn = CPU_CYCLE ? ~PCI_CYCLE_EN : 1'bz;
 assign PCI_CYCLEn = ~PCI_CYCLE_EN;
 
 //--- Helper Signals ---
@@ -142,10 +174,10 @@ wire TACK_ASST = (TACK_EN_SYNC != 2'b00 && CLK33_PREV); //Done on the falling ed
 //--- PCI State Machine ---
 reg CPU_A2P_CYCLE;
 reg CPU_P2A_CYCLE;
-reg IRDY_EN;
 reg TIMEOUT_ASST;
 reg PCI_CYCLE_EN;
 reg BUFFER_EN;
+reg RETRY_EN;
 reg RETRY_RST;
 reg [1:0] RW_SYNC;
 reg [1:0] TACK_EN_SYNC;
@@ -154,10 +186,11 @@ reg [3:0] START_CYCLE_STATE;
 always @(posedge CLK66) begin
     if (!RESETn) begin
         BUFFER_EN     <= 1'b0;
-        IRDY_EN       <= 1'b0;
         TIMEOUT_ASST  <= 1'b0;
         A2P_READ_NEXT <= 1'b0;
         P2A_TIMEOUT   <= 1'b0;
+        RETRY_EN      <= 1'b0;
+        RETRY_CYCLE   <= 1'b0;
         RETRY_RST     <= 1'b0;
         PCI_CYCLE_EN  <= 1'b0;
         CPU_A2P_CYCLE <= 1'b0;
@@ -176,7 +209,6 @@ always @(posedge CLK66) begin
                     //Falling Edge
                     CPU_A2P_CYCLE <= ~(RW_SYNC[1]); //CPU Write cycle
                     CPU_P2A_CYCLE <=   RW_SYNC[1];  //CPU Read cycle
-                    IRDY_EN <= 1'b1;
                     BUFFER_EN <= 1'b1;
                     PCI_CYCLE_EN <= 1'b1;
                     START_CYCLE_STATE <= START_CYCLE_IP;
@@ -185,17 +217,14 @@ always @(posedge CLK66) begin
 
             START_CYCLE_IP : begin
                 // Rising edge
-                if (RETRY_PCI_CYCLE || TRDY_DETECT || END_PCI_CYCLE) begin
+                if (RETRY_PCI_CYCLE || TRDY_DETECT || END_PCI_CYCLE) begin //Detect end of cycle events.
+                
                     BUFFER_EN <= 1'b0;
                     START_CYCLE_STATE <= START_CYCLE_NEG;
 
                     if (RETRY_PCI_CYCLE) begin
-                        RETRY_CYCLE   <= 1'b1;
-                        RETRY_RST     <= 1'b1;
-                        CPU_A2P_CYCLE <= 1'b0;
-                        CPU_P2A_CYCLE <= 1'b0;
+                        RETRY_EN <= 1'b1;
                     end else begin
-                        RETRY_CYCLE <= 1'b0;
                         A2P_READ_NEXT <= CPU_A2P_CYCLE; //Early move to next fifo entry
                         if (END_PCI_CYCLE) begin // Timeout
                             TIMEOUT_ASST <= 1'b1;   // Terminate the cycle
@@ -207,24 +236,20 @@ always @(posedge CLK66) begin
 
             START_CYCLE_NEG : begin
                 //Falling Edge
-                if (RETRY_CYCLE) begin
-                    RETRY_RST <= 1'b0;
-                    START_CYCLE_STATE <= START_CYCLE_IDLE;
+                PCI_CYCLE_EN <= 1'b0;
+                if (RETRY_EN) begin
+                    START_CYCLE_STATE <= START_CYCLE_RETRY;
                 end else begin
                     START_CYCLE_STATE <= START_CYCLE_REARM;
                 end
-
-                PCI_CYCLE_EN <= 1'b0;
-                IRDY_EN <= 1'b0;
             end
 
             START_CYCLE_REARM : begin
-                //A2P_READ_NEXT <= CPU_A2P_CYCLE; //Rising edge.
                 A2P_READ_NEXT <= 1'b0; //Rising Edge
                 if (TACK_ASST || (CPU_A2P_CYCLE && CLK33_PREV)) begin
                     //Falling or Rising Edge
-                    TIMEOUT_ASST  <= 1'b0;
-                    TACK_EN_SYNC  <= 2'b00;
+                    TIMEOUT_ASST <= 1'b0;
+                    TACK_EN_SYNC <= 2'b00;
                     START_CYCLE_STATE <= START_CYCLE_END;
                 end else begin
                     TACK_EN_SYNC <= {TACK_EN_SYNC[0], ~TACK_OUT};
@@ -237,11 +262,24 @@ always @(posedge CLK66) begin
                     P2A_TIMEOUT   <= 1'b0;
                     CPU_A2P_CYCLE <= 1'b0;
                     CPU_P2A_CYCLE <= 1'b0;
-                    //A2P_READ_NEXT <= 1'b0;
                     START_CYCLE_STATE <= START_CYCLE_IDLE;
                 end
             end
 
+            START_CYCLE_RETRY : begin
+                if (!CLK33_PREV) begin
+                    //Rising Edge
+                    if (RETRY_CYCLE) begin
+                        RETRY_CYCLE <= 1'b0;
+                        RETRY_RST   <= 1'b0;
+                        RETRY_EN    <= 1'b0;
+                        START_CYCLE_STATE <= START_CYCLE_IDLE;
+                    end else begin
+                        RETRY_CYCLE <= 1'b1; //Target device signaled a retry.
+                        RETRY_RST   <= 1'b1; //Turn off data buffers.
+                    end
+                end
+            end
         endcase
 
     end

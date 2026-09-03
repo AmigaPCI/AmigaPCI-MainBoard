@@ -65,7 +65,9 @@ module U109_TOP (
 //assign TP1 = DATA_BUFFER_EN;
 //assign TP0 = A2P_FIFO_EMPTY;
 //assign TP1 = P2A_FIFO_EMPTY;
-assign TP0 = PARITY_DIR;
+assign TP0 = RETRY_CYCLE;
+//assign TP1 = PCI_CYCLEn;
+//assign TP0 = PARITY_DIR;
 assign TP1 = PARITY_DA;
 
 /////////////////////
@@ -198,7 +200,7 @@ U109_BUFFERS U109_BUFFERS(
     //.PCI_BUF_ENn (PCI_BUF_ENn),
     .PCI_BUF_DIR (PCI_BUF_DIR),
     //.PCI_WRITE_EN (PCI_WRITE_EN),
-    .CACHE_SPACE_EN (CACHE_SPACE_EN),
+    //.CACHE_SPACE_EN (CACHE_SPACE_EN),
     //.CLK_ADDRESS_LATCH (CLK_ADDRESS_LATCH),
     .PARITY_DA (PARITY_DA),
     .IDSEL (IDSEL),

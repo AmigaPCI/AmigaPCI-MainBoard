@@ -46,7 +46,7 @@ module U109_BUFFERS
     //PCI Signals
     input PCI_TIPn, BRIDGE_SPACE, CACHE_SPACE, DATA_BUFFER_EN, P2A_TIMEOUT, RETRY_CYCLE, //DEVSELn, 
     output ADDRESS_ENn, PCI_BUF_DIR, ADDRESS_DIR,
-    output reg PARITY_DA, PCI_WRITE_EN, CACHE_SPACE_EN, //CLK_ADDRESS_LATCH,
+    output reg PARITY_DA, PCI_WRITE_EN, //CACHE_SPACE_EN, //CLK_ADDRESS_LATCH,
     output [4:0] IDSEL,
     output [2:0] PCIAT,
 
@@ -102,7 +102,7 @@ always @(negedge CLK40) begin
         CPU_ADDRESS_VALID <= 0;
         PCI_WRITE_EN <= 0;
         PCIAT_LATCHED <= MEM_ACCESS;
-        CACHE_SPACE_EN <= 0;
+        //CACHE_SPACE_EN <= 0;
         A_LATCH <= 32'h0;
         DATA_BUFFER_EN_SYNC <= 2'b11;
     end else begin
@@ -117,7 +117,7 @@ always @(negedge CLK40) begin
                 A_LATCH <= AD;
                 CPU_ADDRESS_VALID <= 1;
                 PCI_WRITE_EN <= !(RnW);
-                CACHE_SPACE_EN <= CACHE_SPACE;
+                //CACHE_SPACE_EN <= CACHE_SPACE;
                 case (AD[29:20])
                     CONF0_ADD_SPACE : PCIAT_LATCHED <= CONFIG0_ACCESS;
                     CONF1_ADD_SPACE : PCIAT_LATCHED <= CONFIG1_ACCESS;
@@ -149,12 +149,14 @@ end
 // ADDRESSING WIRES //
 /////////////////////
 
+//--- Memory Spaces ---
 wire ADDRESS_VALID = (CPU_ADDRESS_VALID || RETRY_ADDRESS_VALID);
 wire CONFIG0_SPACE = (A_LATCH[29:20] == CONF0_ADD_SPACE);
 wire CONFIG1_SPACE = (A_LATCH[29:20] == CONF1_ADD_SPACE);
 wire IO_SPACE      = (A_LATCH[29:21] == IO_ADD_LO_SPACE[8:1]);
 wire MEMORY_SPACE  = (!CONFIG0_SPACE && !CONFIG1_SPACE && !IO_SPACE);
 
+//--- Slot IDSEL ---
 wire SLOT4_ENABLE  = (A_LATCH[19:16] == SLOT4_ADDRESS);
 wire SLOT3_ENABLE  = (A_LATCH[19:16] == SLOT3_ADDRESS);
 wire SLOT2_ENABLE  = (A_LATCH[19:16] == SLOT2_ADDRESS);
@@ -221,7 +223,19 @@ always @* begin
     endcase
 end
 
+/*reg [2:0] PCIAT_OUT;
+always @* begin
+    case (AD[29:20])
+        CONF0_ADD_SPACE : PCIAT_OUT <= CONFIG0_ACCESS;
+        CONF1_ADD_SPACE : PCIAT_OUT <= CONFIG1_ACCESS;
+        IO_ADD_LO_SPACE : PCIAT_OUT <= IO_ACCESS;
+        IO_ADD_HI_SPACE : PCIAT_OUT <= IO_ACCESS;
+        default         : PCIAT_OUT <= (CACHE_SPACE && !BURSTn) ? CACHE_ACCESS : MEM_ACCESS;
+    endcase
+end*/
+
 assign PCIAT = RETRY_CYCLE ? RETRY_ACCESS : (ADDRESS_VALID ? PCIAT_LATCHED : PCIAT_PRE);
+//assign PCIAT = RETRY_CYCLE ? RETRY_ACCESS : PCIAT_OUT;
 
 ///////////////////////
 // D/AD BUS BUFFERS //
