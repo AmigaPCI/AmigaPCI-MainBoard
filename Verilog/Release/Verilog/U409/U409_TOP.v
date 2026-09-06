@@ -74,8 +74,8 @@ module U409_TOP (
 
 assign TBIn = (BRIDGE_ENn && !ATA_SPACE) ? 1'b0 : 1'bz;
 
-//assign TCIn = (BRIDGE_ENn && !ATA_SPACE) ? 1'b0 : 1'bz; //No Caching Allowed
-assign TCIn = ROM_SPACE ? 1'b1 : ((!BRIDGE_ENn && ATA_SPACE) ? 1'bz : 1'b0); //Cache the ROM space only
+wire CACHE_SPACE = ROM_SPACE || FLASH_SPACE; //Allow caching in the ROM and FLASH space.
+assign TCIn = CACHE_SPACE ? 1'b1 : ((!BRIDGE_ENn && ATA_SPACE) ? 1'bz : 1'b0);
 
 assign AUTOVECTORn = 1'b0;
 
