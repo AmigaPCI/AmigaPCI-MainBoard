@@ -28,6 +28,7 @@ Date          Who  Description
 -----------------------------------
 18-NOV-2025   JN   INITIAL CODE
 21-NOV-2025   JN   Added address decoding for all cycle types.
+29-OCT-2026   SR   Added the legacy memory window at $9FF.
 
 GitHub: https://github.com/jasonsbeer/AmigaPCI
 */
@@ -72,10 +73,10 @@ localparam SLOT1_ADDRESS   = 4'h2;
 localparam SLOT4_ADDRESS   = 4'h3;
 localparam SLOT2_ADDRESS   = 4'h4;
 localparam SLOT3_ADDRESS   = 4'h8;
-localparam CONF0_ADD_SPACE = 10'b0111111100; //$9FC
-localparam CONF1_ADD_SPACE = 10'b0111111101; //$9FD
-localparam IO_ADD_LO_SPACE = 10'b0111111110; //$9FE
-localparam IO_ADD_HI_SPACE = 10'b0111111111; //$9FF
+localparam CONF0_ADD_SPACE  = 10'b0111111100; //$9FC
+localparam CONF1_ADD_SPACE  = 10'b0111111101; //$9FD
+localparam IO_ADD_SPACE     = 10'b0111111110; //$9FE
+localparam LEGACY_ADD_SPACE = 10'b0111111111; //$9FF, PCI memory $00000000-$000FFFFF
 
 localparam BURST_ORDER_WRAP = 2'b10;
 
@@ -121,8 +122,8 @@ always @(negedge CLK40) begin
                 case (AD[29:20])
                     CONF0_ADD_SPACE : PCIAT_LATCHED <= CONFIG0_ACCESS;
                     CONF1_ADD_SPACE : PCIAT_LATCHED <= CONFIG1_ACCESS;
-                    IO_ADD_LO_SPACE : PCIAT_LATCHED <= IO_ACCESS;
-                    IO_ADD_HI_SPACE : PCIAT_LATCHED <= IO_ACCESS;
+                    IO_ADD_SPACE     : PCIAT_LATCHED <= IO_ACCESS;
+                    LEGACY_ADD_SPACE : PCIAT_LATCHED <= MEM_ACCESS;
                     default         : PCIAT_LATCHED <= (CACHE_SPACE && !BURSTn) ? CACHE_ACCESS : MEM_ACCESS;
                 endcase
             end
@@ -150,10 +151,16 @@ end
 /////////////////////
 
 //--- Memory Spaces ---
+//The legacy window at $9FF00000-$9FFFFFFF is a PCI memory space whose
+//upper address bits are forced to zero, so it reaches PCI memory
+//$00000000-$000FFFFF. This is where VGA compatible cards decode their
+//frame buffer ($A0000-$BFFFF) during a video BIOS POST, an area that
+//is otherwise hidden behind the Amiga chip RAM.
 wire ADDRESS_VALID = (CPU_ADDRESS_VALID || RETRY_ADDRESS_VALID);
 wire CONFIG0_SPACE = (A_LATCH[29:20] == CONF0_ADD_SPACE);
 wire CONFIG1_SPACE = (A_LATCH[29:20] == CONF1_ADD_SPACE);
-wire IO_SPACE      = (A_LATCH[29:21] == IO_ADD_LO_SPACE[8:1]);
+wire IO_SPACE      = (A_LATCH[29:20] == IO_ADD_SPACE);
+wire LEGACY_SPACE  = (A_LATCH[29:20] == LEGACY_ADD_SPACE);
 wire MEMORY_SPACE  = (!CONFIG0_SPACE && !CONFIG1_SPACE && !IO_SPACE);
 
 //--- Slot IDSEL ---
@@ -217,8 +224,8 @@ always @* begin
     case (AD[29:20])
         CONF0_ADD_SPACE : PCIAT_PRE <= CONFIG0_ACCESS;
         CONF1_ADD_SPACE : PCIAT_PRE <= CONFIG1_ACCESS;
-        IO_ADD_LO_SPACE : PCIAT_PRE <= IO_ACCESS;
-        IO_ADD_HI_SPACE : PCIAT_PRE <= IO_ACCESS;
+        IO_ADD_SPACE     : PCIAT_PRE <= IO_ACCESS;
+        LEGACY_ADD_SPACE : PCIAT_PRE <= MEM_ACCESS;
         default         : PCIAT_PRE <= (CACHE_SPACE && !BURSTn) ? CACHE_ACCESS : MEM_ACCESS;
     endcase
 end
@@ -228,8 +235,8 @@ always @* begin
     case (AD[29:20])
         CONF0_ADD_SPACE : PCIAT_OUT <= CONFIG0_ACCESS;
         CONF1_ADD_SPACE : PCIAT_OUT <= CONFIG1_ACCESS;
-        IO_ADD_LO_SPACE : PCIAT_OUT <= IO_ACCESS;
-        IO_ADD_HI_SPACE : PCIAT_OUT <= IO_ACCESS;
+        IO_ADD_SPACE     : PCIAT_OUT <= IO_ACCESS;
+        LEGACY_ADD_SPACE : PCIAT_OUT <= MEM_ACCESS;
         default         : PCIAT_OUT <= (CACHE_SPACE && !BURSTn) ? CACHE_ACCESS : MEM_ACCESS;
     endcase
 end*/
@@ -248,7 +255,8 @@ assign PCIAT = RETRY_CYCLE ? RETRY_ACCESS : (ADDRESS_VALID ? PCIAT_LATCHED : PCI
 //Set AD bus to correct output depending on access type and address or data phase.
 wire AD_OUT_EN       = ADDRESS_VALID || (DATA_BUFFER_EN && (!CPU_BUSn ^ RnW));
 wire [1:0]  A_LOW    = CONFIG0_SPACE ? 2'b00 : CONFIG1_SPACE ? 2'b01 : A_LATCH[1:0]; //Sets AD[1:0]
-wire [31:0] AD_A_OUT = MEMORY_SPACE ? {A_LATCH[31:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
+wire [31:20] A_HIGH  = LEGACY_SPACE ? 12'h0 : A_LATCH[31:20]; //The legacy window maps to the first megabyte of PCI memory.
+wire [31:0] AD_A_OUT = MEMORY_SPACE ? {A_HIGH, A_LATCH[19:2], BURST_ORDER_WRAP} : {12'h0, A_LATCH[19:2], A_LOW}; //Sets AD[31:0]
 wire [31:0] AD_OUT   = !DATA_BUFFER_EN ? AD_A_OUT : {A2P_DATA[7:0], A2P_DATA[15:8], A2P_DATA[23:16], A2P_DATA[31:24]}; //Sets AD source to address or FIFO data.
 
 assign AD = AD_OUT_EN ? AD_OUT : 32'bz;
