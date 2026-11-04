@@ -1,6 +1,6 @@
 <h1 align="center"><img src="/Images/AmigaPCI-logo-dark.png"></h1>
 
-The AmigaPCI is an OCS/ECS Amiga computer in the ATX form factor. It provides a flexible CPU Local Bus port, five AUTOCONFIG PCI slots for expansion purposes such as video and sound, an on-board dual port ATA controller, and offers performance improvements over legacy Amiga designs.
+The AmigaPCI is an OCS/ECS Amiga computer in the ATX form factor. It provides a flexible CPU Local Bus port, five PCI slots for expansion purposes such as video and sound, an on-board dual port ATA controller, and offers performance improvements over legacy Amiga designs.
 
 ## Features  
 <list>
@@ -34,7 +34,7 @@ Review the project [Wiki](https://github.com/AmigaPCI/AmigaPCI-MainBoard/wiki) t
 # Overview
 
 ## PCI Local Bus  
-The PCI bus is based on the [PCI Local Bus Revision 2.3 specifications](/DataSheets/PCI/pci_23.pdf). The PCI Bridge implements a bidirectional asynchronous FIFO to facilitate data movements between the buses. Each slot is compatable with Universal and 5V PCI devices. All efforts are made to align implemented PCI features completely with the PCI Local Bus Revision 2.3. There are no undocumented PCI commands. Each slot is capable of supporting AUTOCONFIG for Amiga specific devices. Software configuration (Prometheus mode) is also available for non-Amiga specific hardware. The AmigaPCI supports true DMA, with each PCI device having total access to all PCI and Amiga address spaces.
+The PCI bus is based on the [PCI Local Bus Revision 2.3 specifications](/DataSheets/PCI/pci_23.pdf). The PCI Bridge implements a bidirectional asynchronous FIFO to facilitate data movements between the buses. Each slot is compatable with Universal and 5V PCI devices. All efforts are made to align implemented PCI features completely with the PCI Local Bus Revision 2.3. There are no undocumented PCI commands. Each slot is capable of supporting Amiga specific devices. The AmigaPCI supports true DMA, with each PCI device having total access to all PCI and Amiga address spaces.
 
 ## CPU Local Bus
 The AmigaPCI main board has no CPU or fast ram. Instead, the CPU Local Bus port supports CPUs and AUTOCONFIG devices. This approach allows fast RAM and other AUTOCONFIG devices be optimized for the clock speed and capabilities of the CPU device implemented. The CPU local bus is discussed further in Section 3.0  of the [AmigaPCI Wiki](https://github.com/AmigaPCI/AmigaPCI-MainBoard/wiki/3.0-Local-Bus-Port).
