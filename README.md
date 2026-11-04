@@ -5,7 +5,7 @@ The AmigaPCI is an OCS/ECS Amiga computer in the ATX form factor. It provides a 
 ## Features  
 <list>
   <li>CPU Local Bus Card supports multiple CPU and fast RAM options</li>
-  <li>Five AUTOCONFIG PCI 5V/Univeral slots</li>
+  <li>Five PCI 5V/Univeral slots</li>
   <li>PCI DMA allowing access to all Amiga and PCI address spaces</li>  
   <li>HID mouse and keyboard inputs</li>
   <li>Dual port IDE interface supporting up to 4 total devices</li>
@@ -29,10 +29,7 @@ This is a hobby project. To me, the Amiga has a personality that PCs of any era 
 
 # Building the AmigaPCI
 
-[Ordering PCBs](pcb_order.md)  
-[Assembly Notes](assembly.md)
-[Hardware Information](hardware_info.md)  
-[Programming the FPGAs](program_fpga.md)  
+Review the project [Wiki](https://github.com/AmigaPCI/AmigaPCI-MainBoard/wiki) to understand how to order, build, and use the AmigaPCI.
 
 # Overview
 
