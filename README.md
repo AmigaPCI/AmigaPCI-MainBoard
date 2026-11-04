@@ -37,12 +37,12 @@ Review the project [Wiki](https://github.com/AmigaPCI/AmigaPCI-MainBoard/wiki) t
 The PCI bus is based on the [PCI Local Bus Revision 2.3 specifications](/DataSheets/PCI/pci_23.pdf). The PCI Bridge implements a bidirectional asynchronous FIFO to facilitate data movements between the buses. Each slot is compatable with Universal and 5V PCI devices. All efforts are made to align implemented PCI features completely with the PCI Local Bus Revision 2.3. There are no undocumented PCI commands. Each slot is capable of supporting AUTOCONFIG for Amiga specific devices. Software configuration (Prometheus mode) is also available for non-Amiga specific hardware. The AmigaPCI supports true DMA, with each PCI device having total access to all PCI and Amiga address spaces.
 
 ## CPU Local Bus
-The AmigaPCI main board has no CPU or fast ram. Instead, the CPU Local Bus port supports CPUs and AUTOCONFIG devices. The CPU Local Bus port is a DIN 41612 connector with 120 pins in 3 rows by 40 columns. The CPU local bus is discussed further in the [AmigaPCI Technical Reference Manual](/AmigaPCI_Technical_Manual.md). This approach allows fast RAM and other AUTOCONFIG devices be optimized for the clock speed and capabilities of the CPU device implemented.
+The AmigaPCI main board has no CPU or fast ram. Instead, the CPU Local Bus port supports CPUs and AUTOCONFIG devices. This approach allows fast RAM and other AUTOCONFIG devices be optimized for the clock speed and capabilities of the CPU device implemented. The CPU local bus is discussed further in Section 3.0  of the [AmigaPCI Wiki](https://github.com/AmigaPCI/AmigaPCI-MainBoard/wiki/3.0-Local-Bus-Port).
 
 <p align="center"><img src="/Images/CPULocalBus-30.jpg" width="425"></p>
 
 ## Amiga Custom Chips  
-The AmigaPCI must be populated with the Amiga OCS/ECS custom chips. The Amiga chipset is required to enable critical functions of the Amiga computer. See [Assembly Notes](assembly.md) for more information.
+The AmigaPCI must be populated with the Amiga OCS or ECS custom chips. See Section 1.0 of the [AmigaPCI Wiki](https://github.com/AmigaPCI/AmigaPCI-MainBoard/wiki/1.0-AmigaPCI-Hardware-Guide) for more information.
 
 ## Kickstart ROM  
 Kickstart ROM version 3.2 or greater for the Amiga 1200 should be burned to 27C4096 EPROMs (DIP-40 footprint) for use by the AmigaPCI. Original Commodore Amiga Kickstart ROMs are not supported. 
@@ -94,24 +94,12 @@ The AmigaPCI includes a dual-port host terminated ATA device interface using [li
 ## Video Slot  
 The AmigaPCI includes the Amiga OCS/ECS video bus. This allows for the use of OCS/ECS compatable video devices with the AmigaPCI.
 
-# References
-
-[AmigaPCI PCI Hardware Developer Reference](/AmigaPCI_PCI_Dev_Guide.md)  
-[AmigaPCI Hardware Reference](/AmigaPCI_Technical_Manual.md)  
-[PCI Local Bus Revision 2.3 specifications](/DataSheets/PCI/pci_23.pdf)  
-
-# Revision History 
-**Rev 6.0**  Current engineering prototype. 
-
 # Acknowledgements  
-Chris Hooper for his work on the STM32F205 microcontroller code.  
-Frédéric Requin for helping me better understand the ATA protocol.  
 Ian Steadman for his [Amiga PC floppy interface](https://github.com/istedman/Floppy_adaptor) design.
-
 
 # License
 Floppy interface modifications from Ian Steadman (noted in schematic) released under the GNU GENERAL PUBLIC LICENSE, Version 3.
 
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/jasonsbeer/AmigaPCI">AmigaPCI</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/jasonsbeer">Jason Neus</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Creative Commons Attribution-NonCommercial 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1" alt=""></a></p>
 
-**Last Update: 28-OCT-2025**
+**Last Update: 04-NOV-2026**
